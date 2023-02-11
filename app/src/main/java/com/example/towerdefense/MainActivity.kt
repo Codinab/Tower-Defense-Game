@@ -3,6 +3,8 @@ package com.example.towerdefense
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import com.example.towerdefense.Utility.MultiVector
+import com.example.towerdefense.Utility.Vector2Di
 import java.io.File
 
 class MainActivity : AppCompatActivity() {
@@ -23,11 +25,14 @@ class MainActivity : AppCompatActivity() {
 
         if (file.exists()) {
             game = Game.fromBinaryFile(filePath, this)!!
-            println("Loaded")
         } else {
             game = Game(this)
-            println("Created")
         }
+
+        var multiVector = MultiVector(Vector2Di())
+        multiVector.add(Vector2Di(1, 0))
+        multiVector.add(Vector2Di(0, 1))
+        println(multiVector.toString())
 
         setContentView(GameView(this, game))
     }

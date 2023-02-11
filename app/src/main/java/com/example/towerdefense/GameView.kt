@@ -66,7 +66,6 @@ class GameView(mainActivity: MainActivity, game: Game) : View(mainActivity) {
             if (game.health <= 0) {
                 game.money *= 2
                 game.saveToBinaryFile(context)
-                Thread.sleep(1000)
                 var newGame = Game.fromBinaryFile(game.fileName, context)!!
                 var gameView = GameView(context as MainActivity, newGame)
                 (context as MainActivity).setContentView(gameView)
