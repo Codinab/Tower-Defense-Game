@@ -2,9 +2,9 @@ package com.example.towerdefense
 
 import android.content.Context
 import android.graphics.*
-import android.view.MotionEvent
-import android.view.View
-import android.view.WindowManager
+import android.view.*
+import android.widget.FrameLayout
+import android.widget.ImageButton
 import androidx.core.content.res.ResourcesCompat
 import java.util.*
 import kotlin.system.exitProcess
@@ -57,7 +57,31 @@ class GameView(mainActivity: MainActivity, game: Game) : View(mainActivity) {
 
         canvas?.drawRect(0f, 300f, 100f, 400f, healthPaint)
         postDelayed(runnable, UPDATE_MILLIS.toLong())
+
+        val backButton = ImageButton(context)
+        backButton.setImageResource(R.drawable.config)
+        backButton.setBackgroundColor(Color.TRANSPARENT)
+        backButton.setOnClickListener { handleBackButtonPress() }
+
+        val layout = FrameLayout(context)
+        layout.addView(backButton)
+        val params = FrameLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            Gravity.TOP or Gravity.LEFT
+        )
+        params.topMargin = 16
+        params.rightMargin = 16
+        backButton.layoutParams = params
+        backButton.maxHeight = 10
+        backButton.maxWidth = 10
+        (context as MainActivity).addContentView(layout, params)
+
     }
+
+    fun handleBackButtonPress() {
+        // Add your logic here to navigate back or exit the game
+    }
+
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         //Update canva
