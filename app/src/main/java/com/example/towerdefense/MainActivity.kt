@@ -13,20 +13,17 @@ import java.util.concurrent.atomic.AtomicBoolean
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
+        supportActionBar?.hide()
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+
         setContentView(R.layout.activity_main)
-        window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        Thread(Runnable {
-            Thread.sleep(1000)
-            //hide title bar
-        }).start()
-
-        window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     private var doubleBackToExitPressedOnce = AtomicBoolean(false)
-
     override fun onBackPressed() {
         //Do double back press to exit
         if (doubleBackToExitPressedOnce.get()) {
@@ -43,21 +40,10 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    lateinit var game: Game
 
     fun startGame(view: View) {
         //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
-
-
-        game = Game(this)
-
-
-        var multiVector = MultiVector(Vector2Di())
-        multiVector.add(Vector2Di(1, 0))
-        multiVector.add(Vector2Di(0, 1))
-        println(multiVector.toString())
-
-        setContentView(GameView(this, game))
+        setContentView(Game(this))
     }
 
     fun continueGame(view: View) {
@@ -67,13 +53,14 @@ class MainActivity : AppCompatActivity() {
 
         println(getDir("", MODE_PRIVATE).absolutePath.toString())
 
+        var game : Game? = null
         try {
             game = Game.fromBinaryFile(filePath, this)!!
         } catch (e: Exception) {
             println(e.message)
         }
 
-        setContentView(GameView(this, game))
+        setContentView(GameView(this, game!!))
     }
 
 
