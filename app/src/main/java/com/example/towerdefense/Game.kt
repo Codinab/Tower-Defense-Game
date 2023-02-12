@@ -1,22 +1,14 @@
 package com.example.towerdefense
 
 import android.content.Context
-import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.text.Editable
-import android.view.MotionEvent
-import android.view.View
-import android.widget.EditText
 import android.widget.Toast
-import com.example.towerdefense.Utility.MultiVector
-import com.example.towerdefense.Utility.Vector2Di
-import java.io.FileInputStream
-import java.io.FileOutputStream
+import com.example.towerdefense.utility.Road
+import com.example.towerdefense.utility.Vector2Di
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
-import kotlin.system.exitProcess
 
 class Game(mainActivity: MainActivity) : Serializable{
     var health = 3

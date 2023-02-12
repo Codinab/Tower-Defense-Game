@@ -1,4 +1,4 @@
-package com.example.towerdefense.Utility;
+package com.example.towerdefense.utility;
 
 
 import java.util.ArrayList;

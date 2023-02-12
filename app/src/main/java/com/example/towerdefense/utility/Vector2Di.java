@@ -1,12 +1,11 @@
-package com.example.towerdefense.Utility;
+package com.example.towerdefense.utility;
 
 
 
-
-
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Vector2Di implements Comparable<Vector2Di> {
+public class Vector2Di implements Comparable<Vector2Di>, Serializable {
     protected int dX;
     protected int dY;
 
@@ -18,6 +17,7 @@ public class Vector2Di implements Comparable<Vector2Di> {
         this.dX = dX;
         this.dY = dY;
     }
+
     public Vector2Di add(Vector2Di v1) {
         return new Vector2Di(this.dX + v1.dX, this.dY + v1.dY);
     }
@@ -43,7 +43,7 @@ public class Vector2Di implements Comparable<Vector2Di> {
     }
 
     public String toString() {
-        return "Vector2D(" + this.dX + ", " + this.dY + ")";
+        return "Vector2Di(" + this.dX + ", " + this.dY + ")";
     }
 
     @Override
@@ -69,6 +69,18 @@ public class Vector2Di implements Comparable<Vector2Di> {
         unit.dX = Integer.compare(this.dX, 0);
         unit.dY = Integer.compare(this.dY, 0);
         return unit;
+    }
+
+    public Direction2D direction(Vector2Di v2) {
+        v2 = v2.sub(this).unitDirection();
+        if(v2.dX == 0 && v2.dY == 0) return Direction2D.UNDEFINED;
+        if(v2.dX == 0) return (v2.dY == 1) ? Direction2D.DOWN : Direction2D.UP;
+        if(v2.dY == 0) return (v2.dX == 1) ? Direction2D.RIGHT : Direction2D.LEFT;
+        return Direction2D.UNDEFINED;
+    }
+
+    public boolean nextTo(Vector2Di v2) {
+        return this.sub(v2).length() == 1;
     }
 
     @Override

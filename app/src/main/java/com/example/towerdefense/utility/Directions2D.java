@@ -1,9 +1,9 @@
-package com.example.towerdefense.Utility;
+package com.example.towerdefense.utility;
 
 import java.util.*;
 
 
-public enum MultiDirection {
+public enum Directions2D {
 
     UNDEFINED(EnumSet.of(Direction2D.UNDEFINED)),
     UP(EnumSet.of(Direction2D.UP)), DOWN(EnumSet.of(Direction2D.DOWN)),
@@ -17,42 +17,45 @@ public enum MultiDirection {
 
     
 
-    MultiDirection(EnumSet <Direction2D> directions) {
+    Directions2D(EnumSet <Direction2D> directions) {
         this.directions = directions;
     }
 
     //For directions in an array
-    public static MultiDirection getMultiDirection(Direction2D[] directions) {
-        if(directions.length == 0) return MultiDirection.UNDEFINED;
-        for (MultiDirection multiDirection : MultiDirection.values()) {
+    public static Directions2D getMultiDirection(Direction2D[] directions) {
+        if(directions.length == 0) return Directions2D.UNDEFINED;
+        for (Directions2D multiDirection : Directions2D.values()) {
             if (multiDirection.getDirections().containsAll(EnumSet.of(directions[0], directions[1]))) {
                 return multiDirection;
             }
         }
-        return MultiDirection.UNDEFINED;
+        return Directions2D.UNDEFINED;
     }
-    
 
-    public static MultiDirection getMultiDirection(Collection <Direction2D> directions) {
-        if(directions.size() == 0) return MultiDirection.UNDEFINED;
-        for (MultiDirection multiDirection : MultiDirection.values()) {
+    public int getDirectionCount() {
+        return getDirections().size();
+    }
+
+    public static Directions2D getMultiDirection(Collection <Direction2D> directions) {
+        if(directions.size() == 0) return Directions2D.UNDEFINED;
+        for (Directions2D multiDirection : Directions2D.values()) {
             if (multiDirection.getDirections().containsAll(directions)) {
                 return multiDirection;
             }
         }
-        return MultiDirection.UNDEFINED;
+        return Directions2D.UNDEFINED;
     }
 
-    public static MultiDirection getMultiDirection(Direction2D direction) {
-        for (MultiDirection multiDirection : MultiDirection.values()) {
-            if (multiDirection.getDirections().contains(direction)) {
-                return multiDirection;
+    public static Directions2D getMultiDirection(Direction2D direction) {
+        for (Directions2D directions2D : Directions2D.values()) {
+            if (directions2D.getDirections().contains(direction)) {
+                return directions2D;
             }
         }
-        return MultiDirection.UNDEFINED;
+        return Directions2D.UNDEFINED;
     }
 
-    public MultiDirection opposite() {
+    public Directions2D opposite() {
         if(this.equals(UNDEFINED)) return UP_DOWN_LEFT_RIGHT;
         if(this.equals(UP_DOWN_LEFT_RIGHT)) return UNDEFINED;
         ArrayList<Direction2D> directions = UP_DOWN_LEFT_RIGHT.getDirections();
@@ -64,17 +67,17 @@ public enum MultiDirection {
         return new ArrayList<>(directions);
     }
 
-    public static boolean connected(MultiDirection multiDirection1, MultiDirection multiDirection2) {
-        for (Direction2D direction : multiDirection1.getDirections()) {
-            if (multiDirection2.getDirections().contains(direction.getOpposite())) {
+    public static boolean connected(Directions2D directions2D1, Directions2D directions2D2) {
+        for (Direction2D direction : directions2D1.getDirections()) {
+            if (directions2D2.getDirections().contains(direction.getOpposite())) {
                 return true;
             }
         }
         return false;
     }
 
-    public boolean connected(MultiDirection multiDirection1) {
-        for (Direction2D direction : multiDirection1.getDirections()) {
+    public boolean connected(Directions2D directions2D1) {
+        for (Direction2D direction : directions2D1.getDirections()) {
             if (getDirections().contains(direction.getOpposite())) {
                 return true;
             }

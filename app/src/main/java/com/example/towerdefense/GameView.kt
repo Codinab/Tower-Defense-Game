@@ -53,13 +53,14 @@ class GameView(mainActivity: MainActivity, game: Game) : View(mainActivity) {
         //canvas?.drawBitmap(tower, null, rectBackGround, null)
         canvas?.drawText("Money: $money", 0f, 100f, textPaint)
         canvas?.drawText("Health: $health", 0f, 200f, textPaint)
+
+
         canvas?.drawRect(0f, 300f, 100f, 400f, healthPaint)
         postDelayed(runnable, UPDATE_MILLIS.toLong())
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        //Update canvas
-
+        //Update canva
 
         if (event?.action == MotionEvent.ACTION_DOWN) {
             game.health--
