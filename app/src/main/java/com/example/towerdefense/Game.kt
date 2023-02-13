@@ -2,25 +2,23 @@ package com.example.towerdefense
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
-import android.os.Handler.Callback
+import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
-import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import com.example.towerdefense.utility.Road
-import com.example.towerdefense.utility.Vector2Di
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
+import java.util.PriorityQueue
 
 /**
  * Game manages the game objects and updates and renders them
  * */
 class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder.Callback {
     private var gameLoop: GameLoop
+    private var gameObjectList = PriorityQueue<GameObject>(compareByDescending { it.z })
     var health = 3
     var money = 100
     var level = 1
@@ -29,7 +27,6 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
 
 
     init {
-
         holder.addCallback(this)
         gameLoop = GameLoop(this, holder)
 
@@ -43,13 +40,16 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
         textPaint.setTextAlign(Paint.Align.LEFT)
         //textPaint.setTypeface(ResourcesCompat.getFont(context, R.font.test))
         healthPaint.setColor(Color.rgb(20, 255, 20))*/
-
     }
 
-    override fun draw(canvas: Canvas?) {
+    override fun draw(canvas: Canvas) {
         super.draw(canvas)
         drawUPS(canvas)
         drawFPS(canvas)
+
+        for (gameObject in gameObjectList) {
+            gameObject.draw(canvas)
+        }
     }
     fun drawUPS(canvas: Canvas?) {
         val averageUPS = gameLoop.averageUPS().toString()
@@ -82,7 +82,41 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
         return
     }
 
+    var objectMovedThread : Thread? = null
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        val x = event?.x?.toDouble()
+        val y = event?.y?.toDouble()
+        var gameObjectSelected : GameObject? = null
+        for (gameObject in gameObjectList) {
+            if (gameObject.isClicked(x!!, y!!)) {
+                gameObjectSelected = gameObject
+                break
+            }
+        }
 
+        when (event?.action) {
+            MotionEvent.ACTION_DOWN -> {
+                if (gameObjectSelected == null) {
+                    gameObjectSelected = GameObject(context, x!!, y!!)
+                    gameObjectList.add(gameObjectSelected)
+                }
+
+                if (gameObjectSelected.movable) {
+                    objectMovedThread = Thread {
+                        while (event.action != MotionEvent.ACTION_UP) {
+                            gameObjectSelected.setPosition(event.x.toDouble(), event.y.toDouble())
+                        }
+                    }
+                    objectMovedThread!!.start()
+                }
+            }
+            MotionEvent.ACTION_UP -> {
+                gameObjectSelected?.setPosition(event.x.toDouble(), event.y.toDouble())
+                objectMovedThread?.interrupt()
+            }
+        }
+        return true
+    }
 
     fun saveToBinaryFile(context: Context) {
 
