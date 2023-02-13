@@ -4,20 +4,22 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.view.MotionEvent
+import android.widget.Toast
 
-class GameObject(context: Context, private var positionX: Double, private var positionY: Double){
+class GameObject(context: Context, private var positionX: Double, private var positionY: Double) :
+    java.io.Serializable, android.view.View(context) {
     private var paint: Paint
     var movable = true
-    var creator = false
     var z = 0
 
     init {
         paint = Paint()
-        paint.color = android.graphics.Color.WHITE
     }
 
-    fun draw(canvas : Canvas) {
-        canvas.drawCircle(positionX.toFloat(), positionY.toFloat(), 100f, paint)
+    override fun draw(canvas: Canvas?) {
+        paint.color = if (movable) android.graphics.Color.RED else android.graphics.Color.WHITE
+        canvas?.drawCircle(positionX.toFloat(), positionY.toFloat(), 100f, paint)
+        super.draw(canvas)
     }
 
     fun isClicked(x: Double, y: Double): Boolean {
@@ -32,9 +34,72 @@ class GameObject(context: Context, private var positionX: Double, private var po
         positionY = y
     }
 
-    fun onTouchEvent(event: MotionEvent) {
-        setPosition(event.x.toDouble(), event.y.toDouble())
+    private var lastClickTime: Long = 0
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        val moveObjectThread = Thread {
+            paint.color = android.graphics.Color.RED
+            while (event.action != MotionEvent.ACTION_UP) {
+                setPosition(event.x.toDouble(), event.y.toDouble())
+            }
+            movable = false
+        }
+
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                if (isClicked(event.x.toDouble(), event.y.toDouble())) {
+                    if (movable) {
+                        moveObjectThread.start()
+                    } else {
+                        val currentTime = System.currentTimeMillis()
+                        if (currentTime - lastClickTime < 300) {
+                            movable = true
+                        }
+                        lastClickTime = currentTime
+                    }
+                    return true
+                }
+            }
+            MotionEvent.ACTION_MOVE -> {
+                if (movable) {
+                    moveObjectThread.start()
+                }
+            }
+
+        }
+        return false
     }
+
+    /* val x = event?.x?.toDouble()
+        val y = event?.y?.toDouble()
+        var gameObjectSelected : GameObject? = null
+        for (gameObject in gameObjectList) {
+            if (gameObject.isClicked(x!!, y!!)) {
+                gameObjectSelected = gameObject
+                break
+            }
+        }
+
+        when (event?.action) {
+            MotionEvent.ACTION_DOWN -> {
+                if (gameObjectSelected == null) {
+                    gameObjectSelected = GameObject(context, x!!, y!!)
+                    gameObjectList.add(gameObjectSelected)
+                }
+
+                if (gameObjectSelected.movable) {
+                    objectMovedThread = Thread {
+                        while (event.action != MotionEvent.ACTION_UP) {
+                            gameObjectSelected.setPosition(event.x.toDouble(), event.y.toDouble())
+                        }
+                    }
+                    objectMovedThread!!.start()
+                }
+            }
+            MotionEvent.ACTION_UP -> {
+                gameObjectSelected?.setPosition(event.x.toDouble(), event.y.toDouble())
+                objectMovedThread?.interrupt()
+            }
+        }*/
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -46,7 +111,6 @@ class GameObject(context: Context, private var positionX: Double, private var po
         if (positionY != other.positionY) return false
         if (paint != other.paint) return false
         if (movable != other.movable) return false
-        if (creator != other.creator) return false
         if (z != other.z) return false
 
         return true
@@ -57,7 +121,6 @@ class GameObject(context: Context, private var positionX: Double, private var po
         result = 31 * result + positionY.hashCode()
         result = 31 * result + paint.hashCode()
         result = 31 * result + movable.hashCode()
-        result = 31 * result + creator.hashCode()
         result = 31 * result + z
         return result
     }

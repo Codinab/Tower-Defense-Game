@@ -6,7 +6,9 @@ import android.graphics.Paint
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
+import android.widget.Button
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
@@ -42,14 +44,30 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
         healthPaint.setColor(Color.rgb(20, 255, 20))*/
     }
 
-    override fun draw(canvas: Canvas) {
+    override fun draw(canvas: Canvas?) {
         super.draw(canvas)
         drawUPS(canvas)
         drawFPS(canvas)
 
+        //addButtonObjectCreator(canvas)
+
+
         for (gameObject in gameObjectList) {
             gameObject.draw(canvas)
         }
+    }
+
+
+    //Button to add a new object
+    fun addButtonObjectCreator(canvas: Canvas?) {
+        val button = Button(context, null)
+        button.text = "Generate GameObject"
+        button.setOnClickListener {
+            val gameObject = GameObject(context, 100.0, 100.0)
+            gameObjectList.add(gameObject)
+            // Add gameObject to your game scene
+        }
+        button.draw(canvas)
     }
     fun drawUPS(canvas: Canvas?) {
         val averageUPS = gameLoop.averageUPS().toString()
@@ -84,46 +102,23 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
 
     var objectMovedThread : Thread? = null
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        val x = event?.x?.toDouble()
-        val y = event?.y?.toDouble()
-        var gameObjectSelected : GameObject? = null
+        if (event == null) return true
         for (gameObject in gameObjectList) {
-            if (gameObject.isClicked(x!!, y!!)) {
-                gameObjectSelected = gameObject
-                break
-            }
+            if(gameObject.onTouchEvent(event)) return true
         }
 
-        when (event?.action) {
-            MotionEvent.ACTION_DOWN -> {
-                if (gameObjectSelected == null) {
-                    gameObjectSelected = GameObject(context, x!!, y!!)
-                    gameObjectList.add(gameObjectSelected)
-                }
-
-                if (gameObjectSelected.movable) {
-                    objectMovedThread = Thread {
-                        while (event.action != MotionEvent.ACTION_UP) {
-                            gameObjectSelected.setPosition(event.x.toDouble(), event.y.toDouble())
-                        }
-                    }
-                    objectMovedThread!!.start()
-                }
-            }
-            MotionEvent.ACTION_UP -> {
-                gameObjectSelected?.setPosition(event.x.toDouble(), event.y.toDouble())
-                objectMovedThread?.interrupt()
-            }
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            val gameObject = GameObject(context, event.x.toDouble(), event.y.toDouble())
+            gameObjectList.add(gameObject)
+            return true
         }
-        return true
+
+        return super.onTouchEvent(event)
     }
 
     fun saveToBinaryFile(context: Context) {
 
         var fos: ObjectOutputStream? = null
-
-        health = 10
-        //TODO: Remove this ^
 
         try {
             fos = ObjectOutputStream(context.openFileOutput(fileName, Context.MODE_PRIVATE))
@@ -132,15 +127,19 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
             Toast.makeText(context, "Saved game $name", Toast.LENGTH_SHORT).show()
 
         } catch (e: Exception) {
-            println("Error saving file")
+            println(e.message)
             e.printStackTrace()
+
         } finally {
             fos?.close()
         }
     }
 
     fun update() {
-        return
+
+        for (gameObject in gameObjectList) {
+            gameObject.update()
+        }
     }
 
     companion object {

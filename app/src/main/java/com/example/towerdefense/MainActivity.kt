@@ -6,8 +6,6 @@ import android.view.Window
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.towerdefense.utility.MultiVector
-import com.example.towerdefense.utility.Vector2Di
 import java.util.concurrent.atomic.AtomicBoolean
 
 class MainActivity : AppCompatActivity() {
@@ -23,44 +21,43 @@ class MainActivity : AppCompatActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
-    private var doubleBackToExitPressedOnce = AtomicBoolean(false)
+    private var lastClickTime: Long = 0
     override fun onBackPressed() {
         //Do double back press to exit
-        if (doubleBackToExitPressedOnce.get()) {
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastClickTime < 400) {
             super.onBackPressed()
-            return
         } else {
-            this.doubleBackToExitPressedOnce.set(true)
-            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show()
-            Thread(Runnable {
-                Thread.sleep(1000)
-                doubleBackToExitPressedOnce.set(false)
-            }).start()
+            Toast.makeText(this, "Press 2 times to exit", Toast.LENGTH_SHORT).show()
+            lastClickTime = currentTime
         }
     }
 
 
 
-    fun startGame(view: View) {
+    var game: Game? = null
+    fun createGame(view: View) {
         //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
-        setContentView(Game(this))
+        game = Game(this)
+        game!!.saveToBinaryFile(this)
+        setContentView(game)
     }
 
     fun continueGame(view: View) {
         //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
-        /*
+
         val filePath = "example.txt"
 
-        println(getDir("", MODE_PRIVATE).absolutePath.toString())
-
-        var game : Game? = null
         try {
-            game = Game.fromBinaryFile(filePath, this)!!
+            game = Game.fromBinaryFile(filePath, this)
         } catch (e: Exception) {
             println(e.message)
         }
 
-        setContentView(GameView(this, game!!))*/
+        //If game is null initialize a new game
+        if (game == null) game = Game(this)
+        setContentView(game)
+
     }
 
 

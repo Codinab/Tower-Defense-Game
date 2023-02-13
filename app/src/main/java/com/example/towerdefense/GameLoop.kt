@@ -3,7 +3,7 @@ package com.example.towerdefense
 import android.graphics.Canvas
 import android.view.SurfaceHolder
 
-class GameLoop(game: Game, holder: SurfaceHolder) : Thread() {
+class GameLoop(game: Game, holder: SurfaceHolder) : Thread() , java.io.Serializable {
 
     private val surfaceHolder: SurfaceHolder
     private val game: Game
