@@ -9,42 +9,42 @@ import java.util.Objects;
 
 
 public class MultiVector implements Serializable {
-    protected HashMap<Vector2Di, Directions2D> vectorConnections;
+    protected HashMap<Vector2i, Directions2D> vectorConnections;
 
     //Has to be initialized by addNotSafe()
     public MultiVector() {
         vectorConnections = new HashMap<>();
     }
-    public MultiVector(Vector2Di position) {
+    public MultiVector(Vector2i position) {
         this(position, Directions2D.UNDEFINED);
     }
-    private MultiVector(Vector2Di position, Directions2D directions2D) {
+    private MultiVector(Vector2i position, Directions2D directions2D) {
         vectorConnections = new HashMap<>();
         vectorConnections.put(position, directions2D);
     }
 
-    protected boolean addNotSafe(Vector2Di position, Directions2D directions2D) {
+    protected boolean addNotSafe(Vector2i position, Directions2D directions2D) {
         vectorConnections.put(position, directions2D);
         return true;
     }
-    protected boolean addNotSafe(Vector2Di position) {
+    protected boolean addNotSafe(Vector2i position) {
         vectorConnections.put(position, Directions2D.UNDEFINED);
         return true;
     }
-    protected boolean add(Vector2Di position, Directions2D directions2D) {
+    protected boolean add(Vector2i position, Directions2D directions2D) {
         if(!nexTo(position)) return false;
         vectorConnections.put(position, directions2D);
         update();
         return true;
     }
-    public Collection<Vector2Di> add(Vector2Di[] positions) {
-        Collection<Vector2Di> notAdded = new ArrayList<>();
-        for(Vector2Di position : positions) {
+    public Collection<Vector2i> add(Vector2i[] positions) {
+        Collection<Vector2i> notAdded = new ArrayList<>();
+        for(Vector2i position : positions) {
             if(!add(position)) notAdded.add(position);
         }
         return notAdded;
     }
-    public boolean add(Vector2Di position) {
+    public boolean add(Vector2i position) {
         if(!nexTo(position)) return false;
         vectorConnections.put(position, Directions2D.UNDEFINED);
         update();
@@ -57,7 +57,7 @@ public class MultiVector implements Serializable {
         return true;
     }
 
-    public Collection<Vector2Di> getPositions() {
+    public Collection<Vector2i> getPositions() {
         return vectorConnections.keySet();
     }
 
@@ -65,30 +65,30 @@ public class MultiVector implements Serializable {
         return vectorConnections.size();
     }
 
-    public boolean contains(Vector2Di vector2Di) {
+    public boolean contains(Vector2i vector2Di) {
         return vectorConnections.containsKey(vector2Di);
     }
 
 
 
-    public Collection<Vector2Di> getExternalPositions() {
-        Collection<Vector2Di> externalPositions = new ArrayList<>();
-        for(Vector2Di position : vectorConnections.keySet()) {
+    public Collection<Vector2i> getExternalPositions() {
+        Collection<Vector2i> externalPositions = new ArrayList<>();
+        for(Vector2i position : vectorConnections.keySet()) {
             if(!vectorConnections.get(position).equals(Directions2D.UP_DOWN_LEFT_RIGHT)) externalPositions.add(position);
         }
         return externalPositions;
     }
 
-    public HashMap<Vector2Di, Directions2D> getConnectableDirections() {
-        HashMap<Vector2Di, Directions2D> connectableDirections = new HashMap<>();
-        Collection<Vector2Di> externalPositions = getExternalPositions();
-        for(Vector2Di position: externalPositions) {
+    public HashMap<Vector2i, Directions2D> getConnectableDirections() {
+        HashMap<Vector2i, Directions2D> connectableDirections = new HashMap<>();
+        Collection<Vector2i> externalPositions = getExternalPositions();
+        for(Vector2i position: externalPositions) {
             connectableDirections.put(position, vectorConnections.get(position).opposite());
         }
         return connectableDirections;
     }
 
-    public Directions2D getDirections(Vector2Di position) {
+    public Directions2D getDirections(Vector2i position) {
         return vectorConnections.get(position);
     }
 
@@ -96,7 +96,7 @@ public class MultiVector implements Serializable {
         return vectorConnections.values().toArray(new Directions2D[0]);
     }
     public void update(){
-        for (Vector2Di position : vectorConnections.keySet()) {
+        for (Vector2i position : vectorConnections.keySet()) {
             Directions2D directions2D = vectorConnections.get(position);
 
             ArrayList<Direction2D> newDirections = new ArrayList<>();
@@ -111,10 +111,10 @@ public class MultiVector implements Serializable {
         }
     }
 
-    public Collection<Vector2Di> getConnectablePositions() {
-        Collection<Vector2Di> positions = getPositions();
-        Collection<Vector2Di> connectablePositions = new ArrayList<>();
-        for (Vector2Di position : positions) {
+    public Collection<Vector2i> getConnectablePositions() {
+        Collection<Vector2i> positions = getPositions();
+        Collection<Vector2i> connectablePositions = new ArrayList<>();
+        for (Vector2i position : positions) {
             Directions2D directions2D = getDirections(position).opposite();
             if (directions2D.equals(Directions2D.UNDEFINED)) continue;
             for(Direction2D direction : directions2D.getDirections()) {
@@ -126,22 +126,22 @@ public class MultiVector implements Serializable {
     }
 
     public boolean nexTo(MultiVector multiVector) {
-        Collection<Vector2Di> positions1 = getPositions();
-        Collection<Vector2Di> positions2 = multiVector.getConnectablePositions();
+        Collection<Vector2i> positions1 = getPositions();
+        Collection<Vector2i> positions2 = multiVector.getConnectablePositions();
         if(positions1.size() == 0 || positions2.size() == 0) return false;
         return positions1.stream().anyMatch(positions2::contains);
     }
-    private boolean nexTo(Vector2Di position) {
+    private boolean nexTo(Vector2i position) {
         return getConnectablePositions().contains(position);
     }
 
     @Override
     public String toString() {
-        Vector2Di[] positions = vectorConnections.keySet().toArray(new Vector2Di[0]);
+        Vector2i[] positions = vectorConnections.keySet().toArray(new Vector2i[0]);
         Arrays.sort(positions);
         //create string
         StringBuilder stringBuilder = new StringBuilder();
-        for (Vector2Di position : positions) {
+        for (Vector2i position : positions) {
             stringBuilder.append(position.toString());
             stringBuilder.append("=");
             stringBuilder.append(vectorConnections.get(position).toString());
@@ -158,9 +158,9 @@ public class MultiVector implements Serializable {
         return Objects.equals(vectorConnections, that.vectorConnections);
     }
 
-    public Vector2Di get(int i) {
+    public Vector2i get(int i) {
         if (i >= size() || i < 0) return null;
-        return (Vector2Di) vectorConnections.keySet().toArray()[i];
+        return (Vector2i) vectorConnections.keySet().toArray()[i];
     }
 
     public void printVectors() {

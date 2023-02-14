@@ -3,14 +3,14 @@ package com.example.towerdefense
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.graphics.Rect
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
-import android.widget.Button
 import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
+import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
+import org.joml.Vector2f
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
@@ -21,7 +21,7 @@ import java.util.PriorityQueue
  * */
 class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder.Callback {
     private var gameLoop: GameLoop
-    private var gameObjectList = PriorityQueue<GameObject>(compareByDescending { it.z })
+    private var roundGameObjectList = PriorityQueue<RoundGameObject>(compareByDescending { it.layerLevel })
     var health = 3
     var money = 100
     var level = 1
@@ -32,9 +32,6 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
     init {
         holder.addCallback(this)
         gameLoop = GameLoop(this, holder)
-
-
-
 
         /*var textPaint = Paint()
         var healthPaint = Paint()
@@ -48,28 +45,37 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
 
     override fun draw(canvas: Canvas?) {
         super.draw(canvas)
+        if (canvas == null) return
         drawUPS(canvas)
         drawFPS(canvas)
+        drawMoney(canvas)
 
         //addButtonObjectCreator(canvas)
 
-
-        for (gameObject in gameObjectList) {
-            gameObject.draw(canvas)
+        for (roundGameObject in roundGameObjectList) {
+            roundGameObject.draw(canvas)
         }
     }
 
 
     //Button to add a new object
-    fun addButtonObjectCreator(canvas: Canvas?) {
+    /*fun addButtonObjectCreator(canvas: Canvas?) {
         val button = Button(context, null)
-        button.text = "Generate GameObject"
+        button.text = "Generate RoundGameObject2D"
         button.setOnClickListener {
-            val gameObject = GameObject(context, 100.0, 100.0)
-            gameObjectList.add(gameObject)
-            // Add gameObject to your game scene
+            val RoundGameObject2D = RoundGameObject2D(context, 100.0, 100.0, this)
+            RoundGameObject2DList.add(RoundGameObject2D)
+            // Add RoundGameObject2D to your game scene
         }
         button.draw(canvas)
+    } */
+
+    fun drawMoney(canvas: Canvas?) {
+        val color = ContextCompat.getColor(context, R.color.purple_500)
+        val paint = Paint()
+        paint.setColor(color)
+        paint.setTextSize(50f)
+        canvas?.drawText("Money: $money", 100f, 300f, paint)
     }
     fun drawUPS(canvas: Canvas?) {
         val averageUPS = gameLoop.averageUPS().toString()
@@ -105,13 +111,22 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
     var objectMovedThread : Thread? = null
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if (event == null) return true
-        for (gameObject in gameObjectList) {
-            if(gameObject.onTouchEvent(event)) return true
+
+        for (roundGameObject in roundGameObjectList) {
+            if(roundGameObject.onTouchEvent(event)) return true
         }
 
         if (event.action == MotionEvent.ACTION_DOWN) {
-            val gameObject = GameObject(context, event.x.toDouble(), event.y.toDouble())
-            gameObjectList.add(gameObject)
+            if (money < 10) return true
+            for (roundGameObject in roundGameObjectList) {
+                if (roundGameObject.movable) {
+                    roundGameObject.setPosition(Vector2f(event.x, event.y))
+                    return true
+                }
+            }
+            money -= 10
+            var roundGameObject = RoundGameObject(40f, Rigidbody2D(Vector2f(event.x, event.y)), this)
+            roundGameObjectList.add(roundGameObject)
             return true
         }
 
@@ -138,10 +153,24 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
     }
 
     fun update() {
-
-        for (gameObject in gameObjectList) {
-            gameObject.update()
+        for (gameObject in roundGameObjectList) {
+            if (gameObject.movable) {
+                var colliding = false
+                for (other in roundGameObjectList) {
+                    if (gameObject != other && IntersectionDetector2D.intersection(gameObject, other)) {
+                        gameObject.fixable = false
+                        colliding = true
+                        println("not fixable")
+                        break
+                    }
+                }
+                if (!colliding) {
+                    gameObject.fixable = true
+                    println("fixable")
+                }
+            }
         }
+
     }
 
     companion object {

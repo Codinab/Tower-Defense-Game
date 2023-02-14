@@ -2,7 +2,6 @@ package com.example.towerdefense.utility
 
 import org.junit.Assert.*
 import org.junit.Test
-import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
@@ -14,7 +13,7 @@ class MultiVectorTest {
         val multiVector1 = MultiVector()
         assertTrue(multiVector1.vectorConnections.isEmpty())
 
-        val position1 = Vector2Di(0, 0)
+        val position1 = Vector2i(0, 0)
         val multiVector2 = MultiVector(position1)
         assertEquals(1, multiVector2.vectorConnections.size)
         assertTrue(multiVector2.vectorConnections.containsKey(position1))
@@ -24,7 +23,7 @@ class MultiVectorTest {
     @Test
     fun testAddNotSafe() {
         val multiVector = MultiVector()
-        val position = Vector2Di(0, 0)
+        val position = Vector2i(0, 0)
         val direction = Directions2D.UP
         assertTrue(multiVector.addNotSafe(position, direction))
         assertEquals(1, multiVector.vectorConnections.size)
@@ -34,15 +33,15 @@ class MultiVectorTest {
 
     @Test
     fun testAdd1() {
-        val position1 = Vector2Di(0, 0)
-        val position2 = Vector2Di(1, 0)
+        val position1 = Vector2i(0, 0)
+        val position2 = Vector2i(1, 0)
         val multiVector = MultiVector(position1)
         assertTrue(multiVector.add(position2))
         assertEquals(2, multiVector.vectorConnections.size)
         assertTrue(multiVector.vectorConnections.containsKey(position1))
         assertNotEquals(Directions2D.UNDEFINED, multiVector.vectorConnections[position1])
 
-        val position3 = Vector2Di(1, 1)
+        val position3 = Vector2i(1, 1)
         assertTrue(multiVector.add(position3))
         assertEquals(3, multiVector.vectorConnections.size)
         assertTrue(multiVector.vectorConnections.containsKey(position3))
@@ -51,7 +50,7 @@ class MultiVectorTest {
 
     @Test
     fun testAdd2() {
-        val position1 = Vector2Di(0, 0)
+        val position1 = Vector2i(0, 0)
         val multiVector = MultiVector()
         assertFalse(multiVector.add(position1))
         assertEquals(0, multiVector.vectorConnections.size)
@@ -59,9 +58,9 @@ class MultiVectorTest {
 
     @Test
     fun testDirections1() {
-        val position1 = Vector2Di(0, 0)
-        val position2 = Vector2Di(1, 0)
-        val position3 = Vector2Di(1, 1)
+        val position1 = Vector2i(0, 0)
+        val position2 = Vector2i(1, 0)
+        val position3 = Vector2i(1, 1)
         val multiVector = MultiVector(position1)
         multiVector.add(position2)
         multiVector.add(position3)
@@ -72,10 +71,10 @@ class MultiVectorTest {
 
     @Test
     fun testDirections2() {
-        val position1 = Vector2Di(0, 0)
-        val position2 = Vector2Di(1, 0)
-        val position3 = Vector2Di(1, 1)
-        val position4 = Vector2Di(0, 1)
+        val position1 = Vector2i(0, 0)
+        val position2 = Vector2i(1, 0)
+        val position3 = Vector2i(1, 1)
+        val position4 = Vector2i(0, 1)
         val multiVector = MultiVector(position1)
         multiVector.add(position2)
         multiVector.add(position3)
@@ -89,15 +88,15 @@ class MultiVectorTest {
     @Test
     fun testDirections3() {
         val positions = arrayOf(
-            Vector2Di(0, 0),
-            Vector2Di(1, 0),
-            Vector2Di(0, 1),
-            Vector2Di(1, 1),
-            Vector2Di(-1, 0),
-            Vector2Di(0, -1),
-            Vector2Di(-1, -1),
-            Vector2Di(-1, 1),
-            Vector2Di(1, -1)
+            Vector2i(0, 0),
+            Vector2i(1, 0),
+            Vector2i(0, 1),
+            Vector2i(1, 1),
+            Vector2i(-1, 0),
+            Vector2i(0, -1),
+            Vector2i(-1, -1),
+            Vector2i(-1, 1),
+            Vector2i(1, -1)
         )
 
         val multiVector = MultiVector(positions[0])

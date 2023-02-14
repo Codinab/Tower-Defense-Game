@@ -2,9 +2,9 @@ package com.example.towerdefense.utility
 
 import java.io.Serializable
 
-class Road(private var startVector: Vector2Di,private var endVector: Vector2Di) : Serializable {
+class Road(private var startVector: Vector2i, private var endVector: Vector2i) : Serializable {
 
-    internal var roadDirections : HashMap<Vector2Di, Direction2D> = HashMap()
+    internal var roadDirections : HashMap<Vector2i, Direction2D> = HashMap()
 
 
     fun initiateRoad(multiVector: MultiVector) {
@@ -13,7 +13,7 @@ class Road(private var startVector: Vector2Di,private var endVector: Vector2Di) 
         multiVector.positions.remove(startVector)
         var positions = multiVector.positions
 
-        var positionArray : Array<Vector2Di?> = Array(positions.size + 1) { null }
+        var positionArray : Array<Vector2i?> = Array(positions.size + 1) { null }
         positionArray[0] = startVector
 
 
@@ -38,7 +38,7 @@ class Road(private var startVector: Vector2Di,private var endVector: Vector2Di) 
 
 
 
-    fun getRoadDirection(position: Vector2Di): Direction2D {
+    fun getRoadDirection(position: Vector2i): Direction2D {
         return roadDirections[position] ?: Direction2D.UNDEFINED
     }
 

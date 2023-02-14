@@ -6,6 +6,8 @@ import android.view.Window
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.towerdefense.Physics2d.primitives.Box2D
+import org.joml.Vector2f
 import java.util.concurrent.atomic.AtomicBoolean
 
 class MainActivity : AppCompatActivity() {
