@@ -44,7 +44,7 @@ public enum Direction2D {
         return UNDEFINED;
     }
 
-    public static Direction2D getDirection(Vector2Di direction) {
+    public static Direction2D getDirection(Vector2i direction) {
         if (direction.getX() == 0.0 && direction.getY() == 1.0) {
             return DOWN;
         } else if (direction.getX() == 0.0 && direction.getY() == -1.0) {
@@ -72,7 +72,7 @@ public enum Direction2D {
         }
     }
 
-    public Direction2D fromVector(Vector2Di vector) {
+    public Direction2D fromVector(Vector2i vector) {
         double x = vector.getX();
         double y = vector.getY();
         if(x == 0.0f && y == 1.0f) {
@@ -96,24 +96,24 @@ public enum Direction2D {
         return this.flagValue;
     }
 
-    public Vector2Di getVector() {
+    public Vector2i getVector() {
         switch (this) {
             case RIGHT:
-                return new Vector2Di(1, 0);
+                return new Vector2i(1, 0);
             case UP:
-                return new Vector2Di(0, -1);
+                return new Vector2i(0, -1);
             case LEFT:
-                return new Vector2Di(-1, 0);
+                return new Vector2i(-1, 0);
             case DOWN:
-                return new Vector2Di(0, 1);
+                return new Vector2i(0, 1);
             default:
-                return new Vector2Di(0, 0);
+                return new Vector2i(0, 0);
         }
     }
 
-    public static Collection<Direction2D> directions(Vector2Di from, Vector2Di to){
+    public static Collection<Direction2D> directions(Vector2i from, Vector2i to){
         Collection<Direction2D> directions = new ArrayList<>();
-        Vector2Di direct = to.sub(from).unitDirection();
+        Vector2i direct = to.sub(from).unitDirection();
         if(direct.getX() > 0) directions.add(RIGHT);
         else if (direct.getX() < 0) directions.add(LEFT);
         if(direct.getY() > 0) directions.add(DOWN);
@@ -122,9 +122,9 @@ public enum Direction2D {
         return directions;
     }
 
-    public static Direction2D connected(Vector2Di position1, Vector2Di position2) {
+    public static Direction2D connected(Vector2i position1, Vector2i position2) {
         for (Direction2D direction : Direction2D.directions()) {
-            Vector2Di result = position1.add(direction.getVector());
+            Vector2i result = position1.add(direction.getVector());
             if(result.getX() == position2.getX() && result.getY() == position2.getY()) {
                 return direction;
             }
