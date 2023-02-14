@@ -27,6 +27,7 @@ class GameObject(context: Context, private var positionX: Double, private var po
     }
 
     fun update() {
+        return
     }
 
     fun setPosition(x: Double, y: Double) {
@@ -59,12 +60,6 @@ class GameObject(context: Context, private var positionX: Double, private var po
                     return true
                 }
             }
-            MotionEvent.ACTION_MOVE -> {
-                if (movable) {
-                    moveObjectThread.start()
-                }
-            }
-
         }
         return false
     }
