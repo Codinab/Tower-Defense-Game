@@ -5,12 +5,14 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.view.MotionEvent
 import android.widget.Toast
+import java.util.concurrent.Semaphore
 
 class GameObject(context: Context, private var positionX: Double, private var positionY: Double) :
     java.io.Serializable, android.view.View(context) {
     private var paint: Paint
     var movable = true
     var z = 0
+    var size = 40f
 
     init {
         paint = Paint()
@@ -18,7 +20,7 @@ class GameObject(context: Context, private var positionX: Double, private var po
 
     override fun draw(canvas: Canvas?) {
         paint.color = if (movable) android.graphics.Color.RED else android.graphics.Color.WHITE
-        canvas?.drawCircle(positionX.toFloat(), positionY.toFloat(), 100f, paint)
+        canvas?.drawCircle(positionX.toFloat(), positionY.toFloat(), size, paint)
         super.draw(canvas)
     }
 
@@ -35,22 +37,24 @@ class GameObject(context: Context, private var positionX: Double, private var po
         positionY = y
     }
 
+
     private var lastClickTime: Long = 0
+    private var semaphore = Semaphore(1)
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val moveObjectThread = Thread {
-            paint.color = android.graphics.Color.RED
+            //paint.color = android.graphics.Color.RED
             while (event.action != MotionEvent.ACTION_UP) {
                 setPosition(event.x.toDouble(), event.y.toDouble())
             }
             movable = false
+            semaphore.release()
         }
 
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 if (isClicked(event.x.toDouble(), event.y.toDouble())) {
-                    if (movable) {
-                        moveObjectThread.start()
-                    } else {
+                    if (movable && semaphore.tryAcquire()) moveObjectThread.start()
+                    else {
                         val currentTime = System.currentTimeMillis()
                         if (currentTime - lastClickTime < 300) {
                             movable = true
@@ -59,6 +63,9 @@ class GameObject(context: Context, private var positionX: Double, private var po
                     }
                     return true
                 }
+            }
+            MotionEvent.ACTION_MOVE -> {
+                if (movable && semaphore.tryAcquire()) moveObjectThread.start()
             }
         }
         return false

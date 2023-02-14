@@ -3,6 +3,7 @@ package com.example.towerdefense
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Rect
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
@@ -32,7 +33,8 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
         holder.addCallback(this)
         gameLoop = GameLoop(this, holder)
 
-        isFocusable = true
+
+
 
         /*var textPaint = Paint()
         var healthPaint = Paint()

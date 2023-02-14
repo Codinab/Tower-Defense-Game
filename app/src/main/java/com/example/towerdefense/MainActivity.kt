@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
 
     fun continueGame(view: View) {
         //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
-
+        /*
         val filePath = "example.txt"
 
         try {
@@ -56,8 +56,7 @@ class MainActivity : AppCompatActivity() {
 
         //If game is null initialize a new game
         if (game == null) game = Game(this)
-        setContentView(game)
-
+        setContentView(game) */
     }
 
 
