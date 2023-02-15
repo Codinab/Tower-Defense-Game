@@ -84,6 +84,14 @@ public class Box2D extends Collider2D {
         this.halfSize.set(size).mul(0.5f);
     }
 
+    public Vector2f getSize() {
+        return this.size;
+    }
+    public void addSize(Vector2f size) {
+        this.size.add(size);
+        this.halfSize.set(this.size).mul(0.5f);
+    }
+
     public Rigidbody2D getRigidbody() {
         return body;
     }

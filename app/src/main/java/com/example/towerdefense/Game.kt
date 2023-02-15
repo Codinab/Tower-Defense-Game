@@ -31,20 +31,23 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
     init {
         holder.addCallback(this)
 
+
         context as MainActivity
 
         val rigidbody =
-            Rigidbody2D(15f, Vector2f(context.screenWidth!! / 2f, context.screenHeight!! / 2f))
+            Rigidbody2D(0f, Vector2f(context.screenWidth!! / 2f, context.screenHeight!! / 2f))
 
         @Temporary
         gameObjectCreator = Box2DGameObject(
-            Vector2f(10f, 100f),
+            Vector2f(100f, 100f),
             rigidbody,
             this
         )
         (gameObjectCreator as Box2DGameObject).creator = true
-        gameObjectCreator.setRotation(Direction2D.DOWN.toAngle())
-        gameObjectCreator.setVelocity(1f)
+        //gameObjectCreator.setRotation(Direction2D.DOWN.toAngle())
+        //gameObjectCreator.setVelocity(1f)
+        gameObjectCreator.setAngularVelocity(2f)
+
 
         gameLoop = GameLoop(this, holder)
     }
@@ -173,13 +176,6 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
         @Temporary
         gameObjectCreator.update()
 
-
-        for (gameObject in gameObjectListToRemove) {
-            gameObjectList.remove(gameObject)
-
-        }
-        gameObjectListToRemove.clear()
-
         for (gameObject in gameObjectList) {
             if (gameObject.movable) {
                 var colliding = false
@@ -205,7 +201,14 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
                 gameObjectListToRemove.add(gameObject)
             }
         }
+
+        for (gameObject in gameObjectListToRemove) {
+            gameObjectList.remove(gameObject)
+        }
+        gameObjectListToRemove.clear()
     }
+
+
 
     companion object {
         /*fun fromBinaryFile(filePath: String, context: Context): Game? {

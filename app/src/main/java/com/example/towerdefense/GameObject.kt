@@ -77,6 +77,7 @@ interface GameObject {
                     game.money += 10
                 }
                 if (fixable) movable = false
+                moveObjectThread.interrupt()
             }
         }
         return false

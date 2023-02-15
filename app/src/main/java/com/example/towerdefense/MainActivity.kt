@@ -1,5 +1,6 @@
 package com.example.towerdefense
 
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -26,6 +27,8 @@ class MainActivity : AppCompatActivity() {
 
         screenHeight = displayMetrics.heightPixels
         screenWidth = displayMetrics.widthPixels
+
+        //window.decorView.setBackgroundColor(Color.CYAN)
 
         setContentView(R.layout.activity_main)
 

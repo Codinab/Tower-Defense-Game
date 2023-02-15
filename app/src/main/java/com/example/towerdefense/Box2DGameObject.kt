@@ -1,8 +1,6 @@
 package com.example.towerdefense
 
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.RectF
+import android.graphics.*
 import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
@@ -32,11 +30,31 @@ class Box2DGameObject(size : Vector2f, body: Rigidbody2D, override var game: Gam
         }
         canvas?.save()
         canvas?.rotate(body.rotation, getRawPosition().x, getRawPosition().y)
+
         canvas?.drawRect(toRectF(), paint)
+        //val image = BitmapFactory.decodeResource(game.context.resources, R.drawable.sense)
+
+        ////Rect() of the source image 512x512
+        //var rect = Rect(0, 0, 116, 168)
+        //canvas?.drawBitmap(image, rect, Rect(0, 0, 512, 512), paint)
+
         canvas?.restore()
     }
 
+    var big = false
+
     override fun update() {
+        if (!big) {
+            addSize(Vector2f(2f, 2f))
+        } else {
+            addSize(Vector2f(-2f, -2f))
+        }
+        if (size.x > 200) {
+            big = true
+        }
+        if (size.x < 100) {
+            big = false
+        }
         body.update()
     }
 
@@ -113,8 +131,11 @@ class Box2DGameObject(size : Vector2f, body: Rigidbody2D, override var game: Gam
 
 
 
-    fun toRectF() : RectF {
-        return RectF(getRawPosition().x - halfSize.x, getRawPosition().y - halfSize.y, getRawPosition().x + halfSize.x, getRawPosition().y + halfSize.y)
+    fun toRectF() : Rect {
+        return Rect((getRawPosition().x - halfSize.x).toInt(),
+            (getRawPosition().y - halfSize.y).toInt(),
+            (getRawPosition().x + halfSize.x).toInt(), (getRawPosition().y + halfSize.y).toInt()
+        )
     }
 
 }
