@@ -39,9 +39,7 @@ class MainActivity : AppCompatActivity() {
 
     var game: Game? = null
     fun createGame(view: View) {
-        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
         game = Game(this)
-        game!!.saveToBinaryFile(this)
         setContentView(game)
     }
 

@@ -11,6 +11,7 @@ interface GameObject {
     var game: Game
     var movable: Boolean
     var fixable: Boolean
+    var toDestroy : Boolean
     var layerLevel : Int
     fun draw(canvas: Canvas?)
     fun update()

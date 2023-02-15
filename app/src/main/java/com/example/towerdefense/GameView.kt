@@ -5,9 +5,8 @@ import android.graphics.*
 import android.view.*
 import java.util.*
 
-
 class GameView(mainActivity: MainActivity, game: Game) : View(mainActivity) {
-    private var buttonSize: Int = 0
+/*    private var buttonSize: Int = 0
     private var buttonX: Int = 0
     private var buttonY: Int = 0
     var UPDATE_MILLIS = 30
@@ -46,12 +45,12 @@ class GameView(mainActivity: MainActivity, game: Game) : View(mainActivity) {
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-        var health = game.health
+        //var health = game.health
         var money = game.money
 
         //canvas?.drawBitmap(tower, null, rectBackGround, null)
         canvas?.drawText("Money: $money", 0f, 100f, textPaint)
-        canvas?.drawText("Health: $health", 0f, 200f, textPaint)
+        //canvas?.drawText("Health: $health", 0f, 200f, textPaint)
 
 
         canvas?.drawRect(0f, 300f, 100f, 400f, healthPaint)
@@ -73,7 +72,7 @@ class GameView(mainActivity: MainActivity, game: Game) : View(mainActivity) {
         postDelayed(runnable, UPDATE_MILLIS.toLong())
     }
 
-    fun handleConfigButtonPress() {
+    /*fun handleConfigButtonPress() {
         game.saveToBinaryFile(context)
         //Change view to activity_main
         (context as MainActivity).setContentView(R.layout.activity_main)
@@ -100,7 +99,5 @@ class GameView(mainActivity: MainActivity, game: Game) : View(mainActivity) {
             }
         }
         return true
-    }
-
-
+    }*/*/
 }

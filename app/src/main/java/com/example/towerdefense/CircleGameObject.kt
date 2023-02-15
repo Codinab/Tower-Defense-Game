@@ -7,22 +7,22 @@ import com.example.towerdefense.Physics2d.primitives.Circle
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import org.joml.Vector2f
-import java.util.Objects
 import java.util.concurrent.Semaphore
 
-class RoundGameObject(radius: Float, rigidbody: Rigidbody2D, override var game: Game) :  Circle(radius, rigidbody), GameObject {
+class CircleGameObject(radius: Float, rigidbody: Rigidbody2D, override var game: Game) :  Circle(radius, rigidbody), GameObject {
 
     @Temporary
-    private var paint: Paint = Paint()
+    var paint: Paint = Paint()
 
     override var movable: Boolean = true
     override var fixable: Boolean = false
+    override var toDestroy: Boolean = false
     override var layerLevel: Int = 0
 
 
-    @Temporary
     override fun draw(canvas: Canvas?) {
         paint.color = when {
+            movable && !fixable && IntersectionDetector2D.intersection(this, game.gameObjectCreator) -> android.graphics.Color.BLUE
             movable && fixable -> android.graphics.Color.GREEN
             movable -> android.graphics.Color.RED
             else -> android.graphics.Color.WHITE
@@ -31,7 +31,6 @@ class RoundGameObject(radius: Float, rigidbody: Rigidbody2D, override var game: 
     }
 
     override fun update() {
-        //TODO("Not yet implemented")
     }
 
     @Synchronized
@@ -82,6 +81,10 @@ class RoundGameObject(radius: Float, rigidbody: Rigidbody2D, override var game: 
                 }
             }
             MotionEvent.ACTION_UP -> {
+                if (!fixable && movable && IntersectionDetector2D.intersection(this, game.gameObjectCreator!!)) {
+                    game.gameObjectListToRemove.add(this)
+                    game.money += 10
+                }
                 if (fixable) movable = false
             }
         }

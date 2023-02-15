@@ -1,9 +1,11 @@
 package com.example.towerdefense.Physics2d.rigidbody;
 
+import com.example.towerdefense.GameObject;
 import com.example.towerdefense.Physics2d.JMath;
 import com.example.towerdefense.Physics2d.primitives.*;
-import org.joml.Vector2f;
 
+import org.jetbrains.annotations.NotNull;
+import org.joml.Vector2f;
 
 
 public class IntersectionDetector2D {
@@ -20,6 +22,7 @@ public class IntersectionDetector2D {
 
         return point.y == m * point.x + n;
     }
+
     public static boolean intersection(Line2D line2D, Vector2f point) { //point on line
         return intersection(point, line2D);
     }
@@ -28,8 +31,9 @@ public class IntersectionDetector2D {
         Vector2f cicleCenter = circle.getCenter();
         Vector2f centerToPoint = new Vector2f(point).sub(cicleCenter);
 
-        return  centerToPoint.lengthSquared() <= circle.getRadius() * circle.getRadius();
+        return centerToPoint.lengthSquared() <= circle.getRadius() * circle.getRadius();
     }
+
     public static boolean intersection(Circle circle, Vector2f point) { //circle on point
         return intersection(point, circle);
     }
@@ -41,6 +45,7 @@ public class IntersectionDetector2D {
         return point.x <= max.x && point.x >= min.x &&
                 point.y <= max.y && point.y >= min.y;
     }
+
     public static boolean intersection(AABB box, Vector2f point) { //aabb on point
         return intersection(point, box);
     }
@@ -55,6 +60,7 @@ public class IntersectionDetector2D {
         return pointLocalBox.x <= max.x && pointLocalBox.x >= min.x &&
                 pointLocalBox.y <= max.y && pointLocalBox.y >= min.y;
     }
+
     public static boolean intersection(Box2D b1, Vector2f point) { //box2d on point
         return intersection(point, b1);
     }
@@ -84,34 +90,51 @@ public class IntersectionDetector2D {
         float y = m1 * x + n1;
         Vector2f point = new Vector2f(x, y);
 
-        return intersection(point, line1) || intersection(point,line2);
+        return intersection(point, line1) || intersection(point, line2);
     }
 
-    public static boolean intersection(Line2D line, Circle circle) { //line on circle
-        if (intersection(line.getStart(), circle) || intersection(line.getEnd(), circle)) return true;
-
-       /** Vector2f ab = new Vector2f(line.getEnd()).sub(line.getStart());
-
-        //Project point onto ab
-        Vector2f circleCenter = circle.getCenter();
-        Vector2f centerToLineStart = new Vector2f(circleCenter).sub(line.getStart());
-        float t = centerToLineStart.dot(ab) / ab.dot(ab);
-
-        if (t < 0 || t > 0) return false;
-
-
-        //Find the closest point to the line segment
-        Vector2f closestPoint = new Vector2f(line.getStart()).add(ab.mul(t));
-        return intersection(closestPoint, circle);**/
-
-       Vector2f lineStartToCircleCenter = new Vector2f(circle.getCenter()).sub(line.getStart());
-
-       float angle = lineStartToCircleCenter.angle(line.getVector());
-
-       float distanceSquared = lineStartToCircleCenter.lengthSquared() * (float)Math.pow(Math.sin(angle), 2);
-
-       return distanceSquared <= circle.getRadius() * circle.getRadius();
+    public static boolean intersection(Line2D line, Circle circle) {
+        if (intersection(line.getStart(), circle) || intersection(line.getEnd(), circle)) {
+            return true;
+        }
+        Vector2f closestPoint = getClosestPointOnLine(line, circle.getCenter());
+        double distance = closestPoint.distance(circle.getCenter());
+        return distance <= circle.getRadius();
     }
+
+    public static Vector2f getClosestPointOnLine(Line2D line, Vector2f point) {
+        double x1 = line.getStart().x;
+        double y1 = line.getStart().y;
+        double x2 = line.getEnd().x;
+        double y2 = line.getEnd().y;
+        double px = point.x;
+        double py = point.y;
+
+        double dx = x2 - x1;
+        double dy = y2 - y1;
+
+        if (dx == 0 && dy == 0) {
+            // The line is a point.
+            return new Vector2f((float) x1, (float) y1);
+        }
+
+        double t = ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy);
+
+        if (t < 0) {
+            // The closest point is outside the line segment, on the side of x1,y1.
+            return new Vector2f((float) x1, (float) y1);
+        } else if (t > 1) {
+            // The closest point is outside the line segment, on the side of x2,y2.
+            return new Vector2f((float) x2, (float) y2);
+        } else {
+            // The closest point is inside the line segment.
+            double closestX = x1 + t * dx;
+            double closestY = y1 + t * dy;
+            return new Vector2f((float) closestX, (float) closestY);
+        }
+    }
+
+
     public static boolean intersection(Circle circle, Line2D line) { //Intersection of a circle and a line
         return intersection(line, circle);
     }
@@ -123,12 +146,13 @@ public class IntersectionDetector2D {
         AABB boxP = new AABB(box.getMin(), box.getMax());
         //Project point onto ab
 
-        for(Line2D side: boxP.getSides()) {
+        for (Line2D side : boxP.getSides()) {
             if (intersection(side, line)) return true;
         }
 
         return false;
     }
+
     public static boolean intersection(AABB box, Line2D line) { //line on aabb
         return intersection(line, box);
     }
@@ -146,6 +170,7 @@ public class IntersectionDetector2D {
 
         return intersection(localLine, aabb);
     }
+
     public static boolean intersection(Box2D box, Line2D line) { //line on box2d
         return intersection(line, box);
     }
@@ -159,27 +184,31 @@ public class IntersectionDetector2D {
 
     public static boolean intersection(Circle c1, AABB box) { //Intersection of a circle and an AABB
         Line2D[] sides = box.getSides();
-        for(Line2D side : sides) {
-            if(intersection(side, c1)) {
+        for (Line2D side : sides) {
+            if (intersection(side, c1)) {
                 return true;
             }
         }
         return false;
     }
+
     public static boolean intersection(AABB box, Circle c1) { //Intersection of an AABB and a circle
         return intersection(c1, box);
     }
 
     public static boolean intersection(Circle c1, Box2D box) { //Intersection of a circle and a Box2D
+        if (intersection(c1.getCenter(), box)) {
+            return true;
+        }
         Line2D[] sides = box.getSides();
-        for(Line2D side : sides) {
-            if(intersection(side, c1)) {
-                System.out.println("Intersection");
+        for (Line2D side : sides) {
+            if (intersection(side, c1)) {
                 return true;
             }
         }
         return false;
     }
+
     public static boolean intersection(Box2D box2D, Circle circle) { //Intersection of a Box2D and a circle
         return intersection(circle, box2D);
     }
@@ -188,8 +217,8 @@ public class IntersectionDetector2D {
     public static boolean intersection(AABB b1, AABB b2) { //Intersection of two AABB
         Vector2f[] b1vert = b1.getVertices();
         Vector2f[] b2vert = b2.getVertices();
-        for(int i = 0; i < 4; i++) {
-            if(intersection(b2vert[i], b1) || intersection(b1vert[i], b2)) {
+        for (int i = 0; i < 4; i++) {
+            if (intersection(b2vert[i], b1) || intersection(b1vert[i], b2)) {
                 return true;
             }
         }
@@ -199,13 +228,14 @@ public class IntersectionDetector2D {
     public static boolean intersection(AABB b1, Box2D b2) {
         Vector2f[] b1vert = b1.getVertices();
         Vector2f[] b2vert = b2.getVertices();
-        for(int i = 0; i < 4; i++) {
-            if(intersection(b2vert[i], b1) || intersection(b1vert[i], b2)) {
+        for (int i = 0; i < 4; i++) {
+            if (intersection(b2vert[i], b1) || intersection(b1vert[i], b2)) {
                 return true;
             }
         }
         return false;
     }
+
     public static boolean intersection(Box2D b2, AABB b) {
         return intersection(b, b2);
     }
@@ -213,10 +243,36 @@ public class IntersectionDetector2D {
     public static boolean intersection(Box2D b1, Box2D b2) {
         Vector2f[] b1vert = b1.getVertices();
         Vector2f[] b2vert = b2.getVertices();
-        for(int i = 0; i < 4; i++) {
-            if(intersection(b2vert[i], b1) || intersection(b1vert[i], b2)) {
+        for (int i = 0; i < 4; i++) {
+            if (intersection(b2vert[i], b1) || intersection(b1vert[i], b2)) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    public static boolean intersection(@NotNull GameObject gameObject, @NotNull GameObject other) {
+        if (gameObject instanceof Box2D) {
+            if (other instanceof Box2D) {
+                return intersection((Box2D) gameObject, (Box2D) other);
+            } else if (other instanceof Circle) {
+                return intersection((Box2D) gameObject, (Circle) other);
+            }
+        } else if (gameObject instanceof Circle) {
+            if (other instanceof Box2D) {
+                return intersection((Box2D) other, (Circle) gameObject);
+            } else if (other instanceof Circle) {
+                return intersection((Circle) gameObject, (Circle) other);
+            }
+        }
+        return false;
+    }
+
+    public static boolean intersection(@NotNull GameObject gameObjectCreator, @NotNull Vector2f vector2f) {
+        if (gameObjectCreator instanceof Box2D) {
+            return intersection(vector2f, (Box2D) gameObjectCreator);
+        } else if (gameObjectCreator instanceof Circle) {
+            return intersection(vector2f, (Circle) gameObjectCreator);
         }
         return false;
     }
