@@ -1,22 +1,31 @@
 package com.example.towerdefense
 
+import android.os.Build
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import com.example.towerdefense.Physics2d.primitives.Box2D
-import org.joml.Vector2f
-import java.util.concurrent.atomic.AtomicBoolean
 
 class MainActivity : AppCompatActivity() {
+
+    var screenHeight : Int? = null
+    var screenWidth : Int? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         supportActionBar?.hide()
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+
+        val displayMetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+
+        screenHeight = displayMetrics.heightPixels
+        screenWidth = displayMetrics.widthPixels
 
         setContentView(R.layout.activity_main)
 
@@ -37,9 +46,9 @@ class MainActivity : AppCompatActivity() {
 
 
 
-    var game: Game? = null
+    @RequiresApi(Build.VERSION_CODES.R)
     fun createGame(view: View) {
-        game = Game(this)
+        var game = Game(this)
         setContentView(game)
     }
 

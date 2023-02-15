@@ -25,17 +25,20 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
     var name : String = "Default Game"
     var fileName : String = "example.txt"
     var gameObjectCreator : GameObject
-
     init {
         holder.addCallback(this)
 
+        context as MainActivity
+
+        val rigidbody = Rigidbody2D(15f, Vector2f(context.screenWidth!! / 2f, context.screenHeight!! / 2f))
+
         @Temporary
         gameObjectCreator = Box2DGameObject(
-            Vector2f(200f, 200f),
-            Rigidbody2D(Vector2f(1500f, 300f)),
+            Vector2f(10f, context.screenWidth!!.toFloat()),
+            rigidbody,
             this)
-        gameObjectCreator.setVelocity(Vector2f(-4f, -4f))
-        gameObjectCreator.movable = false
+        (gameObjectCreator as Box2DGameObject).creator = true
+        gameObjectCreator.setAngularVelocity(5f)
 
         gameLoop = GameLoop(this, holder)
     }
@@ -53,7 +56,6 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
         drawFPS(canvas)
         drawMoney(canvas)
         drawBuildingsNumber(canvas)
-
     }
 
     fun drawMoney(canvas: Canvas?) {
@@ -117,9 +119,9 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
 
             if (IntersectionDetector2D.intersection(gameObjectCreator, Vector2f(event.x, event.y))) {
                 //Generate random radius between 10 and 100
-                val radius = (10..100).random().toFloat()
-                val roundGameObject = CircleGameObject(radius, Rigidbody2D(Vector2f(event.x, event.y)), this)
-                gameObjectList.add(roundGameObject)
+                val circle = CircleGameObject((10..200).random().toFloat(), Rigidbody2D(Vector2f(event.x, event.y)), this)
+                val box = Box2DGameObject(Vector2f((10..200).random().toFloat()), Rigidbody2D(Vector2f(event.x, event.y)), this)
+                gameObjectList.add(listOf(circle, box).random())
                 money -= 10
                 return true
             }
@@ -152,14 +154,6 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
         //Move the game object creator around the screen borders
 
         @Temporary
-        if (gameObjectCreator.minX() < 0 || gameObjectCreator.maxX() > width) {
-            gameObjectCreator.setVelocity(Vector2f(-gameObjectCreator.getVelocity().x, gameObjectCreator.getVelocity().y))
-        }
-        if (gameObjectCreator.minY() < 0 || gameObjectCreator.maxY() > height) {
-            gameObjectCreator.setVelocity(Vector2f(gameObjectCreator.getVelocity().x, -gameObjectCreator.getVelocity().y))
-        }
-
-        @Temporary
         gameObjectCreator.update()
 
 
@@ -185,8 +179,9 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
                     gameObject.fixable = true
                 }
             }
-            else if (!gameObject.movable && IntersectionDetector2D.intersection(gameObjectCreator, gameObject))
+            else if (!gameObject.movable && (IntersectionDetector2D.intersection(gameObjectCreator, gameObject))) {
                 gameObjectListToRemove.add(gameObject)
+            }
         }
     }
 

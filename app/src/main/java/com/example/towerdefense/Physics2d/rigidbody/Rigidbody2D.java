@@ -60,8 +60,6 @@ public class Rigidbody2D  {
 
     private float cor = 1.0f; //Correction
 
-    private boolean fixedRotation = false;
-
     public Vector2f getPosition() {
         return rawTransform.position;
     }
@@ -78,6 +76,12 @@ public class Rigidbody2D  {
 
     public float getRotation() {
         return rotation;
+    }
+    public void setRotation(float rotation) {
+        this.rotation = rotation;
+    }
+    public void addRotation(float rotation) {
+        this.rotation += rotation;
     }
 
 
@@ -113,6 +117,16 @@ public class Rigidbody2D  {
 
     public void addVelocity(Vector2f velocity) {
         this.velocity.add(velocity);
+    }
+
+    public void addAngularVelocity(float angularVelocity) {
+        this.angularVelocity += angularVelocity;
+    }
+    public float getAngularVelocity() {
+        return angularVelocity;
+    }
+    public void setAngularVelocity(float angularVelocity) {
+        this.angularVelocity = angularVelocity;
     }
 
     public void update() {

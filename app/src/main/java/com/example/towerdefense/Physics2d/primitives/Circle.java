@@ -16,8 +16,9 @@ public class Circle extends Collider2D {
         return this.radius;
     }
 
-    public Vector2f getCenter() {
-        return body.getPosition();
+    public Vector2f getPosition() {
+        Vector2f position = new Vector2f(body.getPosition());
+        return position.add(offset);
     }
 
     public void setRadius(float radius) {
@@ -26,5 +27,10 @@ public class Circle extends Collider2D {
 
     public void setRigidbody(Rigidbody2D body) {
         this.body = body;
+    }
+
+    public Vector2f getCenter() {
+        Vector2f position = new Vector2f(body.getPosition());
+        return position.add(offset);
     }
 }
