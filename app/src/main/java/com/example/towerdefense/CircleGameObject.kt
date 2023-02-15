@@ -82,6 +82,7 @@ class CircleGameObject(radius: Float, rigidbody: Rigidbody2D, override var game:
             }
             MotionEvent.ACTION_UP -> {
                 if (!fixable && movable && IntersectionDetector2D.intersection(this, game.gameObjectCreator!!)) {
+                    movable = false
                     game.gameObjectListToRemove.add(this)
                     game.money += 10
                 }

@@ -5,6 +5,7 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.view.MotionEvent
 import com.example.towerdefense.Physics2d.primitives.Box2D
+import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import org.joml.Vector2f
 import java.util.concurrent.Semaphore
@@ -32,8 +33,7 @@ class Box2DGameObject(size : Vector2f, rigidbody: Rigidbody2D, override var game
     }
 
     override fun isClicked(position: Vector2f?): Boolean {
-        //TODO("Not yet implemented")
-        return false
+        return IntersectionDetector2D.intersection(position, this)
     }
 
     override var lastClickTime: Long
