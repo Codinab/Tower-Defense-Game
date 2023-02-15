@@ -1,15 +1,17 @@
 package com.example.towerdefense.utility;
 
 
+import org.joml.Vector2f;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
 public enum Direction2D {
-    DOWN((byte)1, 360.0F),
-    LEFT((byte)2, 270.0F),
-    RIGHT((byte)4, 90.0F),
+    DOWN((byte)1, 90.0F),
+    LEFT((byte)2, 180.0F),
+    RIGHT((byte)4, 360.0F),
     UNDEFINED((byte)8, 0.0F),
-    UP((byte)16, 180.0F);
+    UP((byte)16, 270F);
 
     private final byte flagValue;
     private final float angle;
@@ -40,23 +42,8 @@ public enum Direction2D {
                 return dir;
             }
         }
-
         return UNDEFINED;
     }
-
-    public static Direction2D getDirection(Vector2i direction) {
-        if (direction.getX() == 0.0 && direction.getY() == 1.0) {
-            return DOWN;
-        } else if (direction.getX() == 0.0 && direction.getY() == -1.0) {
-            return UP;
-        } else if (direction.getX() == 1.0 && direction.getY() == 0.0) {
-            return RIGHT;
-        } else {
-            return direction.getX() == -1.0 && direction.getY() == 0.0 ? LEFT : UNDEFINED;
-        }
-    }
-
-
     public Direction2D getOpposite() {
         switch (this) {
             case RIGHT:
@@ -72,7 +59,7 @@ public enum Direction2D {
         }
     }
 
-    public Direction2D fromVector(Vector2i vector) {
+    public static Direction2D fromVector(Vector2i vector) {
         double x = vector.getX();
         double y = vector.getY();
         if(x == 0.0f && y == 1.0f) {
@@ -87,6 +74,22 @@ public enum Direction2D {
             return UNDEFINED;
         }
     }
+    public static Direction2D fromVector(Vector2f vector2f) {
+        double x = vector2f.x;
+        double y = vector2f.y;
+        if(x == 0.0f && y == 1.0f) {
+            return DOWN;
+        } else if(x == 1.0f && y == 0.0f) {
+            return RIGHT;
+        } else if(x == 0.0f && y == -1.0f) {
+            return UP;
+        } else if(x == -1.0f && y == 0.0f) {
+            return LEFT;
+        } else {
+            return UNDEFINED;
+        }
+    }
+
 
     public float toAngle() {
         return this.angle;

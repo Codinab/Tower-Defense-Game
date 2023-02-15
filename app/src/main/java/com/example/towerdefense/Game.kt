@@ -7,8 +7,10 @@ import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import androidx.core.content.ContextCompat
+import com.example.towerdefense.Physics2d.JMath
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
+import com.example.towerdefense.utility.Direction2D
 import org.joml.Vector2f
 import java.io.Serializable
 
@@ -22,20 +24,30 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
     var health = 3
     var money = 1000
     var level = 1
-    var name : String = "Default Game"
-    var fileName : String = "example.txt"
-    var gameObjectCreator : GameObject
+    var name: String = "Default Game"
+    var fileName: String = "example.txt"
+    var gameObjectCreator: GameObject
 
     init {
         holder.addCallback(this)
 
+
+        context as MainActivity
+
+        val rigidbody =
+            Rigidbody2D(0f, Vector2f(context.screenWidth!! / 2f, context.screenHeight!! / 2f))
+
         @Temporary
         gameObjectCreator = Box2DGameObject(
-            Vector2f(200f, 200f),
-            Rigidbody2D(Vector2f(1500f, 300f)),
-            this)
-        gameObjectCreator.setVelocity(Vector2f(-4f, -4f))
-        gameObjectCreator.movable = false
+            Vector2f(100f, 100f),
+            rigidbody,
+            this
+        )
+        (gameObjectCreator as Box2DGameObject).creator = true
+        //gameObjectCreator.setRotation(Direction2D.DOWN.toAngle())
+        //gameObjectCreator.setVelocity(1f)
+        gameObjectCreator.setAngularVelocity(2f)
+
 
         gameLoop = GameLoop(this, holder)
     }
@@ -53,7 +65,6 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
         drawFPS(canvas)
         drawMoney(canvas)
         drawBuildingsNumber(canvas)
-
     }
 
     fun drawMoney(canvas: Canvas?) {
@@ -71,6 +82,7 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
         paint.textSize = 50f
         canvas?.drawText("Buildings: ${gameObjectList.size}", 100f, 400f, paint)
     }
+
     fun drawUPS(canvas: Canvas?) {
         val averageUPS = gameLoop.averageUPS().toString()
         val color = ContextCompat.getColor(context, R.color.purple_500)
@@ -115,11 +127,23 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
                 }
             }
 
-            if (IntersectionDetector2D.intersection(gameObjectCreator, Vector2f(event.x, event.y))) {
+            if (IntersectionDetector2D.intersection(
+                    gameObjectCreator,
+                    Vector2f(event.x, event.y)
+                )
+            ) {
                 //Generate random radius between 10 and 100
-                val radius = (10..100).random().toFloat()
-                val roundGameObject = CircleGameObject(radius, Rigidbody2D(Vector2f(event.x, event.y)), this)
-                gameObjectList.add(roundGameObject)
+                val circle = CircleGameObject(
+                    (10..200).random().toFloat(),
+                    Rigidbody2D(Vector2f(event.x, event.y)),
+                    this
+                )
+                val box = Box2DGameObject(
+                    Vector2f((10..200).random().toFloat()),
+                    Rigidbody2D(Vector2f(event.x, event.y)),
+                    this
+                )
+                gameObjectList.add(listOf(circle, box).random())
                 money -= 10
                 return true
             }
@@ -149,33 +173,18 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
 
     fun update() {
 
-        //Move the game object creator around the screen borders
-
-        @Temporary
-        if (gameObjectCreator.minX() < 0 || gameObjectCreator.maxX() > width) {
-            gameObjectCreator.setVelocity(Vector2f(-gameObjectCreator.getVelocity().x, gameObjectCreator.getVelocity().y))
-        }
-        if (gameObjectCreator.minY() < 0 || gameObjectCreator.maxY() > height) {
-            gameObjectCreator.setVelocity(Vector2f(gameObjectCreator.getVelocity().x, -gameObjectCreator.getVelocity().y))
-        }
-
         @Temporary
         gameObjectCreator.update()
-
-
-        for (gameObject in gameObjectListToRemove) {
-            gameObjectList.remove(gameObject)
-
-            @Temporary
-            money += 10
-        }
-        gameObjectListToRemove.clear()
 
         for (gameObject in gameObjectList) {
             if (gameObject.movable) {
                 var colliding = false
                 for (other in gameObjectList) {
-                    if (gameObject != other && IntersectionDetector2D.intersection(gameObject, other)) {
+                    if (gameObject != other && IntersectionDetector2D.intersection(
+                            gameObject,
+                            other
+                        )
+                    ) {
                         gameObject.fixable = false
                         colliding = true
                         break
@@ -184,11 +193,22 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
                 if (!colliding) {
                     gameObject.fixable = true
                 }
-            }
-            else if (!gameObject.movable && IntersectionDetector2D.intersection(gameObjectCreator, gameObject))
+            } else if (!gameObject.movable && (IntersectionDetector2D.intersection(
+                    gameObjectCreator,
+                    gameObject
+                ))
+            ) {
                 gameObjectListToRemove.add(gameObject)
+            }
         }
+
+        for (gameObject in gameObjectListToRemove) {
+            gameObjectList.remove(gameObject)
+        }
+        gameObjectListToRemove.clear()
     }
+
+
 
     companion object {
         /*fun fromBinaryFile(filePath: String, context: Context): Game? {

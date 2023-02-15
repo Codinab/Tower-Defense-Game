@@ -5,11 +5,12 @@ import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D;
 import org.joml.Vector2f;
 
 public class Box2D extends Collider2D {
-    private Vector2f size = new Vector2f();
-    private Vector2f halfSize = new Vector2f();
+    private Vector2f size;
+    private Vector2f halfSize;
     public Rigidbody2D body;
 
     public Box2D() {
+        size = new Vector2f();
         this.halfSize =  new Vector2f(size).mul(0.5f);
         body = new Rigidbody2D();
     }
@@ -31,8 +32,11 @@ public class Box2D extends Collider2D {
         this.body = rigidbody;
     }
 
-    public Vector2f getCenter() {
-        return body.getPosition();
+    public Vector2f getPosition() {
+        Vector2f position = new Vector2f(body.getPosition());
+        position.add(offset);
+        JMath.rotate(position, body.getRotation(), body.getPosition());
+        return position;
     }
 
     public Vector2f getLocalMin(){
@@ -78,6 +82,14 @@ public class Box2D extends Collider2D {
     public void setSize(Vector2f size) {
         this.size = size;
         this.halfSize.set(size).mul(0.5f);
+    }
+
+    public Vector2f getSize() {
+        return this.size;
+    }
+    public void addSize(Vector2f size) {
+        this.size.add(size);
+        this.halfSize.set(this.size).mul(0.5f);
     }
 
     public Rigidbody2D getRigidbody() {

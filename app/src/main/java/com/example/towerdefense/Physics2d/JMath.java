@@ -20,6 +20,11 @@ public class JMath {
         vec.y = yPrime;
     }
 
+    public static Vector2f angleToVector(float angleDeg) {
+        float x = (float) Math.cos(Math.toRadians(angleDeg));
+        float y = (float) Math.sin(Math.toRadians(angleDeg));
+        return new Vector2f(x, y);
+    }
 
     public static boolean compare(float a, float b, float epsilon) {
         return Math.abs(a - b) <= epsilon * Math.max(Math.abs(a), Math.abs(b));

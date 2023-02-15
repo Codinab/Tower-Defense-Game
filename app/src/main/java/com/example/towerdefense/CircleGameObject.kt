@@ -2,7 +2,6 @@ package com.example.towerdefense
 
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.view.MotionEvent
 import com.example.towerdefense.Physics2d.primitives.Circle
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
@@ -13,6 +12,8 @@ class CircleGameObject(radius: Float, body: Rigidbody2D, override var game: Game
 
     @Temporary
     var paint: Paint = Paint()
+    var creator: Boolean = false
+
 
     override var movable: Boolean = true
     override var fixable: Boolean = false
@@ -28,47 +29,78 @@ class CircleGameObject(radius: Float, body: Rigidbody2D, override var game: Game
             movable -> android.graphics.Color.RED
             else -> android.graphics.Color.WHITE
         }
-        canvas?.drawCircle(center.x, center.y, radius, paint)
+        if (creator) {
+            paint.color = android.graphics.Color.YELLOW
+        }
+        canvas?.drawCircle(position.x, position.y, radius, paint)
     }
 
     override fun update() {
         body.update()
     }
 
-    override fun addVelocity(velocity: Vector2f) {
+    override fun addVelocity(velocity: Float) {
         body.addVelocity(velocity);
     }
 
-    override fun getVelocity(): Vector2f {
+    override fun getVelocity(): Float {
         return body.velocity
     }
 
-    override fun setVelocity(velocity: Vector2f) {
+    override fun setVelocity(velocity: Float) {
         body.velocity = velocity
     }
 
+    override fun setAngularVelocity(angularVelocity: Float) {
+        body.angularVelocity = angularVelocity
+    }
+
+    override fun getAngularVelocity(): Float {
+        return body.angularVelocity
+    }
+
+    override fun addAngularVelocity(angularVelocity: Float) {
+        body.angularVelocity += angularVelocity
+    }
+
+    override fun setRotation(rotation: Float) {
+        body.rotation = rotation
+    }
+
+    override fun getRotation(): Float {
+        return body.rotation
+    }
+
+    override fun addRotation(rotation: Float) {
+        body.rotation += rotation
+    }
+
     override fun maxX(): Float {
-        return center.x + radius
+        return position.x + radius
     }
 
     override fun minX(): Float {
-        return center.x - radius
+        return position.x - radius
     }
 
     override fun maxY(): Float {
-        return center.y + radius
+        return position.y + radius
     }
 
     override fun minY(): Float {
-        return center.y - radius
+        return position.y - radius
     }
 
-    override fun getPosition(): Vector2f {
+    override fun getRawPosition(): Vector2f {
         return body.position
     }
 
     override fun setPosition(position: Vector2f) {
         body.setTransform(position)
+    }
+
+    override fun setOffset(offset: Vector2f) {
+        this.offset = offset
     }
 
     override fun isClicked(position: Vector2f?): Boolean {
@@ -78,51 +110,5 @@ class CircleGameObject(radius: Float, body: Rigidbody2D, override var game: Game
 
     override var lastClickTime: Long = 0
     override var semaphore: Semaphore = Semaphore(1)
-
-    override fun onTouchEvent(event: MotionEvent): Boolean {
-        @Temporary
-        fun position() = Vector2f(event.x, event.y)
-
-        val moveObjectThread = Thread {
-            //paint.color = android.graphics.Color.RED
-            while (event.action != MotionEvent.ACTION_UP && movable) {
-                setPosition(position())
-            }
-            if (fixable) movable = false
-            semaphore.release()
-        }
-
-        when (event.action) {
-            MotionEvent.ACTION_DOWN -> {
-                if (isClicked(position())) {
-                    if (movable && semaphore.tryAcquire()) moveObjectThread.start()
-                    else {
-                        val currentTime = System.currentTimeMillis()
-                        if (currentTime - lastClickTime < 300 && game.money >= 2) {
-                            game.money -= 2
-                            movable = true
-                            fixable = false
-                        }
-                        lastClickTime = currentTime
-                    }
-                    return true
-                }
-            }
-            MotionEvent.ACTION_MOVE -> {
-                if (movable && semaphore.tryAcquire()) {
-                    moveObjectThread.start()
-                }
-            }
-            MotionEvent.ACTION_UP -> {
-                if (!fixable && movable && IntersectionDetector2D.intersection(this, game.gameObjectCreator!!)) {
-                    movable = false
-                    game.gameObjectListToRemove.add(this)
-                    game.money += 10
-                }
-                if (fixable) movable = false
-            }
-        }
-        return false
-    }
 
 }
