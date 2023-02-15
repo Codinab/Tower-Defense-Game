@@ -15,11 +15,12 @@ interface GameObject {
     var layerLevel : Int
     fun draw(canvas: Canvas?)
     fun update()
+    fun getRawPosition(): Vector2f
     fun setPosition(position: Vector2f)
     fun setOffset(offset: Vector2f)
-    fun addVelocity(velocity: Vector2f)
-    fun getVelocity() : Vector2f
-    fun setVelocity(velocity: Vector2f)
+    fun addVelocity(velocity: Float)
+    fun getVelocity() : Float
+    fun setVelocity(velocity: Float)
     fun setAngularVelocity(angularVelocity: Float)
     fun getAngularVelocity() : Float
     fun addAngularVelocity(angularVelocity: Float)
@@ -80,7 +81,6 @@ interface GameObject {
         }
         return false
     }
-
 }
 @Target(AnnotationTarget.EXPRESSION, AnnotationTarget.PROPERTY, AnnotationTarget.CLASS,
     AnnotationTarget.FUNCTION

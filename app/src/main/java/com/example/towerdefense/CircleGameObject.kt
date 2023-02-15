@@ -39,15 +39,15 @@ class CircleGameObject(radius: Float, body: Rigidbody2D, override var game: Game
         body.update()
     }
 
-    override fun addVelocity(velocity: Vector2f) {
+    override fun addVelocity(velocity: Float) {
         body.addVelocity(velocity);
     }
 
-    override fun getVelocity(): Vector2f {
+    override fun getVelocity(): Float {
         return body.velocity
     }
 
-    override fun setVelocity(velocity: Vector2f) {
+    override fun setVelocity(velocity: Float) {
         body.velocity = velocity
     }
 
@@ -91,7 +91,7 @@ class CircleGameObject(radius: Float, body: Rigidbody2D, override var game: Game
         return position.y - radius
     }
 
-    fun getRawPosition(): Vector2f {
+    override fun getRawPosition(): Vector2f {
         return body.position
     }
 

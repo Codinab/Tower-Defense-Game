@@ -48,15 +48,15 @@ class Box2DGameObject(size : Vector2f, body: Rigidbody2D, override var game: Gam
         this.offset = offset
     }
 
-    override fun addVelocity(velocity: Vector2f) {
+    override fun addVelocity(velocity: Float) {
         body.addVelocity(velocity);
     }
 
-    override fun getVelocity(): Vector2f {
+    override fun getVelocity(): Float {
         return body.velocity
     }
 
-    override fun setVelocity(velocity: Vector2f) {
+    override fun setVelocity(velocity: Float) {
         body.velocity = velocity
     }
 
@@ -100,7 +100,7 @@ class Box2DGameObject(size : Vector2f, body: Rigidbody2D, override var game: Gam
         return minOf(vertices[0].y, vertices[1].y, vertices[2].y, vertices[3].y)
     }
 
-    fun getRawPosition(): Vector2f {
+    override fun getRawPosition(): Vector2f {
         return body.position
     }
 

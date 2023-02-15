@@ -11,7 +11,7 @@ import org.joml.Vector2fc;
 
 public class Rigidbody2D  {
 
-    public Rigidbody2D(float rotation, float rotationVelocity, Vector2f position, Vector2f velocity) {
+    public Rigidbody2D(float rotation, float rotationVelocity, Vector2f position, float velocity) {
         rawTransform = new Transform(position);
         collider = new Collider2D();
         this.rotation = rotation;
@@ -19,7 +19,7 @@ public class Rigidbody2D  {
         this.angularVelocity = rotationVelocity;
     }
 
-    public Rigidbody2D(float rotation, Vector2f position, Vector2f velocity) {
+    public Rigidbody2D(float rotation, Vector2f position, float velocity) {
         rawTransform = new Transform(position);
         collider = new Collider2D();
         this.rotation = rotation;
@@ -37,25 +37,25 @@ public class Rigidbody2D  {
         rawTransform = new Transform(position);
         collider = new Collider2D();
         this.rotation = rotation;
-        velocity = new Vector2f();
+        velocity = 0f;
     }
 
     public Rigidbody2D(Vector2f position) {
         rawTransform = new Transform(position);
         collider = new Collider2D();
-        velocity = new Vector2f();
+        velocity = 0f;
     }
 
     public Rigidbody2D() {
         rawTransform = new Transform();
         collider = new Collider2D();
-        velocity = new Vector2f();
+        velocity = 0f;
     }
     private Transform rawTransform;
     private Collider2D collider;
     private float rotation = 0.0f;
 
-    private Vector2f velocity;
+    private Float velocity;
     private float angularVelocity;
 
     private float cor = 1.0f; //Correction
@@ -107,16 +107,16 @@ public class Rigidbody2D  {
         this.cor = cor;
     }
 
-    public Vector2f getVelocity() {
+    public Float getVelocity() {
         return velocity;
     }
 
-    public void setVelocity(Vector2f velocity) {
+    public void setVelocity(Float velocity) {
         this.velocity = velocity;
     }
 
-    public void addVelocity(Vector2f velocity) {
-        this.velocity.add(velocity);
+    public void addVelocity(Float velocity) {
+        this.velocity += velocity;
     }
 
     public void addAngularVelocity(float angularVelocity) {
@@ -139,8 +139,6 @@ public class Rigidbody2D  {
     }
 
     private void positionUpdate() {
-        Vector2f velocityRotated = new Vector2f(velocity);
-        JMath.rotate(velocityRotated, rotation, new Vector2f());
-        rawTransform.position.add(velocityRotated);
+        rawTransform.position.add(JMath.angleToVector(rotation).mul(velocity));
     }
 }
