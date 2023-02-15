@@ -23,6 +23,7 @@ public class IntersectionDetector2D {
         return point.y == m * point.x + n;
     }
 
+
     public static boolean intersection(Line2D line2D, Vector2f point) { //point on line
         return intersection(point, line2D);
     }
@@ -142,9 +143,7 @@ public class IntersectionDetector2D {
     public static boolean intersection(Line2D line, AABB box) { //line on aabb
         if (intersection(line.getStart(), box) || intersection(line.getEnd(), box)) return true;
 
-        Vector2f ab = new Vector2f(line.getEnd()).sub(line.getStart());
         AABB boxP = new AABB(box.getMin(), box.getMax());
-        //Project point onto ab
 
         for (Line2D side : boxP.getSides()) {
             if (intersection(side, line)) return true;

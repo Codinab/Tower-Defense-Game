@@ -33,6 +33,7 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
             Vector2f(200f, 200f),
             Rigidbody2D(Vector2f(1500f, 300f)),
             this)
+
         gameObjectCreator.movable = false
 
         gameObjectList.add(gameObjectCreator)

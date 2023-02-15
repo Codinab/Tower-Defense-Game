@@ -42,6 +42,7 @@ class Road(private var startVector: Vector2i, private var endVector: Vector2i) :
         return roadDirections[position] ?: Direction2D.UNDEFINED
     }
 
+
     fun getAllDirections() : List<Direction2D> {
         return roadDirections.values.toList()
     }
