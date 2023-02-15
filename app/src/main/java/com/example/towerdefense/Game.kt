@@ -33,10 +33,8 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
             Vector2f(200f, 200f),
             Rigidbody2D(Vector2f(1500f, 300f)),
             this)
-
+        gameObjectCreator.setVelocity(Vector2f(-4f, 0f))
         gameObjectCreator.movable = false
-
-        gameObjectList.add(gameObjectCreator)
 
         gameLoop = GameLoop(this, holder)
     }
@@ -44,6 +42,8 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
     override fun draw(canvas: Canvas?) {
         super.draw(canvas)
         if (canvas == null) return
+
+        gameObjectCreator.draw(canvas)
 
         gameObjectList.draw(canvas)
 
@@ -147,9 +147,7 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
 
     fun update() {
 
-        for (gameObject in gameObjectListToRemove) {
-            gameObjectList.remove(gameObject)
-        }
+        gameObjectCreator.update()
 
         for (gameObject in gameObjectList) {
             if (gameObject.movable) {
@@ -165,8 +163,13 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
                     gameObject.fixable = true
                 }
             }
+            if (!gameObject.movable && IntersectionDetector2D.intersection(gameObjectCreator, gameObject))
+                gameObjectListToRemove.add(gameObject)
         }
 
+        for (gameObject in gameObjectListToRemove) {
+            gameObjectList.remove(gameObject)
+        }
     }
 
     companion object {

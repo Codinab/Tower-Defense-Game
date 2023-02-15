@@ -10,7 +10,7 @@ import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import org.joml.Vector2f
 import java.util.concurrent.Semaphore
 
-class Box2DGameObject(size : Vector2f, rigidbody: Rigidbody2D, override var game: Game) :  Box2D(size, rigidbody), GameObject {
+class Box2DGameObject(size : Vector2f, body: Rigidbody2D, override var game: Game) :  Box2D(size, body), GameObject {
     override var movable: Boolean = true
     override var fixable: Boolean = false
     override var toDestroy: Boolean = false
@@ -25,11 +25,21 @@ class Box2DGameObject(size : Vector2f, rigidbody: Rigidbody2D, override var game
     }
 
     override fun update() {
-        //TODO("Not yet implemented")
+        if (body.position.x > 1600) setVelocity(Vector2f(-4f, 0f))
+        if (body.position.x < 100) setVelocity(Vector2f(4f, 0f))
+        body.update()
     }
 
-    override fun setPosition(position: Vector2f?) {
-        if (position == null) return
+    override fun setPosition(position: Vector2f) {
+        body.setTransform(position)
+    }
+
+    override fun addVelocity(velocity: Vector2f) {
+        body.addVelocity(velocity);
+    }
+
+    override fun setVelocity(velocity: Vector2f) {
+        body.velocity = velocity
     }
 
     override fun isClicked(position: Vector2f?): Boolean {

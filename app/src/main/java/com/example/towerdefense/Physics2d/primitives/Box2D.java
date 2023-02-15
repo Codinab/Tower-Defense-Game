@@ -7,39 +7,40 @@ import org.joml.Vector2f;
 public class Box2D extends Collider2D {
     private Vector2f size = new Vector2f();
     private Vector2f halfSize = new Vector2f();
-    private Rigidbody2D rigidbody = null;
+    public Rigidbody2D body;
 
     public Box2D() {
         this.halfSize =  new Vector2f(size).mul(0.5f);
+        body = new Rigidbody2D();
     }
 
     public Box2D(Vector2f min, Vector2f max) {
         this.size = new Vector2f(max).sub(min);
         this.halfSize =  new Vector2f(size).mul(0.5f);
-        rigidbody = new Rigidbody2D();
+        body = new Rigidbody2D();
     }
     public Box2D(Vector2f size, Vector2f halfSize, Rigidbody2D rigidbody) {
         this.size = size;
         this.halfSize = halfSize;
-        this.rigidbody = rigidbody;
+        this.body = rigidbody;
     }
 
     public Box2D(Vector2f size, Rigidbody2D rigidbody) {
         this.size = size;
         this.halfSize =  new Vector2f(size).mul(0.5f);
-        this.rigidbody = rigidbody;
+        this.body = rigidbody;
     }
 
     public Vector2f getCenter() {
-        return rigidbody.getPosition();
+        return body.getPosition();
     }
 
     public Vector2f getLocalMin(){
-        return new Vector2f(this.rigidbody.getPosition()).sub(this.halfSize);
+        return new Vector2f(this.body.getPosition()).sub(this.halfSize);
     }
 
     public Vector2f getLocalMax() {
-        return new Vector2f(this.rigidbody.getPosition()).add(this.halfSize);
+        return new Vector2f(this.body.getPosition()).add(this.halfSize);
     }
 
     public Vector2f[] getVertices() {
@@ -50,9 +51,9 @@ public class Box2D extends Collider2D {
                 new Vector2f(min.x, min.y), new Vector2f(max.x, min.y),
                 new Vector2f(min.x, max.y), new Vector2f(max.x, max.y)
         };
-        if (rigidbody.getRotation() != 0) {
+        if (body.getRotation() != 0) {
             for(Vector2f vert : vertices) {
-                JMath.rotate(vert, rigidbody.getRotation(), this.rigidbody.getPosition());
+                JMath.rotate(vert, body.getRotation(), this.body.getPosition());
             }
         }
 
@@ -70,21 +71,18 @@ public class Box2D extends Collider2D {
         return lines;
     }
 
-    public Rigidbody2D getRigidbody() {
-        return this.rigidbody;
-    }
-
     public Vector2f getHalfSize() {
         return this.halfSize;
-    }
-
-    public void setRigidbody(Rigidbody2D rigidbody) {
-        this.rigidbody = rigidbody;
     }
 
     public void setSize(Vector2f size) {
         this.size = size;
         this.halfSize.set(size).mul(0.5f);
     }
+
+    public Rigidbody2D getRigidbody() {
+        return body;
+    }
+
 
 }

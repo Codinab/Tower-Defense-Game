@@ -15,7 +15,9 @@ interface GameObject {
     var layerLevel : Int
     fun draw(canvas: Canvas?)
     fun update()
-    fun setPosition(position: Vector2f?)
+    fun setPosition(position: Vector2f)
+    fun addVelocity(velocity: Vector2f)
+    fun setVelocity(velocity: Vector2f)
     fun isClicked(position: Vector2f?): Boolean
 
     var lastClickTime: Long

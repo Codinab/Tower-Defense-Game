@@ -11,11 +11,26 @@ import org.joml.Vector2fc;
 
 public class Rigidbody2D  {
 
+    public Rigidbody2D(float rotation, float rotationVelocity, Vector2f position, Vector2f velocity) {
+        rawTransform = new Transform(position);
+        collider = new Collider2D();
+        this.rotation = rotation;
+        this.velocity = velocity;
+        this.angularVelocity = rotationVelocity;
+    }
+
     public Rigidbody2D(float rotation, Vector2f position, Vector2f velocity) {
         rawTransform = new Transform(position);
         collider = new Collider2D();
         this.rotation = rotation;
         this.velocity = velocity;
+    }
+
+    public Rigidbody2D(float rotation, float rotationVelocity, Vector2f position) {
+        rawTransform = new Transform(position);
+        collider = new Collider2D();
+        this.rotation = rotation;
+        this.angularVelocity = rotationVelocity;
     }
 
     public Rigidbody2D(float rotation, Vector2f position) {
@@ -41,15 +56,13 @@ public class Rigidbody2D  {
     private float rotation = 0.0f;
 
     private Vector2f velocity;
+    private float angularVelocity;
 
     private float cor = 1.0f; //Correction
 
     private boolean fixedRotation = false;
 
     public Vector2f getPosition() {
-        Vector2f velocityRotated = new Vector2f(velocity);
-        JMath.rotate(velocityRotated, rotation, new Vector2f());
-        rawTransform.position.add(velocityRotated);
         return rawTransform.position;
     }
 
@@ -98,4 +111,22 @@ public class Rigidbody2D  {
         this.velocity = velocity;
     }
 
+    public void addVelocity(Vector2f velocity) {
+        this.velocity.add(velocity);
+    }
+
+    public void update() {
+        positionUpdate();
+        rotationUpdate();
+    }
+
+    private void rotationUpdate() {
+        rotation += angularVelocity;
+    }
+
+    private void positionUpdate() {
+        Vector2f velocityRotated = new Vector2f(velocity);
+        JMath.rotate(velocityRotated, rotation, new Vector2f());
+        rawTransform.position.add(velocityRotated);
+    }
 }

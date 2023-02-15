@@ -9,7 +9,7 @@ import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import org.joml.Vector2f
 import java.util.concurrent.Semaphore
 
-class CircleGameObject(radius: Float, rigidbody: Rigidbody2D, override var game: Game) :  Circle(radius, rigidbody), GameObject {
+class CircleGameObject(radius: Float, body: Rigidbody2D, override var game: Game) :  Circle(radius, body), GameObject {
 
     @Temporary
     var paint: Paint = Paint()
@@ -33,9 +33,15 @@ class CircleGameObject(radius: Float, rigidbody: Rigidbody2D, override var game:
     override fun update() {
     }
 
-    @Synchronized
-    override fun setPosition(position: Vector2f?) {
-        if (position == null) return
+    override fun addVelocity(velocity: Vector2f) {
+        TODO("Not yet implemented")
+    }
+
+    override fun setVelocity(velocity: Vector2f) {
+        TODO("Not yet implemented")
+    }
+
+    override fun setPosition(position: Vector2f) {
         body.setTransform(position)
     }
 
