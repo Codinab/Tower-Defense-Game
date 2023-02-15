@@ -5,6 +5,7 @@ import android.graphics.*
 import android.view.*
 import java.util.*
 
+@Temporary
 class GameView(mainActivity: MainActivity, game: Game) : View(mainActivity) {
 /*    private var buttonSize: Int = 0
     private var buttonX: Int = 0

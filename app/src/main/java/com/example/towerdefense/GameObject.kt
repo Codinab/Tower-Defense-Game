@@ -32,5 +32,8 @@ interface GameObject {
     fun onTouchEvent(event: MotionEvent): Boolean
 
 }
-
+@Target(AnnotationTarget.EXPRESSION, AnnotationTarget.PROPERTY, AnnotationTarget.CLASS,
+    AnnotationTarget.FUNCTION
+)
+@Retention(AnnotationRetention.SOURCE)
 annotation class Temporary

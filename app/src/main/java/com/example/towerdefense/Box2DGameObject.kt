@@ -20,12 +20,12 @@ class Box2DGameObject(size : Vector2f, body: Rigidbody2D, override var game: Gam
     var paint = Paint()
 
     override fun draw(canvas: Canvas?) {
+        @Temporary
         paint.color = android.graphics.Color.YELLOW
         canvas?.drawRect(toRectF(), paint)
     }
 
     override fun update() {
-        //Move around the edges of the screen
         body.update()
     }
 

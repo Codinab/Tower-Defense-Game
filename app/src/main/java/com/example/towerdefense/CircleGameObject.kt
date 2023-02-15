@@ -21,6 +21,7 @@ class CircleGameObject(radius: Float, body: Rigidbody2D, override var game: Game
 
 
     override fun draw(canvas: Canvas?) {
+        @Temporary
         paint.color = when {
             IntersectionDetector2D.intersection(this, game.gameObjectCreator) -> android.graphics.Color.BLUE
             movable && fixable -> android.graphics.Color.GREEN
@@ -79,6 +80,7 @@ class CircleGameObject(radius: Float, body: Rigidbody2D, override var game: Game
     override var semaphore: Semaphore = Semaphore(1)
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        @Temporary
         fun position() = Vector2f(event.x, event.y)
 
         val moveObjectThread = Thread {

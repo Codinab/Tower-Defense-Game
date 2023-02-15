@@ -29,6 +29,7 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
     init {
         holder.addCallback(this)
 
+        @Temporary
         gameObjectCreator = Box2DGameObject(
             Vector2f(200f, 200f),
             Rigidbody2D(Vector2f(1500f, 300f)),
@@ -43,6 +44,7 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
         super.draw(canvas)
         if (canvas == null) return
 
+        @Temporary
         gameObjectCreator.draw(canvas)
 
         gameObjectList.draw(canvas)
@@ -57,24 +59,24 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
     fun drawMoney(canvas: Canvas?) {
         val color = ContextCompat.getColor(context, R.color.purple_500)
         val paint = Paint()
-        paint.setColor(color)
-        paint.setTextSize(50f)
+        paint.color = color
+        paint.textSize = 50f
         canvas?.drawText("Money: $money", 100f, 300f, paint)
     }
 
     fun drawBuildingsNumber(canvas: Canvas?) {
         val color = ContextCompat.getColor(context, R.color.purple_500)
         val paint = Paint()
-        paint.setColor(color)
-        paint.setTextSize(50f)
+        paint.color = color
+        paint.textSize = 50f
         canvas?.drawText("Buildings: ${gameObjectList.size}", 100f, 400f, paint)
     }
     fun drawUPS(canvas: Canvas?) {
         val averageUPS = gameLoop.averageUPS().toString()
         val color = ContextCompat.getColor(context, R.color.purple_500)
         val paint = Paint()
-        paint.setColor(color)
-        paint.setTextSize(50f)
+        paint.color = color
+        paint.textSize = 50f
         canvas?.drawText("UPS: $averageUPS", 100f, 100f, paint)
     }
 
@@ -82,8 +84,8 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
         val averageFPS = gameLoop.averageFPS().toString()
         val color = ContextCompat.getColor(context, R.color.purple_500)
         val paint = Paint()
-        paint.setTextSize(50f)
-        paint.setColor(color)
+        paint.color = color
+        paint.textSize = 50f
         canvas?.drawText("FPS: $averageFPS", 100f, 200f, paint)
     }
 
@@ -149,6 +151,7 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
 
         //Move the game object creator around the screen borders
 
+        @Temporary
         if (gameObjectCreator.minX() < 0 || gameObjectCreator.maxX() > width) {
             gameObjectCreator.setVelocity(Vector2f(-gameObjectCreator.getVelocity().x, gameObjectCreator.getVelocity().y))
         }
@@ -156,11 +159,14 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
             gameObjectCreator.setVelocity(Vector2f(gameObjectCreator.getVelocity().x, -gameObjectCreator.getVelocity().y))
         }
 
-
+        @Temporary
         gameObjectCreator.update()
+
 
         for (gameObject in gameObjectListToRemove) {
             gameObjectList.remove(gameObject)
+
+            @Temporary
             money += 10
         }
         gameObjectListToRemove.clear()
