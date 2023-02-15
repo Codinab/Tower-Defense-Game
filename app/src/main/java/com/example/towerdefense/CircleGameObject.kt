@@ -22,7 +22,7 @@ class CircleGameObject(radius: Float, body: Rigidbody2D, override var game: Game
 
     override fun draw(canvas: Canvas?) {
         paint.color = when {
-            movable && !fixable && IntersectionDetector2D.intersection(this, game.gameObjectCreator) -> android.graphics.Color.BLUE
+            IntersectionDetector2D.intersection(this, game.gameObjectCreator) -> android.graphics.Color.BLUE
             movable && fixable -> android.graphics.Color.GREEN
             movable -> android.graphics.Color.RED
             else -> android.graphics.Color.WHITE
@@ -31,14 +31,39 @@ class CircleGameObject(radius: Float, body: Rigidbody2D, override var game: Game
     }
 
     override fun update() {
+        body.update()
     }
 
     override fun addVelocity(velocity: Vector2f) {
-        TODO("Not yet implemented")
+        body.addVelocity(velocity);
+    }
+
+    override fun getVelocity(): Vector2f {
+        return body.velocity
     }
 
     override fun setVelocity(velocity: Vector2f) {
-        TODO("Not yet implemented")
+        body.velocity = velocity
+    }
+
+    override fun maxX(): Float {
+        return center.x + radius
+    }
+
+    override fun minX(): Float {
+        return center.x - radius
+    }
+
+    override fun maxY(): Float {
+        return center.y + radius
+    }
+
+    override fun minY(): Float {
+        return center.y - radius
+    }
+
+    override fun getPosition(): Vector2f {
+        return body.position
     }
 
     override fun setPosition(position: Vector2f) {

@@ -17,12 +17,18 @@ interface GameObject {
     fun update()
     fun setPosition(position: Vector2f)
     fun addVelocity(velocity: Vector2f)
+    fun getVelocity() : Vector2f
     fun setVelocity(velocity: Vector2f)
+
+    fun maxX() : Float
+    fun minX() : Float
+    fun maxY() : Float
+    fun minY() : Float
+    fun getPosition() : Vector2f
     fun isClicked(position: Vector2f?): Boolean
 
     var lastClickTime: Long
     var semaphore: Semaphore
-
     fun onTouchEvent(event: MotionEvent): Boolean
 
 }

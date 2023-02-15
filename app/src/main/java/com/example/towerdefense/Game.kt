@@ -33,7 +33,7 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
             Vector2f(200f, 200f),
             Rigidbody2D(Vector2f(1500f, 300f)),
             this)
-        gameObjectCreator.setVelocity(Vector2f(-4f, 0f))
+        gameObjectCreator.setVelocity(Vector2f(-4f, -4f))
         gameObjectCreator.movable = false
 
         gameLoop = GameLoop(this, holder)
@@ -147,7 +147,23 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
 
     fun update() {
 
+        //Move the game object creator around the screen borders
+
+        if (gameObjectCreator.minX() < 0 || gameObjectCreator.maxX() > width) {
+            gameObjectCreator.setVelocity(Vector2f(-gameObjectCreator.getVelocity().x, gameObjectCreator.getVelocity().y))
+        }
+        if (gameObjectCreator.minY() < 0 || gameObjectCreator.maxY() > height) {
+            gameObjectCreator.setVelocity(Vector2f(gameObjectCreator.getVelocity().x, -gameObjectCreator.getVelocity().y))
+        }
+
+
         gameObjectCreator.update()
+
+        for (gameObject in gameObjectListToRemove) {
+            gameObjectList.remove(gameObject)
+            money += 10
+        }
+        gameObjectListToRemove.clear()
 
         for (gameObject in gameObjectList) {
             if (gameObject.movable) {
@@ -163,12 +179,8 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
                     gameObject.fixable = true
                 }
             }
-            if (!gameObject.movable && IntersectionDetector2D.intersection(gameObjectCreator, gameObject))
+            else if (!gameObject.movable && IntersectionDetector2D.intersection(gameObjectCreator, gameObject))
                 gameObjectListToRemove.add(gameObject)
-        }
-
-        for (gameObject in gameObjectListToRemove) {
-            gameObjectList.remove(gameObject)
         }
     }
 

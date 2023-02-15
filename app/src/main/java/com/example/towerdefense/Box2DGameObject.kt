@@ -25,8 +25,7 @@ class Box2DGameObject(size : Vector2f, body: Rigidbody2D, override var game: Gam
     }
 
     override fun update() {
-        if (body.position.x > 1600) setVelocity(Vector2f(-4f, 0f))
-        if (body.position.x < 100) setVelocity(Vector2f(4f, 0f))
+        //Move around the edges of the screen
         body.update()
     }
 
@@ -38,8 +37,32 @@ class Box2DGameObject(size : Vector2f, body: Rigidbody2D, override var game: Gam
         body.addVelocity(velocity);
     }
 
+    override fun getVelocity(): Vector2f {
+        return body.velocity
+    }
+
     override fun setVelocity(velocity: Vector2f) {
         body.velocity = velocity
+    }
+
+    override fun maxX(): Float {
+        return maxOf(vertices[0].x, vertices[1].x, vertices[2].x, vertices[3].x)
+    }
+
+    override fun minX(): Float {
+        return minOf(vertices[0].x, vertices[1].x, vertices[2].x, vertices[3].x)
+    }
+
+    override fun maxY(): Float {
+        return maxOf(vertices[0].y, vertices[1].y, vertices[2].y, vertices[3].y)
+    }
+
+    override fun minY(): Float {
+        return minOf(vertices[0].y, vertices[1].y, vertices[2].y, vertices[3].y)
+    }
+
+    override fun getPosition(): Vector2f {
+        return body.position
     }
 
     override fun isClicked(position: Vector2f?): Boolean {
