@@ -3,6 +3,7 @@ package com.example.towerdefense
 import android.graphics.Canvas
 import android.view.MotionEvent
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
+import org.intellij.lang.annotations.Language
 import org.joml.Vector2f
 import java.util.concurrent.Semaphore
 
@@ -37,8 +38,9 @@ interface GameObject {
     var lastClickTime: Long
     var semaphore: Semaphore
     fun onTouchEvent(event: MotionEvent): Boolean {
-        @Temporary
         fun position() = Vector2f(event.x, event.y)
+
+        if (!isClicked(position())) return false
 
         val moveObjectThread = Thread {
             //paint.color = android.graphics.Color.RED

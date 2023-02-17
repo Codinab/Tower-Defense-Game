@@ -1,6 +1,7 @@
 package com.example.towerdefense
 
 import android.content.Context
+import android.graphics.Camera
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.view.MotionEvent
@@ -27,6 +28,7 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
     var name: String = "Default Game"
     var fileName: String = "example.txt"
     var gameObjectCreator: GameObject
+    var cameraPosition = Vector2f(0f, 0f)
 
     init {
         holder.addCallback(this)
@@ -55,6 +57,8 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
     override fun draw(canvas: Canvas?) {
         super.draw(canvas)
         if (canvas == null) return
+
+        canvas.translate(cameraPosition.x, cameraPosition.y)
 
         @Temporary
         gameObjectCreator.draw(canvas)
@@ -115,8 +119,11 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if (event == null) return true
+        println("Start touch event")
 
-        gameObjectList.onTouchEvent(event)
+        if(gameObjectList.onTouchEvent(event)) return true
+
+        println("touch event: ${event.action}")
 
         if (event.action == MotionEvent.ACTION_DOWN) {
             if (money < 10) return true
@@ -126,12 +133,7 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
                     return true
                 }
             }
-
-            if (IntersectionDetector2D.intersection(
-                    gameObjectCreator,
-                    Vector2f(event.x, event.y)
-                )
-            ) {
+            if (IntersectionDetector2D.intersection(gameObjectCreator, Vector2f(event.x, event.y))) {
                 //Generate random radius between 10 and 100
                 val circle = CircleGameObject(
                     (10..200).random().toFloat(),
@@ -147,6 +149,13 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
                 money -= 10
                 return true
             }
+        }
+        println("End touch event")
+        if (event.action == MotionEvent.ACTION_MOVE) {
+            println("Move touch event")
+            cameraPosition.x = event.x - (context as MainActivity).screenWidth!! / 2f
+            cameraPosition.y = event.y - (context as MainActivity).screenHeight!! / 2f
+            print(cameraPosition)
         }
 
         return super.onTouchEvent(event)
