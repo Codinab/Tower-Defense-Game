@@ -12,6 +12,7 @@ import com.example.towerdefense.Physics2d.JMath
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.utility.Direction2D
+import com.example.towerdefense.utility.lastTouchPosition
 import org.joml.Vector2f
 import java.io.Serializable
 
@@ -58,7 +59,7 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
         super.draw(canvas)
         if (canvas == null) return
 
-        canvas.translate(cameraPosition.x, cameraPosition.y)
+        canvas.translate(-cameraPosition.x, -cameraPosition.y)
 
         @Temporary
         gameObjectCreator.draw(canvas)
@@ -117,48 +118,53 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
         return
     }
 
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
-        if (event == null) return true
-        println("Start touch event")
+    override fun performClick(): Boolean {
+        return super.performClick()
+    }
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        performClick()
+        println(event)
 
-        if(gameObjectList.onTouchEvent(event)) return true
+        //lastTouchPosition.set(event.x, event.y)
 
-        println("touch event: ${event.action}")
+        //if (gameObjectList.onTouchEvent(event)) return true
 
-        if (event.action == MotionEvent.ACTION_DOWN) {
-            if (money < 10) return true
-            for (roundGameObject in gameObjectList) {
-                if (roundGameObject.movable) {
-                    roundGameObject.setPosition(Vector2f(event.x, event.y))
-                    return true
-                }
-            }
-            if (IntersectionDetector2D.intersection(gameObjectCreator, Vector2f(event.x, event.y))) {
-                //Generate random radius between 10 and 100
-                val circle = CircleGameObject(
-                    (10..200).random().toFloat(),
-                    Rigidbody2D(Vector2f(event.x, event.y)),
-                    this
-                )
-                val box = Box2DGameObject(
-                    Vector2f((10..200).random().toFloat()),
-                    Rigidbody2D(Vector2f(event.x, event.y)),
-                    this
-                )
-                gameObjectList.add(listOf(circle, box).random())
-                money -= 10
-                return true
-            }
-        }
-        println("End touch event")
-        if (event.action == MotionEvent.ACTION_MOVE) {
-            println("Move touch event")
-            cameraPosition.x = event.x - (context as MainActivity).screenWidth!! / 2f
-            cameraPosition.y = event.y - (context as MainActivity).screenHeight!! / 2f
-            print(cameraPosition)
-        }
+
+        //if (event.action == MotionEvent.ACTION_DOWN && onTouchEvent_ACTION_DOWN(event)) return true
+
+        //onTouchEvent_ACTION_MOVE(event)
+        println(Vector2f(event.x, event.y))
+
+        println("Game: onTouchEvent2")
 
         return super.onTouchEvent(event)
+    }
+
+    fun onTouchEvent_ACTION_MOVE(event: MotionEvent): Boolean {
+        println(cameraPosition)
+        cameraPosition.x = -event.x + (context as MainActivity).screenWidth!! / 2f
+        cameraPosition.y = -event.y + (context as MainActivity).screenHeight!! / 2f
+        return true
+    }
+
+    private fun onTouchEvent_ACTION_DOWN(event: MotionEvent): Boolean {
+        if (IntersectionDetector2D.intersection(gameObjectCreator, Vector2f(event.x, event.y))) {
+            //Generate random radius between 10 and 100
+            val circle = CircleGameObject(
+                (10..200).random().toFloat(),
+                Rigidbody2D(Vector2f(event.x, event.y)),
+                this
+            )
+            val box = Box2DGameObject(
+                Vector2f((10..200).random().toFloat()),
+                Rigidbody2D(Vector2f(event.x, event.y)),
+                this
+            )
+            gameObjectList.add(listOf(circle, box).random())
+            money -= 10
+            return true
+        }
+        return false
     }
 
     /*fun saveToBinaryFile(context: Context) {
@@ -186,28 +192,19 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
         gameObjectCreator.update()
 
         for (gameObject in gameObjectList) {
-            if (gameObject.movable) {
+            if (gameObject.movable.get()) {
                 var colliding = false
                 for (other in gameObjectList) {
-                    if (gameObject != other && IntersectionDetector2D.intersection(
-                            gameObject,
-                            other
-                        )
-                    ) {
-                        gameObject.fixable = false
+                    if (gameObject != other &&
+                            IntersectionDetector2D.intersection(gameObject, other)) {
+                        gameObject.fixable.set(false)
                         colliding = true
                         break
                     }
                 }
                 if (!colliding) {
-                    gameObject.fixable = true
+                    gameObject.fixable.set(true)
                 }
-            } else if (!gameObject.movable && (IntersectionDetector2D.intersection(
-                    gameObjectCreator,
-                    gameObject
-                ))
-            ) {
-                gameObjectListToRemove.add(gameObject)
             }
         }
 
@@ -216,7 +213,6 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
         }
         gameObjectListToRemove.clear()
     }
-
 
 
     companion object {

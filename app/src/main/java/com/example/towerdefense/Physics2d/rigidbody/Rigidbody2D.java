@@ -89,8 +89,6 @@ public class Rigidbody2D  {
         this.rawTransform = rawTransform;
     }
 
-
-
     public Collider2D getCollider() {
         return collider;
     }

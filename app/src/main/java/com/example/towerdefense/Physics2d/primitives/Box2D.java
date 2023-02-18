@@ -32,7 +32,7 @@ public class Box2D extends Collider2D {
         this.body = rigidbody;
     }
 
-    public Vector2f getPosition() {
+    public Vector2f getOnTouchEventPosition() {
         Vector2f position = new Vector2f(body.getPosition());
         position.add(offset);
         JMath.rotate(position, body.getRotation(), body.getPosition());
@@ -94,6 +94,10 @@ public class Box2D extends Collider2D {
 
     public Rigidbody2D getRigidbody() {
         return body;
+    }
+
+    public Vector2f getPosition() {
+        return body.getPosition();
     }
 
 

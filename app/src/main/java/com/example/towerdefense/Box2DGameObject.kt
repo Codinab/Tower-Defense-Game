@@ -6,10 +6,11 @@ import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import org.joml.Vector2f
 import java.util.concurrent.Semaphore
+import java.util.concurrent.atomic.AtomicBoolean
 
 class Box2DGameObject(size : Vector2f, body: Rigidbody2D, override var game: Game) :  Box2D(size, body), GameObject {
-    override var movable: Boolean = true
-    override var fixable: Boolean = false
+    override var movable: AtomicBoolean = AtomicBoolean(true)
+    override var fixable: AtomicBoolean = AtomicBoolean(false)
     override var toDestroy: Boolean = false
     override var layerLevel: Int = 0
 
@@ -20,16 +21,16 @@ class Box2DGameObject(size : Vector2f, body: Rigidbody2D, override var game: Gam
     override fun draw(canvas: Canvas?) {
         @Temporary
         paint.color = when {
-            IntersectionDetector2D.intersection(this, game.gameObjectCreator) -> android.graphics.Color.BLUE
-            movable && fixable -> android.graphics.Color.GREEN
-            movable -> android.graphics.Color.RED
-            else -> android.graphics.Color.WHITE
+            IntersectionDetector2D.intersection(this, game.gameObjectCreator) -> Color.BLUE
+            movable.get() && fixable.get() -> Color.GREEN
+            movable.get() -> Color.RED
+            else -> Color.WHITE
         }
         if (creator) {
-            paint.color = android.graphics.Color.YELLOW
+            paint.color = Color.YELLOW
         }
         canvas?.save()
-        canvas?.rotate(body.rotation, getRawPosition().x, getRawPosition().y)
+        canvas?.rotate(body.rotation, position.x, position.y)
 
         canvas?.drawRect(toRectF(), paint)
         //val image = BitmapFactory.decodeResource(game.context.resources, R.drawable.sense)
@@ -58,6 +59,7 @@ class Box2DGameObject(size : Vector2f, body: Rigidbody2D, override var game: Gam
         body.update()
     }
 
+
     override fun setPosition(position: Vector2f) {
         body.setTransform(position)
     }
@@ -67,7 +69,7 @@ class Box2DGameObject(size : Vector2f, body: Rigidbody2D, override var game: Gam
     }
 
     override fun addVelocity(velocity: Float) {
-        body.addVelocity(velocity);
+        body.addVelocity(velocity)
     }
 
     override fun getVelocity(): Float {
@@ -118,7 +120,7 @@ class Box2DGameObject(size : Vector2f, body: Rigidbody2D, override var game: Gam
         return minOf(vertices[0].y, vertices[1].y, vertices[2].y, vertices[3].y)
     }
 
-    override fun getRawPosition(): Vector2f {
+    override fun getPosition(): Vector2f {
         return body.position
     }
 
@@ -128,13 +130,11 @@ class Box2DGameObject(size : Vector2f, body: Rigidbody2D, override var game: Gam
 
     override var lastClickTime: Long = 0
     override var semaphore: Semaphore = Semaphore(1)
-
-
-
+    override var moveObjectThread: MoveGameObjectThread = MoveGameObjectThread(this)
     fun toRectF() : Rect {
-        return Rect((getRawPosition().x - halfSize.x).toInt(),
-            (getRawPosition().y - halfSize.y).toInt(),
-            (getRawPosition().x + halfSize.x).toInt(), (getRawPosition().y + halfSize.y).toInt()
+        return Rect((position.x - halfSize.x).toInt(),
+            (position.y - halfSize.y).toInt(),
+            (position.x + halfSize.x).toInt(), (position.y + halfSize.y).toInt()
         )
     }
 

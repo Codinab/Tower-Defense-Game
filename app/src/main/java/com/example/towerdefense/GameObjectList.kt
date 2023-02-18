@@ -13,6 +13,7 @@ class GameObjectList(private val gameObjects: MutableList<GameObject> = mutableL
     }
 
     fun onTouchEvent(event: MotionEvent): Boolean {
+        println("OnTouchEvent")
         return gameObjects.any { it.onTouchEvent(event) }
     }
 
