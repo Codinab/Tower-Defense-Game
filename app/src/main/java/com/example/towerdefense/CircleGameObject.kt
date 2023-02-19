@@ -110,7 +110,4 @@ class CircleGameObject(radius: Float, body: Rigidbody2D, override var game: Game
 
 
     override var lastClickTime: Long = 0
-    override var semaphore: Semaphore = Semaphore(1)
-    override var moveObjectThread: MoveGameObjectThread = MoveGameObjectThread(this)
-
 }

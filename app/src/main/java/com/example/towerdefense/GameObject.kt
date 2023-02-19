@@ -36,58 +36,18 @@ interface GameObject {
     fun isClicked(position: Vector2f?): Boolean
 
     var lastClickTime: Long
-    var semaphore: Semaphore
-
-    var moveObjectThread: MoveGameObjectThread
     fun onTouchEvent(event: MotionEvent, position: Vector2f): Boolean {
         when (event.action) {
-            MotionEvent.ACTION_DOWN -> {
-                if (movable.get()) setPosition(position)
-                else if (isClicked(position)) {
-                    val currentTime = System.currentTimeMillis()
-                    if (currentTime - lastClickTime < 300 && game.money >= 2) {
-                        game.money -= 2
-                        movable.set(true)
-                        fixable.set(false)
-                    }
-                    lastClickTime = currentTime
-                }
-            }
-            MotionEvent.ACTION_MOVE -> {
-                setPosition(position)
-            }
-            MotionEvent.ACTION_UP -> {
-                if (IntersectionDetector2D.intersection(this, game.gameObjectCreator)) {
-                    movable.set(false)
-                    game.gameObjectListToRemove.add(this)
-                    game.money += 10
-                } else if (fixable.get()) {
-                    fixable.set(false)
-                    movable.set(false)
-                }
-            }
+            MotionEvent.ACTION_DOWN -> handleDownEvent(event, position)
+            MotionEvent.ACTION_MOVE -> handleMoveEvent(event, position)
+            MotionEvent.ACTION_UP -> handleUpEvent(event, position)
         }
         return movable.get() || fixable.get()
     }
 
-    fun onTouchEvent_ACTION_UP(event: MotionEvent): Boolean {
-        if (movable.get() &&
-            IntersectionDetector2D.intersection(this, game.gameObjectCreator)
-        ) {
-            movable.set(false)
-            game.gameObjectListToRemove.add(this)
-            game.money += 10
-            return true
-        }
-        if (fixable.get() && movable.get()) {
-            movable.set(false)
-            return true
-        }
-        return false
-    }
-
-    fun onTouchEvent_ACTION_DOWN(event: MotionEvent): Boolean {
-        if (isClicked(Vector2f(event.x, event.y))) {
+    fun handleDownEvent(event: MotionEvent, position: Vector2f) {
+        if (movable.get()) setPosition(position)
+        else if (isClicked(position)) {
             val currentTime = System.currentTimeMillis()
             if (currentTime - lastClickTime < 300 && game.money >= 2) {
                 game.money -= 2
@@ -96,16 +56,21 @@ interface GameObject {
             }
             lastClickTime = currentTime
         }
-        return false
     }
 
-    fun onTouchEvent_ACTION_MOVE(event: MotionEvent): Boolean {
-        if (movable.get() && semaphore.tryAcquire()) {
-            semaphore.tryAcquire()
-            moveObjectThread.start()
-            return true
+    fun handleUpEvent(event: MotionEvent, position: Vector2f) {
+        if (IntersectionDetector2D.intersection(this, game.gameObjectCreator)) {
+            movable.set(false)
+            game.gameObjectListToRemove.add(this)
+            game.money += 10
+        } else if (fixable.get()) {
+            fixable.set(false)
+            movable.set(false)
         }
-        return false
+    }
+
+    fun handleMoveEvent(event: MotionEvent, position: Vector2f) {
+        setPosition(position)
     }
 }
 

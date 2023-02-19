@@ -23,16 +23,6 @@ class GameObjectList(private val gameObjects: MutableList<GameObject> = mutableL
         return gameObjects.any { it.onTouchEvent(event,position) }
     }
 
-    fun onTouchEvent_ACTION_DOWN(event: MotionEvent): Boolean {
-        return gameObjects.any { it.onTouchEvent_ACTION_DOWN(event) }
-    }
-    fun onTouchEvent_ACTION_MOVE(event: MotionEvent): Boolean {
-        return gameObjects.any { it.onTouchEvent_ACTION_MOVE(event) }
-    }
-    fun onTouchEvent_ACTION_UP(event: MotionEvent): Boolean {
-        return gameObjects.any { it.onTouchEvent_ACTION_UP(event) }
-    }
-
     fun getMovable(): GameObjectList {
         val movableGameObjects = GameObjectList()
         gameObjects.forEach { if (it.movable.get()) movableGameObjects.add(it) }

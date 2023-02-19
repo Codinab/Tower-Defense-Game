@@ -1,19 +1,23 @@
 package com.example.towerdefense.utility
 
+import android.graphics.Canvas
+import android.graphics.Paint
 import java.io.Serializable
 
 class Road(private var startVector: Vector2i, private var endVector: Vector2i) : Serializable {
 
+    private val roadHeight: Int = 100
+    private val roadWidth: Int = 100
+    private val roadPaint: Paint = Paint()
     internal var roadDirections : HashMap<Vector2i, Direction2D> = HashMap()
-
 
     fun initiateRoad(multiVector: MultiVector) {
         if (!roadFormat(multiVector)) throw IncorrectFormatException
 
         multiVector.positions.remove(startVector)
-        var positions = multiVector.positions
+        val positions = multiVector.positions
 
-        var positionArray : Array<Vector2i?> = Array(positions.size + 1) { null }
+        val positionArray : Array<Vector2i?> = Array(positions.size + 1) { null }
         positionArray[0] = startVector
 
 
@@ -30,13 +34,13 @@ class Road(private var startVector: Vector2i, private var endVector: Vector2i) :
         if (positionArray[positionArray.size-1] != endVector) throw IncorrectPositionException
 
         for (i in 0 until positionArray.size - 1) {
-            var direction = positionArray[i]!!.direction(positionArray[i + 1])
-            roadDirections.set(positionArray[i]!!, direction)
+            val direction = positionArray[i]!!.direction(positionArray[i + 1])
+            roadDirections[positionArray[i]!!] = direction
         }
-        roadDirections.set(positionArray[positionArray.size-1]!!, Direction2D.UNDEFINED)
+        roadDirections[positionArray[positionArray.size-1]!!] = Direction2D.UNDEFINED
+        roadPaint.strokeWidth = 10f
+        roadPaint.color = android.graphics.Color.RED
     }
-
-
 
     fun getRoadDirection(position: Vector2i): Direction2D {
         return roadDirections[position] ?: Direction2D.UNDEFINED
@@ -46,6 +50,15 @@ class Road(private var startVector: Vector2i, private var endVector: Vector2i) :
     fun getAllDirections() : List<Direction2D> {
         return roadDirections.values.toList()
     }
+     fun draw(canvas: Canvas) {
+        for ((start, direction) in roadDirections) {
+            if (direction == Direction2D.UNDEFINED) return
+            val length = direction.vector.add(Vector2i(roadWidth, roadHeight))
+            val end = start
+
+        }
+    }
+
 
     companion object {
         fun roadFormat(multiVector: MultiVector) : Boolean {

@@ -9,6 +9,9 @@ import android.view.SurfaceView
 import androidx.core.content.ContextCompat
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
+import com.example.towerdefense.utility.MultiVector
+import com.example.towerdefense.utility.Road
+import com.example.towerdefense.utility.Vector2i
 import org.joml.Vector2f
 import java.io.Serializable
 
@@ -25,6 +28,7 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
     var name: String = "Default Game"
     var fileName: String = "example.txt"
     var gameObjectCreator: GameObject
+    lateinit var road : Road
 
     init {
         holder.addCallback(this)
@@ -48,6 +52,16 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
 
 
         gameLoop = GameLoop(this, holder)
+
+        val multiVector1 = MultiVector(Vector2i(0, 0))
+        multiVector1.add(Vector2i(1, 0))
+        multiVector1.add(Vector2i(2, 0))
+        multiVector1.add(Vector2i(2, 1))
+        multiVector1.add(Vector2i(2, 2))
+
+        road = Road(Vector2i(0, 0), Vector2i(2,2))
+        road.initiateRoad(multiVector1)
+
     }
 
     override fun draw(canvas: Canvas?) {
@@ -55,6 +69,8 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
         if (canvas == null) return
 
         canvas.translate(-cameraPosition.x, -cameraPosition.y)
+
+        road.draw(canvas)
 
         @Temporary
         gameObjectCreator.draw(canvas)

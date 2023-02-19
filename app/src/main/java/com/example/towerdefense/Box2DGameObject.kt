@@ -58,8 +58,6 @@ class Box2DGameObject(size : Vector2f, body: Rigidbody2D, override var game: Gam
         }
         body.update()
     }
-
-
     override fun setPosition(position: Vector2f) {
         body.setTransform(position)
     }
@@ -129,9 +127,7 @@ class Box2DGameObject(size : Vector2f, body: Rigidbody2D, override var game: Gam
     }
 
     override var lastClickTime: Long = 0
-    override var semaphore: Semaphore = Semaphore(1)
-    override var moveObjectThread: MoveGameObjectThread = MoveGameObjectThread(this)
-    fun toRectF() : Rect {
+    private fun toRectF() : Rect {
         return Rect((position.x - halfSize.x).toInt(),
             (position.y - halfSize.y).toInt(),
             (position.x + halfSize.x).toInt(), (position.y + halfSize.y).toInt()
