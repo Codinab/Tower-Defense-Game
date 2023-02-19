@@ -1,15 +1,16 @@
-package com.example.towerdefense
+package com.example.towerdefense.gameObjects
 
 import android.graphics.Canvas
 import android.graphics.Paint
+import com.example.towerdefense.Game
 import com.example.towerdefense.Physics2d.primitives.Circle
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import org.joml.Vector2f
-import java.util.concurrent.Semaphore
 import java.util.concurrent.atomic.AtomicBoolean
 
-class CircleGameObject(radius: Float, body: Rigidbody2D, override var game: Game) :  Circle(radius, body), GameObject {
+class CircleGameObject(radius: Float, body: Rigidbody2D, override var game: Game) :  Circle(radius, body),
+    GameObject {
 
     @Temporary
     var paint: Paint = Paint()
@@ -33,7 +34,7 @@ class CircleGameObject(radius: Float, body: Rigidbody2D, override var game: Game
         if (creator) {
             paint.color = android.graphics.Color.YELLOW
         }
-        canvas?.drawCircle(onTouchEventPosition.x, onTouchEventPosition.y, radius, paint)
+        canvas?.drawCircle(center.x, center.y, radius, paint)
     }
 
     override fun update() {
@@ -97,11 +98,7 @@ class CircleGameObject(radius: Float, body: Rigidbody2D, override var game: Game
     }
 
     override fun setPosition(position: Vector2f) {
-        body.setTransform(position)
-    }
-
-    override fun setOffset(offset: Vector2f) {
-        this.offset = offset
+        body.setPosition(position)
     }
 
     override fun isClicked(position: Vector2f?): Boolean {

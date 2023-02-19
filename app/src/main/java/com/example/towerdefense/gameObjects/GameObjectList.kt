@@ -1,4 +1,4 @@
-package com.example.towerdefense
+package com.example.towerdefense.gameObjects
 
 import android.graphics.Canvas
 import android.view.MotionEvent

@@ -1,14 +1,15 @@
-package com.example.towerdefense
+package com.example.towerdefense.gameObjects
 
 import android.graphics.*
+import com.example.towerdefense.Game
 import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import org.joml.Vector2f
-import java.util.concurrent.Semaphore
 import java.util.concurrent.atomic.AtomicBoolean
 
-class Box2DGameObject(size : Vector2f, body: Rigidbody2D, override var game: Game) :  Box2D(size, body), GameObject {
+class Box2DGameObject(size : Vector2f, body: Rigidbody2D, override var game: Game) :  Box2D(size, body),
+    GameObject {
     override var movable: AtomicBoolean = AtomicBoolean(true)
     override var fixable: AtomicBoolean = AtomicBoolean(false)
     override var toDestroy: Boolean = false
@@ -30,7 +31,7 @@ class Box2DGameObject(size : Vector2f, body: Rigidbody2D, override var game: Gam
             paint.color = Color.YELLOW
         }
         canvas?.save()
-        canvas?.rotate(body.rotation, position.x, position.y)
+        canvas?.rotate(body.rotation, body.position.x, body.position.y)
 
         canvas?.drawRect(toRectF(), paint)
         //val image = BitmapFactory.decodeResource(game.context.resources, R.drawable.sense)
@@ -59,11 +60,7 @@ class Box2DGameObject(size : Vector2f, body: Rigidbody2D, override var game: Gam
         body.update()
     }
     override fun setPosition(position: Vector2f) {
-        body.setTransform(position)
-    }
-
-    override fun setOffset(offset: Vector2f) {
-        this.offset = offset
+        body.setPosition(position)
     }
 
     override fun addVelocity(velocity: Float) {
@@ -79,27 +76,27 @@ class Box2DGameObject(size : Vector2f, body: Rigidbody2D, override var game: Gam
     }
 
     override fun setAngularVelocity(angularVelocity: Float) {
-        rigidbody.angularVelocity = angularVelocity
+        body.angularVelocity = angularVelocity
     }
 
     override fun getAngularVelocity(): Float {
-        return rigidbody.angularVelocity
+        return body.angularVelocity
     }
 
     override fun addAngularVelocity(angularVelocity: Float) {
-        rigidbody.angularVelocity += angularVelocity
+        body.angularVelocity += angularVelocity
     }
 
     override fun setRotation(rotation: Float) {
-        rigidbody.rotation = rotation
+        body.rotation = rotation
     }
 
     override fun getRotation(): Float {
-        return rigidbody.rotation
+        return body.rotation
     }
 
     override fun addRotation(rotation: Float) {
-        rigidbody.rotation += rotation
+        body.rotation += rotation
     }
 
     override fun maxX(): Float {
@@ -128,9 +125,9 @@ class Box2DGameObject(size : Vector2f, body: Rigidbody2D, override var game: Gam
 
     override var lastClickTime: Long = 0
     private fun toRectF() : Rect {
-        return Rect((position.x - halfSize.x).toInt(),
-            (position.y - halfSize.y).toInt(),
-            (position.x + halfSize.x).toInt(), (position.y + halfSize.y).toInt()
+        return Rect((body.position.x - halfSize.x).toInt(),
+            (body.position.y - halfSize.y).toInt(),
+            (body.position.x + halfSize.x).toInt(), (body.position.y + halfSize.y).toInt()
         )
     }
 

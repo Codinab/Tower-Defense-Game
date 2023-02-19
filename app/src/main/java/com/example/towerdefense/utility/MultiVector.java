@@ -1,5 +1,7 @@
 package com.example.towerdefense.utility;
 
+import org.joml.Vector2i;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,6 +59,15 @@ public class MultiVector implements Serializable {
         return true;
     }
 
+    public boolean addLine(Vector2i position, Direction2D direction, int length) {
+        if(!vectorConnections.containsKey(position)) return false;
+        for(int i = 1; i <= length; i++) {
+            Vector2i newPosition = new Vector2i(position).add(direction.getVector().mul(i));
+            if(!add(newPosition)) return false;
+        }
+        return true;
+    }
+
     public Collection<Vector2i> getPositions() {
         return vectorConnections.keySet();
     }
@@ -74,7 +85,7 @@ public class MultiVector implements Serializable {
     public Collection<Vector2i> getExternalPositions() {
         Collection<Vector2i> externalPositions = new ArrayList<>();
         for(Vector2i position : vectorConnections.keySet()) {
-            if(!vectorConnections.get(position).equals(Directions2D.UP_DOWN_LEFT_RIGHT)) externalPositions.add(position);
+            if(!Objects.equals(vectorConnections.get(position), Directions2D.UP_DOWN_LEFT_RIGHT)) externalPositions.add(position);
         }
         return externalPositions;
     }
@@ -101,7 +112,8 @@ public class MultiVector implements Serializable {
 
             ArrayList<Direction2D> newDirections = new ArrayList<>();
             for (Direction2D direction : Direction2D.directions()) {
-                if (vectorConnections.containsKey(position.add(direction.getVector()))) {
+                Vector2i pos = new Vector2i(position).add(direction.getVector());
+                if (vectorConnections.containsKey(pos)) {
                     newDirections.add(direction);
                 }
             }
@@ -118,8 +130,9 @@ public class MultiVector implements Serializable {
             Directions2D directions2D = getDirections(position).opposite();
             if (directions2D.equals(Directions2D.UNDEFINED)) continue;
             for(Direction2D direction : directions2D.getDirections()) {
-                if (vectorConnections.containsKey(position.add(direction.getVector()))) continue;
-                connectablePositions.add(position.add(direction.getVector()));
+                Vector2i pos = new Vector2i(position).add(direction.getVector());
+                if (vectorConnections.containsKey(pos)) continue;
+                connectablePositions.add(pos);
             }
         }
         return connectablePositions;
@@ -172,7 +185,7 @@ public class MultiVector implements Serializable {
         }
         //fill matrix
         for (int i = 0; i < size(); i++) {
-            matrix[get(i).getX() + size() + 1][get(i).getY() + size() + 1] = 1;
+            matrix[get(i).x + size() + 1][get(i).y + size() + 1] = 1;
         }
 
         //print matrix

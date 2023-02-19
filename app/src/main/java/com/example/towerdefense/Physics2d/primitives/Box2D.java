@@ -7,7 +7,6 @@ import org.joml.Vector2f;
 public class Box2D extends Collider2D {
     private Vector2f size;
     private Vector2f halfSize;
-    public Rigidbody2D body;
 
     public Box2D() {
         size = new Vector2f();
@@ -30,13 +29,6 @@ public class Box2D extends Collider2D {
         this.size = size;
         this.halfSize =  new Vector2f(size).mul(0.5f);
         this.body = rigidbody;
-    }
-
-    public Vector2f getOnTouchEventPosition() {
-        Vector2f position = new Vector2f(body.getPosition());
-        position.add(offset);
-        JMath.rotate(position, body.getRotation(), body.getPosition());
-        return position;
     }
 
     public Vector2f getLocalMin(){
@@ -90,14 +82,6 @@ public class Box2D extends Collider2D {
     public void addSize(Vector2f size) {
         this.size.add(size);
         this.halfSize.set(this.size).mul(0.5f);
-    }
-
-    public Rigidbody2D getRigidbody() {
-        return body;
-    }
-
-    public Vector2f getPosition() {
-        return body.getPosition();
     }
 
 
