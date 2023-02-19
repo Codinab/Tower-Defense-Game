@@ -3,6 +3,7 @@ package com.example.towerdefense
 import android.graphics.Canvas
 import android.view.MotionEvent
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
+import com.example.towerdefense.utility.lastTouchPosition
 import org.joml.Vector2f
 import java.util.concurrent.Semaphore
 import java.util.concurrent.atomic.AtomicBoolean
@@ -38,18 +39,41 @@ interface GameObject {
     var semaphore: Semaphore
 
     var moveObjectThread: MoveGameObjectThread
-    fun onTouchEvent(event: MotionEvent): Boolean {
-
-        if (event.action == MotionEvent.ACTION_DOWN && onTouchEvent_ACTION_DOWN(event)) return true
-        if (event.action == MotionEvent.ACTION_MOVE && onTouchEvent_ACTION_MOVE(event)) return true
-        if (event.action == MotionEvent.ACTION_UP && onTouchEvent_ACTION_UP(event)) return true
-
+    fun onTouchEvent(event: MotionEvent, position: Vector2f): Boolean {
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                if (movable.get()) setPosition(position)
+                else if (isClicked(position)) {
+                    val currentTime = System.currentTimeMillis()
+                    if (currentTime - lastClickTime < 300 && game.money >= 2) {
+                        game.money -= 2
+                        movable.set(true)
+                        fixable.set(false)
+                    }
+                    lastClickTime = currentTime
+                }
+            }
+            MotionEvent.ACTION_MOVE -> {
+                setPosition(position)
+            }
+            MotionEvent.ACTION_UP -> {
+                if (IntersectionDetector2D.intersection(this, game.gameObjectCreator)) {
+                    movable.set(false)
+                    game.gameObjectListToRemove.add(this)
+                    game.money += 10
+                } else if (fixable.get()) {
+                    fixable.set(false)
+                    movable.set(false)
+                }
+            }
+        }
         return movable.get() || fixable.get()
     }
 
     fun onTouchEvent_ACTION_UP(event: MotionEvent): Boolean {
         if (movable.get() &&
-                IntersectionDetector2D.intersection(this, game.gameObjectCreator)) {
+            IntersectionDetector2D.intersection(this, game.gameObjectCreator)
+        ) {
             movable.set(false)
             game.gameObjectListToRemove.add(this)
             game.money += 10
@@ -64,30 +88,22 @@ interface GameObject {
 
     fun onTouchEvent_ACTION_DOWN(event: MotionEvent): Boolean {
         if (isClicked(Vector2f(event.x, event.y))) {
-            if (movable.get() && semaphore.tryAcquire()) moveObjectThread.start()
-            else {
-                val currentTime = System.currentTimeMillis()
-                if (currentTime - lastClickTime < 300 && game.money >= 2) {
-                    game.money -= 2
-                    movable.set(true)
-                    fixable.set(false)
-                }
-                lastClickTime = currentTime
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastClickTime < 300 && game.money >= 2) {
+                game.money -= 2
+                movable.set(true)
+                fixable.set(false)
             }
-            return true
+            lastClickTime = currentTime
         }
         return false
     }
 
     fun onTouchEvent_ACTION_MOVE(event: MotionEvent): Boolean {
-        if (movable.get()) {
-            try {
-                semaphore.tryAcquire()
-                moveObjectThread.start()
-                return true
-            } catch (e: java.lang.Exception) {
-                e.printStackTrace()
-            }
+        if (movable.get() && semaphore.tryAcquire()) {
+            semaphore.tryAcquire()
+            moveObjectThread.start()
+            return true
         }
         return false
     }

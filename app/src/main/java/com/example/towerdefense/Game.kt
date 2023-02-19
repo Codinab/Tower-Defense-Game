@@ -1,18 +1,14 @@
 package com.example.towerdefense
 
 import android.content.Context
-import android.graphics.Camera
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import androidx.core.content.ContextCompat
-import com.example.towerdefense.Physics2d.JMath
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
-import com.example.towerdefense.utility.Direction2D
-import com.example.towerdefense.utility.lastTouchPosition
 import org.joml.Vector2f
 import java.io.Serializable
 
@@ -29,7 +25,6 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
     var name: String = "Default Game"
     var fileName: String = "example.txt"
     var gameObjectCreator: GameObject
-    var cameraPosition = Vector2f(0f, 0f)
 
     init {
         holder.addCallback(this)
@@ -77,7 +72,7 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
         val paint = Paint()
         paint.color = color
         paint.textSize = 50f
-        canvas?.drawText("Money: $money", 100f, 300f, paint)
+        canvas?.drawText("Money: $money", 100f + cameraPosition.x, 300f + cameraPosition.y, paint)
     }
 
     fun drawBuildingsNumber(canvas: Canvas?) {
@@ -85,7 +80,7 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
         val paint = Paint()
         paint.color = color
         paint.textSize = 50f
-        canvas?.drawText("Buildings: ${gameObjectList.size}", 100f, 400f, paint)
+        canvas?.drawText("Buildings: ${gameObjectList.size}", 100f + cameraPosition.x, 400f + cameraPosition.y, paint)
     }
 
     fun drawUPS(canvas: Canvas?) {
@@ -94,7 +89,7 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
         val paint = Paint()
         paint.color = color
         paint.textSize = 50f
-        canvas?.drawText("UPS: $averageUPS", 100f, 100f, paint)
+        canvas?.drawText("UPS: $averageUPS", 100f + cameraPosition.x, 100f + cameraPosition.y, paint)
     }
 
     fun drawFPS(canvas: Canvas?) {
@@ -103,8 +98,9 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
         val paint = Paint()
         paint.color = color
         paint.textSize = 50f
-        canvas?.drawText("FPS: $averageFPS", 100f, 200f, paint)
+        canvas?.drawText("FPS: $averageFPS", 100f + cameraPosition.x, 200f + cameraPosition.y, paint)
     }
+
 
     override fun surfaceCreated(p0: SurfaceHolder) {
         gameLoop.startLoop()
@@ -118,36 +114,65 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
         return
     }
 
-    override fun performClick(): Boolean {
-        return super.performClick()
-    }
+    var cameraPosition = Vector2f(0f, 0f)
+    var previousTouchX = 0f
+    var previousTouchY = 0f
+
+
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        performClick()
-        println(event)
+        val adjustedPosition = Vector2f(event.x + cameraPosition.x, event.y + cameraPosition.y)
+        val movable = gameObjectList.getMovable()
+        val clicked = gameObjectList.getClicked(adjustedPosition)
 
-        //lastTouchPosition.set(event.x, event.y)
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                if (movable.isNotEmpty()) movable.onTouchEvent(event, adjustedPosition)
+                else if (clicked.isNotEmpty()) clicked.onTouchEvent(event, adjustedPosition)
+                else if (gameObjectCreator.isClicked(adjustedPosition)) {
+                    val circle = CircleGameObject(
+                        (10..200).random().toFloat(),
+                        Rigidbody2D(Vector2f(event.x, event.y)),
+                        this
+                    )
+                    val box = Box2DGameObject(
+                        Vector2f((10..200).random().toFloat()),
+                        Rigidbody2D(adjustedPosition),
+                        this
+                    )
+                    gameObjectList.add(listOf(circle, box).random())
+                    money -= 10
+                } else {
+                    previousTouchX = event.x
+                    previousTouchY = event.y
+                }
+            }
+            MotionEvent.ACTION_MOVE -> {
+                if (movable.isNotEmpty()) movable.onTouchEvent(event, adjustedPosition)
+                else {
+                    val deltaX = event.x - previousTouchX
+                    val deltaY = event.y - previousTouchY
+                    cameraPosition.x -= deltaX
+                    cameraPosition.y -= deltaY
+                    previousTouchX = event.x
+                    previousTouchY = event.y
+                }
+            }
 
-        //if (gameObjectList.onTouchEvent(event)) return true
-
-
-        //if (event.action == MotionEvent.ACTION_DOWN && onTouchEvent_ACTION_DOWN(event)) return true
-
-        //onTouchEvent_ACTION_MOVE(event)
-        println(Vector2f(event.x, event.y))
-
-        println("Game: onTouchEvent2")
-
-        return super.onTouchEvent(event)
+            MotionEvent.ACTION_UP -> {
+                if (movable.isNotEmpty()) movable.onTouchEvent(event, adjustedPosition)
+            }
+        }
+        return true
     }
+
 
     fun onTouchEvent_ACTION_MOVE(event: MotionEvent): Boolean {
-        println(cameraPosition)
         cameraPosition.x = -event.x + (context as MainActivity).screenWidth!! / 2f
         cameraPosition.y = -event.y + (context as MainActivity).screenHeight!! / 2f
         return true
     }
 
-    private fun onTouchEvent_ACTION_DOWN(event: MotionEvent): Boolean {
+    fun onTouchEvent_ACTION_DOWN(event: MotionEvent): Boolean {
         if (IntersectionDetector2D.intersection(gameObjectCreator, Vector2f(event.x, event.y))) {
             //Generate random radius between 10 and 100
             val circle = CircleGameObject(
@@ -162,7 +187,6 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
             )
             gameObjectList.add(listOf(circle, box).random())
             money -= 10
-            return true
         }
         return false
     }
@@ -196,7 +220,8 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
                 var colliding = false
                 for (other in gameObjectList) {
                     if (gameObject != other &&
-                            IntersectionDetector2D.intersection(gameObject, other)) {
+                        IntersectionDetector2D.intersection(gameObject, other)
+                    ) {
                         gameObject.fixable.set(false)
                         colliding = true
                         break
