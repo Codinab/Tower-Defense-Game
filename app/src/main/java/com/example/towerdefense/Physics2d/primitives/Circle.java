@@ -16,7 +16,7 @@ public class Circle extends Collider2D {
         return this.radius;
     }
 
-    public Vector2f getPosition() {
+    public Vector2f getOnTouchEventPosition() {
         Vector2f position = new Vector2f(body.getPosition());
         return position.add(offset);
     }
