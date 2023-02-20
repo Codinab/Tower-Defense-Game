@@ -9,7 +9,9 @@ import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import org.joml.Vector2f
 import java.util.concurrent.atomic.AtomicBoolean
 
-class CircleGameObject(radius: Float, body: Rigidbody2D, override var game: Game) :  Circle(radius, body),
+@Deprecated("")
+class CircleGameObject(radius: Float, body: Rigidbody2D, override var game: Game) :
+    Circle(radius, body),
     GameObject {
 
     @Temporary
@@ -26,7 +28,10 @@ class CircleGameObject(radius: Float, body: Rigidbody2D, override var game: Game
     override fun draw(canvas: Canvas?) {
         @Temporary
         paint.color = when {
-            IntersectionDetector2D.intersection(this, game.gameObjectCreator) -> android.graphics.Color.BLUE
+            IntersectionDetector2D.intersection(
+                this,
+                game.gameObjectCreator
+            ) -> android.graphics.Color.BLUE
             movable.get() && fixable.get() -> android.graphics.Color.GREEN
             movable.get() -> android.graphics.Color.RED
             else -> android.graphics.Color.WHITE

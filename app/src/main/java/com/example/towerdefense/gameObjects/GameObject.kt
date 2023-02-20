@@ -7,6 +7,7 @@ import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import org.joml.Vector2f
 import java.util.concurrent.atomic.AtomicBoolean
 
+@Deprecated("")
 interface GameObject {
 
     var game: Game

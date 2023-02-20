@@ -7,6 +7,7 @@ import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import androidx.core.content.ContextCompat
+import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.gameObjects.*
@@ -30,7 +31,8 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
     var name: String = "Default Game"
     var fileName: String = "example.txt"
     var gameObjectCreator: GameObject
-    lateinit var road: Road
+    var road: Road
+    val enemyList = mutableListOf<Enemy>()
     
     init {
         holder.addCallback(this)
@@ -56,16 +58,15 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
         gameLoop = GameLoop(this, holder)
         
         val multiVector1 = MultiVector(Vector2i(0, 0))
-        multiVector1.addLine(Vector2i(0, 0), Direction2D.RIGHT, 5)
-        multiVector1.addLine(Vector2i(5, 0), Direction2D.DOWN, 5)
-        multiVector1.addLine(Vector2i(5, 5), Direction2D.LEFT, 5)
-        multiVector1.addLine(Vector2i(0, 5), Direction2D.DOWN, 5)
-        multiVector1.addLine(Vector2i(0, 10), Direction2D.RIGHT, 20)
-        multiVector1.addLine(Vector2i(20, 10), Direction2D.UP, 5)
+        multiVector1.addLine(Vector2i(0, 0), Direction2D.RIGHT, 10)
+        multiVector1.addLine(Vector2i(10, 0), Direction2D.DOWN, 10)
+        multiVector1.addLine(Vector2i(10, 10), Direction2D.RIGHT, 10)
         
         
         road = Road(Vector2i(0, 0), multiVector1)
-        
+        var box2D = Box2D()
+        box2D.body.velocity = 1f
+        enemyList.add(Enemy(box2D, this))
     }
     
     override fun draw(canvas: Canvas?) {
@@ -75,6 +76,7 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
         canvas.translate(-cameraPosition.x, -cameraPosition.y)
         
         road.draw(canvas)
+        enemyList.forEach { it.draw(canvas) }
         
         @Temporary
         gameObjectCreator.draw(canvas)
@@ -85,6 +87,8 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
         drawFPS(canvas)
         drawMoney(canvas)
         drawBuildingsNumber(canvas)
+
+
     }
     
     fun drawMoney(canvas: Canvas?) {
@@ -276,6 +280,8 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
         
         @Temporary
         gameObjectCreator.update()
+
+        enemyList.forEach { it.update() }
         
         for (gameObject in gameObjectList) {
             if (gameObject.movable.get()) {

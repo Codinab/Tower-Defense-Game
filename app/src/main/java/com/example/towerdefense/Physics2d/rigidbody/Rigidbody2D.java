@@ -69,6 +69,9 @@ public class Rigidbody2D  {
         this.rotation = rotation;
         rawTransform.position = position;
     }
+    public void addPosition(Vector2f position) {
+        rawTransform.position.add(position);
+    }
     public void setPosition(Vector2f position) {
         rawTransform.position = position;
     }

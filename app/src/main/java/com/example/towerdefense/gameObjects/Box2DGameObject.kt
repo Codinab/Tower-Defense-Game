@@ -8,6 +8,7 @@ import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import org.joml.Vector2f
 import java.util.concurrent.atomic.AtomicBoolean
 
+@Deprecated("")
 class Box2DGameObject(size : Vector2f, body: Rigidbody2D, override var game: Game) :  Box2D(size, body),
     GameObject {
     override var movable: AtomicBoolean = AtomicBoolean(true)
