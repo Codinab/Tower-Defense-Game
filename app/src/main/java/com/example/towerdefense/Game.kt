@@ -58,14 +58,16 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
         gameLoop = GameLoop(this, holder)
         
         val multiVector1 = MultiVector(Vector2i(0, 0))
-        multiVector1.addLine(Vector2i(0, 0), Direction2D.RIGHT, 10)
-        multiVector1.addLine(Vector2i(10, 0), Direction2D.DOWN, 10)
-        multiVector1.addLine(Vector2i(10, 10), Direction2D.RIGHT, 10)
+        multiVector1.addLine(Vector2i(0, 0), Direction2D.RIGHT, 50)
+        multiVector1.addLine(Vector2i(50, 0), Direction2D.DOWN, 50)
+        multiVector1.addLine(Vector2i(50, 50), Direction2D.RIGHT, 50)
         
-        
+        android.graphics.Path()
+
         road = Road(Vector2i(0, 0), multiVector1)
         var box2D = Box2D()
         box2D.body.velocity = 1f
+
         enemyList.add(Enemy(box2D, this))
     }
     

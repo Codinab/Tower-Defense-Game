@@ -1,15 +1,19 @@
 package com.example.towerdefense
 
 import android.graphics.Color
+import android.os.Binder
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.View
+import android.view.View.OnClickListener
+import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import com.example.towerdefense.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,9 +32,13 @@ class MainActivity : AppCompatActivity() {
         screenHeight = displayMetrics.heightPixels
         screenWidth = displayMetrics.widthPixels
 
-        //window.decorView.setBackgroundColor(Color.CYAN)
+        val binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
 
-        setContentView(R.layout.activity_main)
+        //window.decorView.setBackgroundColor(Color.CYAN)
+        setContentView(view)
+
+        //setContentView(R.layout.activity_main)
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }

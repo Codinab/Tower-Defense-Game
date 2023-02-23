@@ -15,29 +15,26 @@ class Enemy(override var collider2D: Collider2D, private val game: Game) :
 
     override val bitmapDrawable: BitmapDrawable? = null
     var health = 100f
-    var previousPosition = game.road.getStart().toVector2f()
-    var nextPosition = game.road.getNextPosition(previousPosition.toVector2i()).first.toVector2f()
+    var nextPosition = game.road.getNextCorner(null)
 
     init {
-        setPosition(previousPosition)
-        setRotation(game.road.getRoadDirection(previousPosition.toVector2i()).toAngle())
+        setRotation(getPosition().angle(nextPosition))
     }
 
     override fun update() {
         super.update()
 
-        collider2D.body.update()
-
         if (isAtNextPosition()) {
-            previousPosition = nextPosition
-            nextPosition = game.road.getNextPosition(nextPosition.toVector2i()).first.toVector2f()
-            setRotation(game.road.getRoadDirection(nextPosition.toVector2i()).toAngle())
+            nextPosition = game.road.getNextCorner(nextPosition)
+            println("NextPosition: " + nextPosition + "Position: " + getPosition() + "Rotation: " + getRotation() + "Angle: " + getPosition().angle(nextPosition))
+            setRotation(getPosition().angle(nextPosition))
         }
-        println("Enemy position: ${getPosition()}" + " previousPosition: $previousPosition" + " nextPosition: $nextPosition")
+        collider2D.body.update()
     }
 
     private fun isAtNextPosition(): Boolean {
-        return getPosition().distance(nextPosition) < collider2D.body.velocity
+        println("Distanve: "+ getPosition().distance(nextPosition) + "Velocity: " + collider2D.body.velocity+ "\nPosition: "+ getPosition() + "NextPositionx: "+ nextPosition.x + "NextPositiony: "+ nextPosition.y)
+        return getPosition().distance(nextPosition) <= collider2D.body.velocity
     }
 
 

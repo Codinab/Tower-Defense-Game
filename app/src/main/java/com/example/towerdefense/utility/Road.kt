@@ -9,10 +9,11 @@ import java.io.Serializable
 
 class Road(private var startVector: Vector2i, multiVector: MultiVector) : Serializable {
 
-    private val roadHeight: Int = 100
-    private val roadWidth: Int = 100
+    private val roadHeight: Int = 10
+    private val roadWidth: Int = 10
     private val roadPaint: Paint = Paint()
     private var roadDirections: ArrayList<Pair<Vector2i, Direction2D>> = ArrayList()
+    private var roadCorners : ArrayList<Pair<Vector2i, Direction2D>> = ArrayList()
 
 
     init {
@@ -43,6 +44,15 @@ class Road(private var startVector: Vector2i, multiVector: MultiVector) : Serial
         roadDirections.add(Pair(positionArray[positionArray.size - 1]!!, Direction2D.UNDEFINED))
         roadPaint.strokeWidth = 10f
         roadPaint.color = android.graphics.Color.RED
+
+        for (i in 0 until roadDirections.size - 1) {
+            if (roadDirections[i].second != roadDirections[i + 1].second) {
+                roadCorners.add(roadDirections[i + 1])
+            }
+        }
+
+        roadCorners.forEach { println(it.first) }
+
     }
 
     fun getRoadDirection(position: Vector2i): Direction2D {
@@ -55,18 +65,14 @@ class Road(private var startVector: Vector2i, multiVector: MultiVector) : Serial
     }
 
     //Returns the next position in the road that changes direction
-    fun getNextPosition(position: Vector2i?): Pair<Vector2i, Direction2D> {
-        if (position == null) return roadDirections.first()
-        var found = false
-        for (i in 0 until roadDirections.size - 1) {
-            if (roadDirections[i].first == position) {
-                found = true
-            }
-            if (found && roadDirections[i].second != roadDirections[i + 1].second) {
-                return roadDirections[i + 1]
+    fun getNextCorner(position: Vector2f?): Vector2f {
+        if (position == null) return roadCorners.first().first.toVector2f()
+        for (i in 0 until roadCorners.size - 1) {
+            if (roadCorners[i].first.toVector2f() == position) {
+                return roadCorners[i + 1].first.toVector2f()
             }
         }
-        return roadDirections.last()
+        return roadCorners.last().first.toVector2f()
     }
 
     fun getStart(): Vector2i = roadDirections.first().first
@@ -88,6 +94,9 @@ class Road(private var startVector: Vector2i, multiVector: MultiVector) : Serial
 
         fun Vector2i.toVector2f(): Vector2f {
             return Vector2f(this.x.toFloat(), this.y.toFloat())
+        }
+        fun Vector2f.toVector2i(): Vector2i {
+            return Vector2i(this.x.toInt(), this.y.toInt())
         }
         fun roadFormat(multiVector: MultiVector): Boolean {
             var oneDirection = 2
