@@ -1,13 +1,13 @@
-package com.example.towerdefense
+package com.example.towerdefense.gameObjects
 
 import android.graphics.Canvas
 import android.view.MotionEvent
+import com.example.towerdefense.Game
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
-import com.example.towerdefense.utility.lastTouchPosition
 import org.joml.Vector2f
-import java.util.concurrent.Semaphore
 import java.util.concurrent.atomic.AtomicBoolean
 
+@Deprecated("")
 interface GameObject {
 
     var game: Game
@@ -18,7 +18,6 @@ interface GameObject {
     fun draw(canvas: Canvas?)
     fun update()
     fun setPosition(position: Vector2f)
-    fun setOffset(offset: Vector2f)
     fun addVelocity(velocity: Float)
     fun getVelocity(): Float
     fun setVelocity(velocity: Float)

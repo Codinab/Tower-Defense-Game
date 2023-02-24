@@ -1,9 +1,7 @@
 package com.example.towerdefense
 
-import android.content.Context
-import android.graphics.*
 import android.view.*
-import java.util.*
+import com.example.towerdefense.gameObjects.Temporary
 
 @Temporary
 class GameView(mainActivity: MainActivity, game: Game) : View(mainActivity) {

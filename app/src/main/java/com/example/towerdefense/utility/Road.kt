@@ -2,28 +2,33 @@ package com.example.towerdefense.utility
 
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.util.ArrayMap
+import org.joml.Vector2f
+import org.joml.Vector2i
 import java.io.Serializable
 
-class Road(private var startVector: Vector2i, private var endVector: Vector2i) : Serializable {
+class Road(private var startVector: Vector2i, multiVector: MultiVector) : Serializable {
 
-    private val roadHeight: Int = 100
-    private val roadWidth: Int = 100
+    private val roadHeight: Int = 10
+    private val roadWidth: Int = 10
     private val roadPaint: Paint = Paint()
-    internal var roadDirections : HashMap<Vector2i, Direction2D> = HashMap()
+    private var roadDirections: ArrayList<Pair<Vector2i, Direction2D>> = ArrayList()
+    private var roadCorners : ArrayList<Pair<Vector2i, Direction2D>> = ArrayList()
 
-    fun initiateRoad(multiVector: MultiVector) {
+
+    init {
         if (!roadFormat(multiVector)) throw IncorrectFormatException
 
         multiVector.positions.remove(startVector)
         val positions = multiVector.positions
 
-        val positionArray : Array<Vector2i?> = Array(positions.size + 1) { null }
+        val positionArray: Array<Vector2i?> = Array(positions.size + 1) { null }
         positionArray[0] = startVector
 
 
-        for (i in 1 .. positions.size) {
+        for (i in 1..positions.size) {
             for (position in positions) {
-                if(position.nextTo(positionArray[i-1])) {
+                if (position.distanceSquared(positionArray[i - 1]!!) <= 1.01) {
                     positionArray[i] = position
                     positions.remove(position)
                     break
@@ -31,37 +36,69 @@ class Road(private var startVector: Vector2i, private var endVector: Vector2i) :
             }
         }
 
-        if (positionArray[positionArray.size-1] != endVector) throw IncorrectPositionException
-
         for (i in 0 until positionArray.size - 1) {
-            val direction = positionArray[i]!!.direction(positionArray[i + 1])
-            roadDirections[positionArray[i]!!] = direction
+            val direction =
+                Direction2D.fromVector(positionArray[i + 1]!!.sub(positionArray[i]!!, Vector2i()))
+            roadDirections.add(Pair(positionArray[i]!!, direction))
         }
-        roadDirections[positionArray[positionArray.size-1]!!] = Direction2D.UNDEFINED
+        roadDirections.add(Pair(positionArray[positionArray.size - 1]!!, Direction2D.UNDEFINED))
         roadPaint.strokeWidth = 10f
         roadPaint.color = android.graphics.Color.RED
+
+        for (i in 0 until roadDirections.size - 1) {
+            if (roadDirections[i].second != roadDirections[i + 1].second) {
+                roadCorners.add(roadDirections[i + 1])
+            }
+        }
+
+        roadCorners.forEach { println(it.first) }
+
     }
 
     fun getRoadDirection(position: Vector2i): Direction2D {
-        return roadDirections[position] ?: Direction2D.UNDEFINED
+        return roadDirections.first { it.first == position }.second
     }
 
 
-    fun getAllDirections() : List<Direction2D> {
-        return roadDirections.values.toList()
+    fun getAllDirections(): List<Direction2D> {
+        return roadDirections.map { it.second }
     }
-     fun draw(canvas: Canvas) {
+
+    //Returns the next position in the road that changes direction
+    fun getNextCorner(position: Vector2f?): Vector2f {
+        if (position == null) return roadCorners.first().first.toVector2f()
+        for (i in 0 until roadCorners.size - 1) {
+            if (roadCorners[i].first.toVector2f() == position) {
+                return roadCorners[i + 1].first.toVector2f()
+            }
+        }
+        return roadCorners.last().first.toVector2f()
+    }
+
+    fun getStart(): Vector2i = roadDirections.first().first
+
+    fun draw(canvas: Canvas) {
         for ((start, direction) in roadDirections) {
-            if (direction == Direction2D.UNDEFINED) return
-            val length = direction.vector.add(Vector2i(roadWidth, roadHeight))
-            val end = start
+            val startX = start.x * roadWidth
+            val startY = start.y * roadHeight
+            val endX = (start.x + direction.vector.x) * roadWidth
+            val endY = (start.y + direction.vector.y) * roadHeight
 
+            canvas.drawLine(startX.toFloat(), startY.toFloat(), endX.toFloat(),
+                endY.toFloat(), roadPaint)
         }
     }
 
 
     companion object {
-        fun roadFormat(multiVector: MultiVector) : Boolean {
+
+        fun Vector2i.toVector2f(): Vector2f {
+            return Vector2f(this.x.toFloat(), this.y.toFloat())
+        }
+        fun Vector2f.toVector2i(): Vector2i {
+            return Vector2i(this.x.toInt(), this.y.toInt())
+        }
+        fun roadFormat(multiVector: MultiVector): Boolean {
             var oneDirection = 2
             for (directions in multiVector.allDirections) {
                 if (directions.directionCount > 2) return false
@@ -72,9 +109,7 @@ class Road(private var startVector: Vector2i, private var endVector: Vector2i) :
         }
     }
 }
-object IncorrectPositionException : Throwable() {
 
-}
 object IncorrectFormatException : Throwable() {
 
 }

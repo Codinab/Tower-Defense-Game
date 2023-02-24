@@ -5,8 +5,6 @@ import org.joml.Vector2f;
 
 public class Circle extends Collider2D {
     protected float radius;
-    protected Rigidbody2D body;
-
     public Circle(float radius, Rigidbody2D center) {
         this.radius = radius;
         this.body = center;
@@ -16,21 +14,8 @@ public class Circle extends Collider2D {
         return this.radius;
     }
 
-    public Vector2f getOnTouchEventPosition() {
-        Vector2f position = new Vector2f(body.getPosition());
-        return position.add(offset);
-    }
-
-    public void setRadius(float radius) {
-        this.radius = radius;
-    }
-
-    public void setRigidbody(Rigidbody2D body) {
-        this.body = body;
-    }
 
     public Vector2f getCenter() {
-        Vector2f position = new Vector2f(body.getPosition());
-        return position.add(offset);
+        return this.body.getPosition();
     }
 }

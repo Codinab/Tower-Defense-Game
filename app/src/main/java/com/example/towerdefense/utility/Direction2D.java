@@ -2,6 +2,7 @@ package com.example.towerdefense.utility;
 
 
 import org.joml.Vector2f;
+import org.joml.Vector2i;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -60,8 +61,8 @@ public enum Direction2D {
     }
 
     public static Direction2D fromVector(Vector2i vector) {
-        double x = vector.getX();
-        double y = vector.getY();
+        double x = vector.x;
+        double y = vector.y;
         if(x == 0.0f && y == 1.0f) {
             return DOWN;
         } else if(x == 1.0f && y == 0.0f) {
@@ -113,22 +114,12 @@ public enum Direction2D {
                 return new Vector2i(0, 0);
         }
     }
-
-    public static Collection<Direction2D> directions(Vector2i from, Vector2i to){
-        Collection<Direction2D> directions = new ArrayList<>();
-        Vector2i direct = to.sub(from).unitDirection();
-        if(direct.getX() > 0) directions.add(RIGHT);
-        else if (direct.getX() < 0) directions.add(LEFT);
-        if(direct.getY() > 0) directions.add(DOWN);
-        else if(direct.getY() < 0) directions.add(UP);
-        if(directions.isEmpty()) directions.add(UNDEFINED);
-        return directions;
-    }
+    
 
     public static Direction2D connected(Vector2i position1, Vector2i position2) {
         for (Direction2D direction : Direction2D.directions()) {
             Vector2i result = position1.add(direction.getVector());
-            if(result.getX() == position2.getX() && result.getY() == position2.getY()) {
+            if(result.x == position2.x && result.y == position2.y) {
                 return direction;
             }
         }

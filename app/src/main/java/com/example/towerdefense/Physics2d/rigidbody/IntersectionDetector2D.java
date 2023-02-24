@@ -1,6 +1,6 @@
 package com.example.towerdefense.Physics2d.rigidbody;
 
-import com.example.towerdefense.GameObject;
+import com.example.towerdefense.gameObjects.GameObject;
 import com.example.towerdefense.Physics2d.JMath;
 import com.example.towerdefense.Physics2d.primitives.*;
 
@@ -53,7 +53,7 @@ public class IntersectionDetector2D {
 
     public static boolean intersection(Vector2f point, Box2D box) { //point on box2d
         Vector2f pointLocalBox = new Vector2f(point);
-        JMath.rotate(pointLocalBox, box.getRigidbody().getRotation(), box.getRigidbody().getPosition());
+        JMath.rotate(pointLocalBox, box.body.getRotation(), box.body.getPosition());
 
         Vector2f min = box.getLocalMin();
         Vector2f max = box.getLocalMax();
@@ -157,8 +157,8 @@ public class IntersectionDetector2D {
     }
 
     public static boolean intersection(Line2D line, Box2D box) { //line on box2d
-        float rotation = -box.getRigidbody().getRotation();
-        Vector2f position = box.getRigidbody().getPosition();
+        float rotation = -box.body.getRotation();
+        Vector2f position = box.body.getPosition();
         Vector2f localStart = new Vector2f(line.getStart());
         Vector2f localEnd = new Vector2f(line.getEnd());
         JMath.rotate(localStart, rotation, position);
@@ -272,6 +272,15 @@ public class IntersectionDetector2D {
             return intersection(vector2f, (Box2D) gameObjectCreator);
         } else if (gameObjectCreator instanceof Circle) {
             return intersection(vector2f, (Circle) gameObjectCreator);
+        }
+        return false;
+    }
+
+    public static boolean intersection(Vector2f position, Collider2D collider2D) {
+        if (collider2D instanceof Box2D) {
+            return intersection(position, (Box2D) collider2D);
+        } else if (collider2D instanceof Circle) {
+            return intersection(position, (Circle) collider2D);
         }
         return false;
     }

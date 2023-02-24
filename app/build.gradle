@@ -7,7 +7,7 @@ android {
     namespace 'com.example.towerdefense'
     compileSdk 33
 
-    defaultConfig {
+    defaultConfig { //Important
         applicationId "com.example.towerdefense"
         minSdk 28
         targetSdk 33
@@ -35,7 +35,7 @@ android {
     }
 }
 
-dependencies {
+dependencies { //Important
 
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'

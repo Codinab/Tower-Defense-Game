@@ -7,7 +7,6 @@ import com.example.towerdefense.Physics2d.jade.Transform;
 import com.example.towerdefense.Physics2d.primitives.Collider2D;
 
 import org.joml.Vector2f;
-import org.joml.Vector2fc;
 
 public class Rigidbody2D  {
 
@@ -66,11 +65,14 @@ public class Rigidbody2D  {
 
 
 
-    public void setTransform(Vector2f position, float rotation) {
+    public void setPosition(Vector2f position, float rotation) {
         this.rotation = rotation;
         rawTransform.position = position;
     }
-    public void setTransform(Vector2f position) {
+    public void addPosition(Vector2f position) {
+        rawTransform.position.add(position);
+    }
+    public void setPosition(Vector2f position) {
         rawTransform.position = position;
     }
 
