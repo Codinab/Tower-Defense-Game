@@ -19,28 +19,44 @@ class MainActivity : AppCompatActivity() {
 
     var screenHeight : Int? = null
     var screenWidth : Int? = null
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        requestWindowFeature(Window.FEATURE_NO_TITLE)
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
         supportActionBar?.hide()
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
+        saveWindowSizes()
+
+        val binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+
+        initializeButtons(binding)
+
+        setContentView(view)
+
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
+    private fun saveWindowSizes() {
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
 
         screenHeight = displayMetrics.heightPixels
         screenWidth = displayMetrics.widthPixels
+    }
 
-        val binding = ActivityMainBinding.inflate(layoutInflater)
-        val view = binding.root
-
-        //window.decorView.setBackgroundColor(Color.CYAN)
-        setContentView(view)
-
-        //setContentView(R.layout.activity_main)
-
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    @RequiresApi(Build.VERSION_CODES.R)
+    private fun initializeButtons(binding: ActivityMainBinding) {
+        val continueButton = binding.createButton
+        continueButton.setOnClickListener {
+            createGame(it)
+        }
+        val createButton = binding.continueGame
+        createButton.setOnClickListener {
+            continueGame(it)
+        }
     }
 
     private var lastClickTime: Long = 0
@@ -59,11 +75,13 @@ class MainActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.R)
     fun createGame(view: View) {
-        var game = Game(this)
+        val game = Game(this)
         setContentView(game)
     }
 
     fun continueGame(view: View) {
+        Toast.makeText(baseContext, getString(R.string.textoToast), Toast.LENGTH_SHORT).show()
+
         //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
         /*
         val filePath = "example.txt"
