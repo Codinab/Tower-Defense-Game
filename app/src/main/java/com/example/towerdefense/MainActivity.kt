@@ -1,19 +1,19 @@
 package com.example.towerdefense
 
-import android.graphics.Color
-import android.os.Binder
+import GameObjectView
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.View
-import android.view.View.OnClickListener
-import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import com.example.towerdefense.Physics2d.primitives.Circle
+import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.databinding.ActivityMainBinding
+import org.joml.Vector2f
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
 
         initializeButtons(binding)
 
-        setContentView(view)
+        setContentView(GameObjectView())
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }

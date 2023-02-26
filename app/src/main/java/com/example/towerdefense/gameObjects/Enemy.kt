@@ -82,7 +82,3 @@ class Enemy(override var collider2D: Collider2D, private val game: Game) :
         return collider2D.body.position
     }
 }
-
-private fun Vector2f.toVector2i(): Vector2i {
-    return Vector2i(x.toInt(), y.toInt())
-}

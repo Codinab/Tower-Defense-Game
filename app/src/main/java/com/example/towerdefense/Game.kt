@@ -36,8 +36,8 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
     
     init {
         holder.addCallback(this)
-        
-        
+
+
         context as MainActivity
         
         val rigidbody =
@@ -69,6 +69,9 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
         box2D.body.velocity = 1f
 
         enemyList.add(Enemy(box2D, this))
+
+
+
     }
     
     override fun draw(canvas: Canvas?) {
@@ -92,7 +95,7 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
 
 
     }
-    
+
     fun drawMoney(canvas: Canvas?) {
         val color = ContextCompat.getColor(context, R.color.purple_500)
         val paint = Paint()

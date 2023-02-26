@@ -89,7 +89,6 @@ class Road(private var startVector: Vector2i, multiVector: MultiVector) : Serial
         }
     }
 
-
     companion object {
 
         fun Vector2i.toVector2f(): Vector2f {
@@ -98,6 +97,7 @@ class Road(private var startVector: Vector2i, multiVector: MultiVector) : Serial
         fun Vector2f.toVector2i(): Vector2i {
             return Vector2i(this.x.toInt(), this.y.toInt())
         }
+
         fun roadFormat(multiVector: MultiVector): Boolean {
             var oneDirection = 2
             for (directions in multiVector.allDirections) {
@@ -109,6 +109,7 @@ class Road(private var startVector: Vector2i, multiVector: MultiVector) : Serial
         }
     }
 }
+
 
 object IncorrectFormatException : Throwable() {
 

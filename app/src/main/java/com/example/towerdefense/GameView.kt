@@ -1,10 +1,34 @@
 package com.example.towerdefense
 
+import GameObjectView
+import android.content.Context
+import android.graphics.Canvas
+import android.util.AttributeSet
 import android.view.*
+import android.widget.FrameLayout
 import com.example.towerdefense.gameObjects.Temporary
+import org.joml.Vector2f
 
 @Temporary
-class GameView(mainActivity: MainActivity, game: Game) : View(mainActivity) {
+class GameView(context: Context) : ViewGroup(context) {
+
+    fun addGameObjectView(gameObjectView: GameObjectView) {
+        addView(gameObjectView)
+    }
+
+
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        for (i in 0 until childCount) {
+            val child = getChildAt(i)
+            val lp = child.layoutParams as LayoutParams
+            child.layout(left, top, left + lp.width, top + lp.height)
+        }
+    }
+}
+
+
+
+
 /*    private var buttonSize: Int = 0
     private var buttonX: Int = 0
     private var buttonY: Int = 0
@@ -99,4 +123,3 @@ class GameView(mainActivity: MainActivity, game: Game) : View(mainActivity) {
         }
         return true
     }*/*/
-}
