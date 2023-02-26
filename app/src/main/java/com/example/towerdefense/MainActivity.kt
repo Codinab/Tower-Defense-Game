@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
 
         initializeButtons(binding)
 
-        setContentView(GameObjectView())
+        setContentView(GameView(this))
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
