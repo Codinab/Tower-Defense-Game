@@ -70,8 +70,6 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
 
         enemyList.add(Enemy(box2D, this))
 
-
-
     }
     
     override fun draw(canvas: Canvas?) {

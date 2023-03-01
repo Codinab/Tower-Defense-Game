@@ -4,6 +4,7 @@ import GameObjectView
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.view.SurfaceView
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
@@ -34,7 +35,7 @@ class MainActivity : AppCompatActivity() {
 
         initializeButtons(binding)
 
-        setContentView(GameView(this))
+        setContentView(view)
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
@@ -51,18 +52,20 @@ class MainActivity : AppCompatActivity() {
     private fun initializeButtons(binding: ActivityMainBinding) {
         val continueButton = binding.createButton
         continueButton.setOnClickListener {
-            createGame(it)
+            createGame()
         }
         val createButton = binding.continueGame
         createButton.setOnClickListener {
-            continueGame(it)
+            continueGame()
         }
     }
 
     private var lastClickTime: Long = 0
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onBackPressed() {
         //Do double back press to exit
         val currentTime = System.currentTimeMillis()
+        createGame()
         if (currentTime - lastClickTime < 400) {
             super.onBackPressed()
         } else {
@@ -74,12 +77,13 @@ class MainActivity : AppCompatActivity() {
 
 
     @RequiresApi(Build.VERSION_CODES.R)
-    fun createGame(view: View) {
-        val game = Game(this)
+    fun createGame() {
+        val game = GameView(this, SurfaceView(this).holder)
+        game.addGameObjectView(GameObjectView(this, game, Circle(100f, Rigidbody2D(Vector2f(100f, 100f)))))
         setContentView(game)
     }
 
-    fun continueGame(view: View) {
+    fun continueGame() {
         Toast.makeText(baseContext, getString(R.string.textoToast), Toast.LENGTH_SHORT).show()
 
         //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)

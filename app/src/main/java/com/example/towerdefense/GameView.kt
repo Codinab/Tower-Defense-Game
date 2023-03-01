@@ -6,12 +6,19 @@ import android.graphics.Canvas
 import android.util.AttributeSet
 import android.view.*
 import android.widget.FrameLayout
+import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
+import com.example.towerdefense.gameObjects.Box2DGameObject
+import com.example.towerdefense.gameObjects.CircleGameObject
+import com.example.towerdefense.gameObjects.GameObjectList
 import com.example.towerdefense.gameObjects.Temporary
 import org.joml.Vector2f
 
 @Temporary
-class GameView(context: Context) : ViewGroup(context) {
-
+class GameView(context: Context, surfaceHolder : SurfaceHolder) : ViewGroup(context) , SurfaceHolder.Callback {
+    init {
+        // Create the SurfaceHolder and add the callback
+        surfaceHolder.addCallback(this)
+    }
     fun addGameObjectView(gameObjectView: GameObjectView) {
         addView(gameObjectView)
     }
@@ -24,6 +31,99 @@ class GameView(context: Context) : ViewGroup(context) {
             child.layout(left, top, left + lp.width, top + lp.height)
         }
     }
+
+    var cameraPosition = Vector2f(0f, 0f)
+    var previousTouchX = 0f
+    var previousTouchY = 0f
+
+
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        val adjustedPosition = Vector2f(event.x + cameraPosition.x, event.y + cameraPosition.y)
+        val movable = gameObjectList.getMovable()
+        val clicked = gameObjectList.getClicked(adjustedPosition)
+
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                handleDownEvent(movable, event, adjustedPosition, clicked)
+            }
+            MotionEvent.ACTION_MOVE -> {
+                handleMoveEvent(movable, event, adjustedPosition, clicked)
+            }
+
+            MotionEvent.ACTION_UP -> {
+                handleUpEvent(movable, event, adjustedPosition)
+            }
+        }
+        return true
+    }
+
+    private fun handleUpEvent(
+        movable: GameObjectList,
+        event: MotionEvent,
+        adjustedPosition: Vector2f
+    ) {
+        if (movable.isNotEmpty()) movable.onTouchEvent(event, adjustedPosition)
+    }
+
+    private fun handleDownEvent(
+        movable: GameObjectList,
+        event: MotionEvent,
+        adjustedPosition: Vector2f,
+        clicked: GameObjectList
+    ) {
+        if (movable.isNotEmpty()) movable.onTouchEvent(event, adjustedPosition)
+        else if (clicked.isNotEmpty()) clicked.onTouchEvent(event, adjustedPosition)
+        else if (gameObjectCreator.isClicked(adjustedPosition)) {
+            val circle = CircleGameObject(
+                (10..200).random().toFloat(),
+                Rigidbody2D(Vector2f(event.x, event.y)),
+                this
+            )
+            val box = Box2DGameObject(
+                Vector2f((10..200).random().toFloat()),
+                Rigidbody2D(adjustedPosition),
+                this
+            )
+            gameObjectList.add(listOf(circle, box).random())
+            money -= 10
+        } else {
+            previousTouchX = event.x
+            previousTouchY = event.y
+        }
+    }
+
+    private fun handleMoveEvent(
+        movable: GameObjectList,
+        event: MotionEvent,
+        adjustedPosition: Vector2f,
+        clicked: GameObjectList
+    ) {
+        if (movable.isNotEmpty()) movable.onTouchEvent(event, adjustedPosition)
+        else if (clicked.isNotEmpty()) return
+        else {
+            val deltaX = event.x - previousTouchX
+            val deltaY = event.y - previousTouchY
+            cameraPosition.x -= deltaX
+            cameraPosition.y -= deltaY
+            previousTouchX = event.x
+            previousTouchY = event.y
+        }
+    }
+
+    override fun surfaceCreated(p0: SurfaceHolder) {
+        //TODO("Not yet implemented")
+    }
+
+    override fun surfaceChanged(p0: SurfaceHolder, p1: Int, p2: Int, p3: Int) {
+        //TODO("Not yet implemented")
+    }
+
+    override fun surfaceDestroyed(p0: SurfaceHolder) {
+     //   TODO("Not yet implemented")
+    }
+
+
 }
 
 
