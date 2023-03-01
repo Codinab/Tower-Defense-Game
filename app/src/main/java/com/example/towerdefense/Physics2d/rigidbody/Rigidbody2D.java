@@ -2,6 +2,8 @@ package com.example.towerdefense.Physics2d.rigidbody;
 
 
 
+import androidx.annotation.NonNull;
+
 import com.example.towerdefense.Physics2d.JMath;
 import com.example.towerdefense.Physics2d.jade.Transform;
 import com.example.towerdefense.Physics2d.primitives.Collider2D;
@@ -140,5 +142,18 @@ public class Rigidbody2D  {
 
     private void positionUpdate() {
         rawTransform.position.add(JMath.angleToVector(rotation).mul(velocity));
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Rigidbody2D{" +
+                "rawTransform=" + rawTransform +
+                ", collider=" + collider +
+                ", rotation=" + rotation +
+                ", velocity=" + velocity +
+                ", angularVelocity=" + angularVelocity +
+                ", cor=" + cor +
+                '}';
     }
 }

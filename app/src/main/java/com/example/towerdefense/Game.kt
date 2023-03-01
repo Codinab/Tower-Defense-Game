@@ -23,8 +23,8 @@ import java.io.Serializable
  * */
 class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder.Callback {
     private var gameLoop: GameLoop
-    var gameObjectList = GameObjectList()
-    var gameObjectListToRemove = GameObjectList()
+    var gameObjectList = GameObjectListOld()
+    var gameObjectListToRemove = GameObjectListOld()
     var health = 3
     var money = 1000
     var level = 1
@@ -182,18 +182,18 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
     }
     
     private fun handleUpEvent(
-            movable: GameObjectList,
-            event: MotionEvent,
-            adjustedPosition: Vector2f
+        movable: GameObjectListOld,
+        event: MotionEvent,
+        adjustedPosition: Vector2f
     ) {
         if (movable.isNotEmpty()) movable.onTouchEvent(event, adjustedPosition)
     }
     
     private fun handleDownEvent(
-            movable: GameObjectList,
-            event: MotionEvent,
-            adjustedPosition: Vector2f,
-            clicked: GameObjectList
+        movable: GameObjectListOld,
+        event: MotionEvent,
+        adjustedPosition: Vector2f,
+        clicked: GameObjectListOld
     ) {
         if (movable.isNotEmpty()) movable.onTouchEvent(event, adjustedPosition)
         else if (clicked.isNotEmpty()) clicked.onTouchEvent(event, adjustedPosition)
@@ -217,10 +217,10 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
     }
     
     private fun handleMoveEvent(
-            movable: GameObjectList,
-            event: MotionEvent,
-            adjustedPosition: Vector2f,
-            clicked: GameObjectList
+        movable: GameObjectListOld,
+        event: MotionEvent,
+        adjustedPosition: Vector2f,
+        clicked: GameObjectListOld
     ) {
         if (movable.isNotEmpty()) movable.onTouchEvent(event, adjustedPosition)
         else if (clicked.isNotEmpty()) return

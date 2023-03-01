@@ -2,15 +2,9 @@ package com.example.towerdefense
 
 import GameObjectView
 import android.content.Context
-import android.graphics.Canvas
-import android.util.AttributeSet
 import android.view.*
-import android.widget.FrameLayout
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
-import com.example.towerdefense.gameObjects.Box2DGameObject
-import com.example.towerdefense.gameObjects.CircleGameObject
-import com.example.towerdefense.gameObjects.GameObjectList
-import com.example.towerdefense.gameObjects.Temporary
+import com.example.towerdefense.gameObjects.*
 import org.joml.Vector2f
 
 @Temporary
@@ -35,81 +29,41 @@ class GameView(context: Context, surfaceHolder : SurfaceHolder) : ViewGroup(cont
     var cameraPosition = Vector2f(0f, 0f)
     var previousTouchX = 0f
     var previousTouchY = 0f
-
-
-
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        val adjustedPosition = Vector2f(event.x + cameraPosition.x, event.y + cameraPosition.y)
-        val movable = gameObjectList.getMovable()
-        val clicked = gameObjectList.getClicked(adjustedPosition)
+
+        //Check if the child view is clicked
+        for (i in 0 until childCount) {
+            val child = getChildAt(i)
+            if (child is GameObjectView) {
+                if(child.isClicked(Vector2f(event.x, event.y))) {
+                    child.onTouchEvent(event, Vector2f(event.x, event.y))
+                    return true
+                }
+            }
+        }
 
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                handleDownEvent(movable, event, adjustedPosition, clicked)
             }
             MotionEvent.ACTION_MOVE -> {
-                handleMoveEvent(movable, event, adjustedPosition, clicked)
+                val x = event.x
+                val y = event.y
+                val dx = x - previousTouchX
+                val dy = y - previousTouchY
+                cameraPosition.x -= dx
+                cameraPosition.y -= dy
+                previousTouchX = x
+                previousTouchY = y
+                println("ACTION_MOVE")
             }
 
             MotionEvent.ACTION_UP -> {
-                handleUpEvent(movable, event, adjustedPosition)
+                println("ACTION_UP")
             }
         }
         return true
     }
 
-    private fun handleUpEvent(
-        movable: GameObjectList,
-        event: MotionEvent,
-        adjustedPosition: Vector2f
-    ) {
-        if (movable.isNotEmpty()) movable.onTouchEvent(event, adjustedPosition)
-    }
-
-    private fun handleDownEvent(
-        movable: GameObjectList,
-        event: MotionEvent,
-        adjustedPosition: Vector2f,
-        clicked: GameObjectList
-    ) {
-        if (movable.isNotEmpty()) movable.onTouchEvent(event, adjustedPosition)
-        else if (clicked.isNotEmpty()) clicked.onTouchEvent(event, adjustedPosition)
-        else if (gameObjectCreator.isClicked(adjustedPosition)) {
-            val circle = CircleGameObject(
-                (10..200).random().toFloat(),
-                Rigidbody2D(Vector2f(event.x, event.y)),
-                this
-            )
-            val box = Box2DGameObject(
-                Vector2f((10..200).random().toFloat()),
-                Rigidbody2D(adjustedPosition),
-                this
-            )
-            gameObjectList.add(listOf(circle, box).random())
-            money -= 10
-        } else {
-            previousTouchX = event.x
-            previousTouchY = event.y
-        }
-    }
-
-    private fun handleMoveEvent(
-        movable: GameObjectList,
-        event: MotionEvent,
-        adjustedPosition: Vector2f,
-        clicked: GameObjectList
-    ) {
-        if (movable.isNotEmpty()) movable.onTouchEvent(event, adjustedPosition)
-        else if (clicked.isNotEmpty()) return
-        else {
-            val deltaX = event.x - previousTouchX
-            val deltaY = event.y - previousTouchY
-            cameraPosition.x -= deltaX
-            cameraPosition.y -= deltaY
-            previousTouchX = event.x
-            previousTouchY = event.y
-        }
-    }
 
     override fun surfaceCreated(p0: SurfaceHolder) {
         //TODO("Not yet implemented")
