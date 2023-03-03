@@ -82,7 +82,6 @@ class GameView(context: Context, surfaceHolder : SurfaceHolder) : ViewGroup(cont
 
 
 
-
 /*    private var buttonSize: Int = 0
     private var buttonX: Int = 0
     private var buttonY: Int = 0
