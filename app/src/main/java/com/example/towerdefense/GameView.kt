@@ -32,16 +32,19 @@ class GameView(context: Context, surfaceHolder : SurfaceHolder) : ViewGroup(cont
     override fun onTouchEvent(event: MotionEvent): Boolean {
 
         //Check if the child view is clicked
-        for (i in 0 until childCount) {
+        /*for (i in 0 until childCount) {
             val child = getChildAt(i)
             if (child is GameObjectView) {
                 if(child.onTouchEvent(event, Vector2f(event.x, event.y)))
                     return true
             }
-        }
+        }*/
 
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
+                previousTouchX = event.x
+                previousTouchY = event.y
+                println("ACTION_DOWN")
             }
             MotionEvent.ACTION_MOVE -> {
                 val x = event.x

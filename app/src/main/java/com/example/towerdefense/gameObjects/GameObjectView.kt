@@ -17,9 +17,17 @@ class GameObjectView(context: Context, viewGroup: ViewGroup, var collider2D: Col
     var fixable: Boolean = true
     init {
         layoutParams = ViewGroup.LayoutParams(200, 200)
+        setOnTouchListener(object : OnTouchListener {
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                if (event != null) {
+                    val position = Vector2f(event.x, event.y)
+                    onTouchEvent(event, position)
+                }
+                return true
+            }
+        })
     }
     fun onTouchEvent(event: MotionEvent, position: Vector2f): Boolean {
-        if (!movable && !fixable && !isClicked(position)) return false
         when (event.action) {
             MotionEvent.ACTION_DOWN -> handleDownEvent(event, position)
             MotionEvent.ACTION_MOVE -> handleMoveEvent(event, position)
