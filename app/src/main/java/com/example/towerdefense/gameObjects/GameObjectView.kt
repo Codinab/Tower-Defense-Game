@@ -19,6 +19,7 @@ class GameObjectView(context: Context, viewGroup: ViewGroup, var collider2D: Col
         layoutParams = ViewGroup.LayoutParams(200, 200)
     }
     fun onTouchEvent(event: MotionEvent, position: Vector2f): Boolean {
+        if (!movable && !fixable && !isClicked(position)) return false
         when (event.action) {
             MotionEvent.ACTION_DOWN -> handleDownEvent(event, position)
             MotionEvent.ACTION_MOVE -> handleMoveEvent(event, position)
@@ -28,18 +29,20 @@ class GameObjectView(context: Context, viewGroup: ViewGroup, var collider2D: Col
     }
 
     fun handleDownEvent(event: MotionEvent, position: Vector2f) {
-        if (movable) setPosition(position)
+        println("${this} DOWN")
+        if (movable) setPosition(Vector2f(position).sub(this.width / 2.toFloat(), this.height / 2.toFloat()))
         else if (isClicked(position)) {
             val currentTime = System.currentTimeMillis()
             if (currentTime - lastClickTime < 300) {
                 movable = true
-                fixable = false
+                fixable = true
             }
             lastClickTime = currentTime
         }
     }
 
     fun handleUpEvent(event: MotionEvent, position: Vector2f) {
+        println("${this} UP")
         if (fixable) {
             fixable = false
             movable = false
@@ -47,7 +50,8 @@ class GameObjectView(context: Context, viewGroup: ViewGroup, var collider2D: Col
     }
 
     fun handleMoveEvent(event: MotionEvent, position: Vector2f) {
-        setPosition(position)
+        println("${this} MOVE")
+        if (movable) setPosition(Vector2f(position).sub(this.width / 2.toFloat(), this.height / 2.toFloat()))
     }
 
 

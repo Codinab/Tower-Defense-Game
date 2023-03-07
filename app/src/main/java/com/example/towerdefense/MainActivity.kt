@@ -1,6 +1,8 @@
 package com.example.towerdefense
 
 import GameObjectView
+import android.app.Activity
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -9,6 +11,8 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.towerdefense.Physics2d.primitives.Circle
@@ -20,6 +24,8 @@ class MainActivity : AppCompatActivity() {
 
     var screenHeight : Int? = null
     var screenWidth : Int? = null
+
+    lateinit var startForResult : ActivityResultLauncher<Intent>
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +42,12 @@ class MainActivity : AppCompatActivity() {
         initializeButtons(binding)
 
         setContentView(view)
+
+        startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                Toast.makeText(this, "Result OK", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }

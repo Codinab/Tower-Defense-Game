@@ -35,10 +35,8 @@ class GameView(context: Context, surfaceHolder : SurfaceHolder) : ViewGroup(cont
         for (i in 0 until childCount) {
             val child = getChildAt(i)
             if (child is GameObjectView) {
-                if(child.isClicked(Vector2f(event.x, event.y))) {
-                    child.onTouchEvent(event, Vector2f(event.x, event.y))
+                if(child.onTouchEvent(event, Vector2f(event.x, event.y)))
                     return true
-                }
             }
         }
 
