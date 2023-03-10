@@ -91,7 +91,8 @@ class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.R)
     fun createGame() {
         val game = GameView(this, SurfaceView(this).holder)
-        game.addGameObjectView(GameObjectView(this, game, Circle(100f, Rigidbody2D(Vector2f(100f, 100f)))))
+        game.addGameObjectView(GameObjectView(this, game, Circle(100f, Rigidbody2D(Vector2f()))))
+        game.addGameObjectView(GameObjectView(this, game, Circle(100f, Rigidbody2D(Vector2f()))))
         setContentView(game)
     }
 

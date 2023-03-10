@@ -1,4 +1,5 @@
 import android.content.Context
+import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -6,6 +7,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
 import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import org.joml.Vector2f
@@ -26,7 +28,10 @@ class GameObjectView(context: Context, viewGroup: ViewGroup, var collider2D: Col
                 return true
             }
         })
+
+        setBackgroundColor(Color.TRANSPARENT)
     }
+
     fun onTouchEvent(event: MotionEvent, position: Vector2f): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> handleDownEvent(event, position)

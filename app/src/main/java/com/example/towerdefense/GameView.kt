@@ -2,6 +2,8 @@ package com.example.towerdefense
 
 import GameObjectView
 import android.content.Context
+import android.graphics.Color
+import android.net.Uri
 import android.view.*
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.gameObjects.*
@@ -12,6 +14,7 @@ class GameView(context: Context, surfaceHolder : SurfaceHolder) : ViewGroup(cont
     init {
         // Create the SurfaceHolder and add the callback
         surfaceHolder.addCallback(this)
+        setBackgroundColor(Color.YELLOW)
     }
     fun addGameObjectView(gameObjectView: GameObjectView) {
         addView(gameObjectView)
@@ -30,16 +33,7 @@ class GameView(context: Context, surfaceHolder : SurfaceHolder) : ViewGroup(cont
     var previousTouchX = 0f
     var previousTouchY = 0f
     override fun onTouchEvent(event: MotionEvent): Boolean {
-
         //Check if the child view is clicked
-        /*for (i in 0 until childCount) {
-            val child = getChildAt(i)
-            if (child is GameObjectView) {
-                if(child.onTouchEvent(event, Vector2f(event.x, event.y)))
-                    return true
-            }
-        }*/
-
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 previousTouchX = event.x
@@ -64,7 +58,6 @@ class GameView(context: Context, surfaceHolder : SurfaceHolder) : ViewGroup(cont
         }
         return true
     }
-
 
     override fun surfaceCreated(p0: SurfaceHolder) {
         //TODO("Not yet implemented")

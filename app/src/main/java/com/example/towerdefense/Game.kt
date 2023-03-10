@@ -23,8 +23,8 @@ import java.io.Serializable
  * */
 class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder.Callback {
     private var gameLoop: GameLoop
-    var gameObjectList = GameObjectListOld()
-    var gameObjectListToRemove = GameObjectListOld()
+    var gameObjectList = GameObjectList()
+    var gameObjectListToRemove = GameObjectList()
     var health = 3
     var money = 1000
     var level = 1
@@ -182,7 +182,7 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
     }
     
     private fun handleUpEvent(
-        movable: GameObjectListOld,
+        movable: GameObjectList,
         event: MotionEvent,
         adjustedPosition: Vector2f
     ) {
@@ -190,10 +190,10 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
     }
     
     private fun handleDownEvent(
-        movable: GameObjectListOld,
+        movable: GameObjectList,
         event: MotionEvent,
         adjustedPosition: Vector2f,
-        clicked: GameObjectListOld
+        clicked: GameObjectList
     ) {
         if (movable.isNotEmpty()) movable.onTouchEvent(event, adjustedPosition)
         else if (clicked.isNotEmpty()) clicked.onTouchEvent(event, adjustedPosition)
@@ -217,10 +217,10 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
     }
     
     private fun handleMoveEvent(
-        movable: GameObjectListOld,
+        movable: GameObjectList,
         event: MotionEvent,
         adjustedPosition: Vector2f,
-        clicked: GameObjectListOld
+        clicked: GameObjectList
     ) {
         if (movable.isNotEmpty()) movable.onTouchEvent(event, adjustedPosition)
         else if (clicked.isNotEmpty()) return
