@@ -2,37 +2,111 @@ package com.example.towerdefense
 
 import GameObjectView
 import android.content.Context
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Rect
 import android.net.Uri
 import android.view.*
+import android.widget.Button
+import android.widget.LinearLayout
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.gameObjects.*
 import org.joml.Vector2f
+import java.lang.Integer.max
 
 @Temporary
-class GameView(context: Context, surfaceHolder : SurfaceHolder) : ViewGroup(context) , SurfaceHolder.Callback {
+class GameView(context: Context) : ViewGroup(context) {
+
+    private lateinit var surfaceView: SurfaceView
+
     init {
-        // Create the SurfaceHolder and add the callback
-        surfaceHolder.addCallback(this)
-        setBackgroundColor(Color.YELLOW)
-    }
-    fun addGameObjectView(gameObjectView: GameObjectView) {
-        addView(gameObjectView)
+        surfaceView = SurfaceView(context)
+        surfaceView.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+        surfaceView.holder.addCallback(object : SurfaceHolder.Callback {
+            override fun surfaceCreated(holder: SurfaceHolder) {
+                val canvas = holder.lockCanvas()
+                canvas.drawColor(Color.GREEN)
+                holder.unlockCanvasAndPost(canvas)
+            }
+
+            override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
+                val canvas = holder.lockCanvas()
+                canvas.drawColor(Color.WHITE)
+                holder.unlockCanvasAndPost(canvas)
+            }
+
+            override fun surfaceDestroyed(holder: SurfaceHolder) {
+            }
+        })
+        //addView(surfaceView)
+
+        // Add other views here, such as buttons or text views
     }
 
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        // Measure all child views, accounting for padding and margin
+        measureChildren(widthMeasureSpec, heightMeasureSpec)
 
-    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        // Compute total width and height of this view group
+        var width = 0
+        var height = 0
         for (i in 0 until childCount) {
             val child = getChildAt(i)
-            val lp = child.layoutParams as LayoutParams
-            child.layout(left, top, left + lp.width, top + lp.height)
+            val lp = child.layoutParams
+            if (lp is MarginLayoutParams) {
+                width = max(width, child.measuredWidth + lp.leftMargin + lp.rightMargin)
+                height += child.measuredHeight + lp.topMargin + lp.bottomMargin
+            } else {
+                width = max(width, child.measuredWidth)
+                height += child.measuredHeight
+            }
         }
+        width += paddingLeft + paddingRight
+        height += paddingTop + paddingBottom
+
+        // Use the computed width and height to set the measured dimensions of this view group
+        setMeasuredDimension(resolveSize(width, widthMeasureSpec), resolveSize(height, heightMeasureSpec))
+    }
+
+
+    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+        // Layout all child views within this view group, accounting for padding and margin
+        var childLeft = paddingLeft
+        var childTop = paddingTop
+        for (i in 0 until childCount) {
+            val child = getChildAt(i)
+            if(child is SurfaceView) continue
+            val lp = child.layoutParams as LinearLayout.LayoutParams
+            child.layout(
+                childLeft + lp.leftMargin,
+                childTop + lp.topMargin,
+                childLeft + lp.leftMargin + child.measuredWidth,
+                childTop + lp.topMargin + child.measuredHeight
+            )
+            childTop += child.measuredHeight + lp.topMargin + lp.bottomMargin
+        }
+    }
+
+    fun getSurfaceHolder(): SurfaceHolder {
+        return surfaceView.holder
     }
 
     var cameraPosition = Vector2f(0f, 0f)
     var previousTouchX = 0f
     var previousTouchY = 0f
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        for (i in 0 until childCount) {
+            val child = getChildAt(i)
+            val lp = child.layoutParams as LayoutParams
+            val position = Vector2f(event.x, event.y)
+            if (child is GameObjectView) {
+                if (child.movable) {
+                    return child.onTouchEvent(event, position)
+                }
+            }
+        }
+
         //Check if the child view is clicked
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
@@ -51,29 +125,13 @@ class GameView(context: Context, surfaceHolder : SurfaceHolder) : ViewGroup(cont
                 previousTouchY = y
                 println("ACTION_MOVE")
             }
-
             MotionEvent.ACTION_UP -> {
                 println("ACTION_UP")
             }
         }
         return true
     }
-
-    override fun surfaceCreated(p0: SurfaceHolder) {
-        //TODO("Not yet implemented")
-    }
-
-    override fun surfaceChanged(p0: SurfaceHolder, p1: Int, p2: Int, p3: Int) {
-        //TODO("Not yet implemented")
-    }
-
-    override fun surfaceDestroyed(p0: SurfaceHolder) {
-     //   TODO("Not yet implemented")
-    }
-
-
 }
-
 
 
 /*    private var buttonSize: Int = 0

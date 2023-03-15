@@ -6,15 +6,16 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.view.SurfaceView
-import android.view.View
-import android.view.Window
-import android.view.WindowManager
+import android.view.*
+import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.marginBottom
+import androidx.core.view.marginTop
 import com.example.towerdefense.Physics2d.primitives.Circle
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.databinding.ActivityMainBinding
@@ -90,10 +91,31 @@ class MainActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.R)
     fun createGame() {
-        val game = GameView(this, SurfaceView(this).holder)
-        game.addGameObjectView(GameObjectView(this, game, Circle(100f, Rigidbody2D(Vector2f()))))
-        game.addGameObjectView(GameObjectView(this, game, Circle(100f, Rigidbody2D(Vector2f()))))
-        setContentView(game)
+        val surfaceView = SurfaceView(this)
+
+        surfaceView.setOnTouchListener(object : View.OnTouchListener {
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                Toast.makeText(this@MainActivity, "SurfaceView touched", Toast.LENGTH_SHORT).show()
+                return true
+            }
+        })
+
+        val layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+
+        val gameView = GameView(this)
+        val button = Button(this)
+        button.text = "Click me"
+        button.layoutParams = layoutParams
+        gameView.addView(surfaceView)
+        button.setOnClickListener {
+            Toast.makeText(this, "Button clicked", Toast.LENGTH_SHORT).show()
+        }
+        gameView.addView(button)
+
+        setContentView(gameView)
     }
 
     fun continueGame() {

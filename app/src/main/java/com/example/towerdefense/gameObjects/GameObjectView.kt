@@ -44,14 +44,13 @@ class GameObjectView(context: Context, viewGroup: ViewGroup, var collider2D: Col
     fun handleDownEvent(event: MotionEvent, position: Vector2f) {
         println("${this} DOWN")
         if (movable) setPosition(Vector2f(position).sub(this.width / 2.toFloat(), this.height / 2.toFloat()))
-        else if (isClicked(position)) {
-            val currentTime = System.currentTimeMillis()
-            if (currentTime - lastClickTime < 300) {
-                movable = true
-                fixable = true
-            }
-            lastClickTime = currentTime
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastClickTime < 300) {
+            movable = true
+            fixable = true
         }
+        lastClickTime = currentTime
+
     }
 
     fun handleUpEvent(event: MotionEvent, position: Vector2f) {
