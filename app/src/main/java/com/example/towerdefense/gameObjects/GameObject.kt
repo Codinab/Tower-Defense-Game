@@ -7,7 +7,7 @@ import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import org.joml.Vector2f
 import java.util.concurrent.atomic.AtomicBoolean
 
-interface GameObject {
+interface GameObject {/*
 
     var game: Game
     var movable: AtomicBoolean
@@ -69,7 +69,7 @@ interface GameObject {
 
     fun handleMoveEvent(event: MotionEvent, position: Vector2f) {
         setPosition(position)
-    }
+    }*/
 }
 
 @Target(

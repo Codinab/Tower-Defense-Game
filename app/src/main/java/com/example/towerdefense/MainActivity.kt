@@ -1,6 +1,6 @@
 package com.example.towerdefense
 
-import GameObjectView
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
@@ -8,18 +8,14 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.*
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.marginBottom
-import androidx.core.view.marginTop
-import com.example.towerdefense.Physics2d.primitives.Circle
-import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.databinding.ActivityMainBinding
-import org.joml.Vector2f
 
 class MainActivity : AppCompatActivity() {
 
@@ -89,33 +85,40 @@ class MainActivity : AppCompatActivity() {
 
 
 
+    @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(Build.VERSION_CODES.R)
     fun createGame() {
-        val surfaceView = SurfaceView(this)
 
-        surfaceView.setOnTouchListener(object : View.OnTouchListener {
-            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                Toast.makeText(this@MainActivity, "SurfaceView touched", Toast.LENGTH_SHORT).show()
-                return true
-            }
-        })
+
+        val gameView = GameView(this)
+        setContentView(gameView)
+
+        gameView.setOnTouchListener { v, event ->
+            Toast.makeText(this@MainActivity, "SurfaceView touched", Toast.LENGTH_SHORT).show()
+            true
+        }
 
         val layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
 
-        val gameView = GameView(this)
         val button = Button(this)
-        button.text = "Click me"
+        button.text = "Stop"
         button.layoutParams = layoutParams
-        gameView.addView(surfaceView)
         button.setOnClickListener {
-            Toast.makeText(this, "Button clicked", Toast.LENGTH_SHORT).show()
+            gameView.stop()
         }
         gameView.addView(button)
 
-        setContentView(gameView)
+        val button2 = Button(this)
+        button2.text = "Start"
+        button2.layoutParams = layoutParams
+        button2.setOnClickListener {
+            gameView.start()
+        }
+        gameView.addView(button2)
+
     }
 
     fun continueGame() {

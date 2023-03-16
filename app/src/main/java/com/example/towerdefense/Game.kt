@@ -21,6 +21,8 @@ import java.io.Serializable
 /**
  * Game manages the game objects and updates and renders them
  * */
+class Game{}
+/*@Deprecated("Use GameView instead")
 class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder.Callback {
     private var gameLoop: GameLoop
     var gameObjectList = GameObjectList()
@@ -327,4 +329,4 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
             return game
         }*/
     }
-}
+}*/

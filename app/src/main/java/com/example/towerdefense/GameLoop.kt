@@ -1,21 +1,21 @@
 package com.example.towerdefense
 
 import android.graphics.Canvas
-import android.view.SurfaceHolder
+import android.view.SurfaceView
 
 /**
  *
  * */
-class GameLoop(game: Game, holder: SurfaceHolder) : Thread() , java.io.Serializable {
+class GameLoop(game: GameView, view: SurfaceView) : Thread() , java.io.Serializable {
 
-    private val surfaceHolder: SurfaceHolder
-    private val game: Game
-    private var isRunning = false
+    private val view: SurfaceView
+    private val game: GameView
+    internal var isRunning = false
     private var averageUPS: Double = 0.0
     private var averageFPS: Double = 0.0
 
     init {
-        surfaceHolder = holder
+        this.view = view
         this.game = game
     }
 
@@ -35,6 +35,9 @@ class GameLoop(game: Game, holder: SurfaceHolder) : Thread() , java.io.Serializa
     override fun run() {
         super.run()
 
+        println("Valid?: " + view.holder.surface.isValid)
+        println(view.holder.surface)
+
         var updateCount: Int = 0
         var frameCount: Int = 0
 
@@ -47,9 +50,10 @@ class GameLoop(game: Game, holder: SurfaceHolder) : Thread() , java.io.Serializa
         //Game loop
         while (isRunning) {
 
+            println("GameLoop: run()")
             try { //Update and render
-                canvas = surfaceHolder.lockCanvas()
-                synchronized(surfaceHolder) {
+                canvas = view.holder.lockCanvas(null)
+                synchronized(view.holder) {
                     game.update()
                     updateCount++
                     game.draw(canvas)
@@ -59,11 +63,13 @@ class GameLoop(game: Game, holder: SurfaceHolder) : Thread() , java.io.Serializa
             } finally {
                 if (canvas != null) {
                     try {
-                        surfaceHolder.unlockCanvasAndPost(canvas)
+                        view.holder.unlockCanvasAndPost(canvas)
                         frameCount++
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
+                } else {
+                    println("GameLoop: canvas is null")
                 }
             }
 
@@ -96,6 +102,10 @@ class GameLoop(game: Game, holder: SurfaceHolder) : Thread() , java.io.Serializa
                 startTime = System.currentTimeMillis()
             }
         }
+    }
+
+    fun setRunning(b: Boolean) {
+        isRunning = b
     }
 
     companion object {
