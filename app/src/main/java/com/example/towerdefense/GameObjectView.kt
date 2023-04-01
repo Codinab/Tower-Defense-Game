@@ -8,33 +8,25 @@ import android.graphics.Paint
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
 import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import org.joml.Vector2f
 
-class GameObjectView(context: Context, viewGroup: ViewGroup, var collider2D: Collider2D) : View(context) {
+class GameObjectView(context: Context, viewGroup: ViewGroup, var collider2D: Collider2D) : androidx.appcompat.widget.AppCompatButton(context) {
 
     var lastClickTime: Long = 0
     var movable: Boolean = true
     var fixable: Boolean = true
     init {
         layoutParams = ViewGroup.LayoutParams(200, 200)
-        setOnTouchListener(object : OnTouchListener {
-            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                if (event != null) {
-                    val position = Vector2f(event.x, event.y)
-                    onTouchEvent(event, position)
-                }
-                return true
-            }
-        })
-
         setBackgroundColor(Color.TRANSPARENT)
     }
 
     fun onTouchEvent(event: MotionEvent, position: Vector2f): Boolean {
+
         when (event.action) {
             MotionEvent.ACTION_DOWN -> handleDownEvent(event, position)
             MotionEvent.ACTION_MOVE -> handleMoveEvent(event, position)
@@ -71,11 +63,13 @@ class GameObjectView(context: Context, viewGroup: ViewGroup, var collider2D: Col
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
-    override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
+    override fun draw(canvas: Canvas) {
+        super.draw(canvas)
         paint.color = Color.RED
         canvas.drawCircle((width / 2).toFloat(), (width / 2).toFloat(), (width / 2).toFloat(), paint)
     }
+
+
 
     fun setPosition(position: Vector2f) {
         x = position.x

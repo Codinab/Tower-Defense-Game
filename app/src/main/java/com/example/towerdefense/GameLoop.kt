@@ -6,18 +6,12 @@ import android.view.SurfaceView
 /**
  *
  * */
-class GameLoop(game: GameView, view: SurfaceView) : Thread() , java.io.Serializable {
+class GameLoop(private val game: GameView) : Thread() , java.io.Serializable {
 
-    private val view: SurfaceView
-    private val game: GameView
+    private val view: GameSurfaceView = game.surfaceView
     internal var isRunning = false
     private var averageUPS: Double = 0.0
     private var averageFPS: Double = 0.0
-
-    init {
-        this.view = view
-        this.game = game
-    }
 
     fun averageUPS(): Double {
         return averageUPS
@@ -45,32 +39,19 @@ class GameLoop(game: GameView, view: SurfaceView) : Thread() , java.io.Serializa
         var elapsedTime: Long
         var sleepTime: Long
 
-        var canvas: Canvas? = null
         startTime = System.currentTimeMillis()
         //Game loop
         while (isRunning) {
 
-            println("GameLoop: run()")
             try { //Update and render
-                canvas = view.holder.lockCanvas(null)
                 synchronized(view.holder) {
                     game.update()
                     updateCount++
-                    game.draw(canvas)
+                    view.postInvalidate()
+                    frameCount++
                 }
             } catch (e: IllegalArgumentException) {
                 e.printStackTrace()
-            } finally {
-                if (canvas != null) {
-                    try {
-                        view.holder.unlockCanvasAndPost(canvas)
-                        frameCount++
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                } else {
-                    println("GameLoop: canvas is null")
-                }
             }
 
             //Pause to maintain target UPS

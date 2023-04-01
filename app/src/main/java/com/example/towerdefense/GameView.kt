@@ -8,100 +8,54 @@ import android.graphics.Paint
 import android.graphics.drawable.ColorDrawable
 import android.view.*
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.Toast
+import androidx.core.view.get
+import com.example.towerdefense.Physics2d.primitives.Circle
+import com.example.towerdefense.Physics2d.primitives.Collider2D
+import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
+import com.example.towerdefense.gameObjects.DrawableObject
 import com.example.towerdefense.gameObjects.Temporary
+import com.example.towerdefense.utility.Direction2D
 import org.joml.Vector2f
 import java.lang.Integer.max
 
 @SuppressLint("ClickableViewAccessibility")
-class GameView(context: Context) : ViewGroup(context), SurfaceHolder.Callback {
+class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callback {
 
-    private var surfaceView = SurfaceView(context)
+    lateinit var surfaceView: GameSurfaceView
     private lateinit var gameLoop: GameLoop
+    private var movableObjects = ArrayList<Collider2D>()
 
     init {
         setBackgroundColor(Color.TRANSPARENT)
+        initSurfaceView(context)
+
+        val circle = Circle(100f, Rigidbody2D(Vector2f(100f, 100f)))
+        circle.body.velocity = 10f
+        circle.body.rotation = Direction2D.DOWN.toAngle()
+        movableObjects.add(circle)
+        surfaceView.toDraw.add(DrawableObject(circle))
+    }
+
+    private fun initSurfaceView(context: Context) {
+        surfaceView = GameSurfaceView(context)
         surfaceView.holder.addCallback(this)
-        surfaceView.visibility = View.VISIBLE
+        surfaceView.visibility = VISIBLE
         surfaceView.isFocusableInTouchMode = true
         surfaceView.setBackgroundColor(Color.GREEN)
-        addView(surfaceView)
-
-        @Temporary
-        surfaceView.setOnTouchListener(object : OnTouchListener {
-            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                if (event != null) {
-                    Toast.makeText(context, "Touch", Toast.LENGTH_SHORT).show()
-                }
-                return true
-            }
-        })
+        this.addView(surfaceView)
 
         surfaceView.layoutParams =
             LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
-    }
 
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        // Measure all child views, accounting for padding and margin
-        measureChildren(widthMeasureSpec, heightMeasureSpec)
-        // Compute total width and height of this view group
-        var width = 0
-        var height = 0
-        for (i in 0 until childCount) {
-            val child = getChildAt(i)
-            if (child is SurfaceView) continue
-            val lp = child.layoutParams
-            if (lp is MarginLayoutParams) {
-                width = max(width, child.measuredWidth + lp.leftMargin + lp.rightMargin)
-                height += child.measuredHeight + lp.topMargin + lp.bottomMargin
-            } else {
-                width = max(width, child.measuredWidth)
-                height += child.measuredHeight
-            }
-        }
-        width += paddingLeft + paddingRight
-        height += paddingTop + paddingBottom
-
-        // Use the computed width and height to set the measured dimensions of this view group
-        setMeasuredDimension(
-            resolveSize(width, widthMeasureSpec),
-            resolveSize(height, heightMeasureSpec)
-        )
-    }
-    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        // Layout all child views within this view group, accounting for padding and margin
-        val childLeft = paddingLeft
-        var childTop = paddingTop
-        for (i in 0 until childCount) {
-            val child = getChildAt(i)
-            if (child is SurfaceView) continue
-            val lp = child.layoutParams as LinearLayout.LayoutParams
-            child.layout(
-                childLeft + lp.leftMargin,
-                childTop + lp.topMargin,
-                childLeft + lp.leftMargin + child.measuredWidth,
-                childTop + lp.topMargin + child.measuredHeight
-            )
-            childTop += child.measuredHeight + lp.topMargin + lp.bottomMargin
-        }
-        surfaceView.setBackgroundColor(Color.BLUE)
+        surfaceView.holder.setKeepScreenOn(true)
     }
 
     var cameraPosition = Vector2f(0f, 0f)
     var previousTouchX = 0f
     var previousTouchY = 0f
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        for (i in 0 until childCount) {
-            val child = getChildAt(i)
-            val lp = child.layoutParams as LayoutParams
-            val position = Vector2f(event.x, event.y)
-            if (child is GameObjectView) {
-                if (child.movable) {
-                    return child.onTouchEvent(event, position)
-                }
-            }
-        }
-
         //Check if the child view is clicked
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
@@ -127,7 +81,13 @@ class GameView(context: Context) : ViewGroup(context), SurfaceHolder.Callback {
         return true
     }
 
+
     fun update() {
+        movableObjects.forEach { it.update() }
+    }
+
+    fun isRunning(): Boolean {
+        return ::gameLoop.isInitialized && gameLoop.isRunning
     }
 
     fun stop() {
@@ -138,24 +98,9 @@ class GameView(context: Context) : ViewGroup(context), SurfaceHolder.Callback {
 
     fun start() {
         if (::gameLoop.isInitialized && gameLoop.isRunning) return
-        gameLoop = GameLoop(this, surfaceView)
+        gameLoop = GameLoop(this)
         gameLoop.startLoop()
     }
-
-    var tmpx = 0f
-    var tmpy = 0f
-    override fun draw(canvas: Canvas?) {
-        canvas?.let {
-            super.draw(canvas)
-            val paint = Paint()
-            paint.color = Color.RED
-            canvas.drawRect(tmpx, tmpy, tmpx + 200f, tmpy + 200f, paint)
-            tmpx += 1f
-            tmpy += 1f
-            println("Position: $tmpx, $tmpy")
-        }
-    }
-
 
     override fun surfaceCreated(p0: SurfaceHolder) {
         stop()
@@ -265,3 +210,50 @@ class GameView(context: Context) : ViewGroup(context), SurfaceHolder.Callback {
         }
         return true
     }*/*/
+/*override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+    // Measure all child views, accounting for padding and margin
+    measureChildren(widthMeasureSpec, heightMeasureSpec)
+    // Compute total width and height of this view group
+    var width = 0
+    var height = 0
+    for (i in 0 until childCount) {
+        val child = getChildAt(i)
+        if (child is SurfaceView) continue
+        val lp = child.layoutParams
+        if (lp is MarginLayoutParams) {
+            width = max(width, child.measuredWidth + lp.leftMargin + lp.rightMargin)
+            height += child.measuredHeight + lp.topMargin + lp.bottomMargin
+        } else {
+            width = max(width, child.measuredWidth)
+            height += child.measuredHeight
+        }
+    }
+    width += paddingLeft + paddingRight
+    height += paddingTop + paddingBottom
+
+    // Use the computed width and height to set the measured dimensions of this view group
+    setMeasuredDimension(
+        resolveSize(width, widthMeasureSpec),
+        resolveSize(height, heightMeasureSpec)
+    )
+}*/
+/*
+    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+        // Layout all child views within this view group, accounting for padding and margin
+        val childLeft = paddingLeft
+        var childTop = paddingTop
+        for (i in 0 until childCount) {
+            val child = getChildAt(i)
+            if (child is SurfaceView) continue
+            val lp = child.layoutParams as LinearLayout.LayoutParams
+            child.layout(
+                childLeft + lp.leftMargin,
+                childTop + lp.topMargin,
+                childLeft + lp.leftMargin + child.measuredWidth,
+                childTop + lp.topMargin + child.measuredHeight
+            )
+            childTop += child.measuredHeight + lp.topMargin + lp.bottomMargin
+        }
+        surfaceView.setBackgroundColor(Color.BLUE)
+    }
+*/
