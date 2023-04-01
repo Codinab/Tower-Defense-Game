@@ -15,7 +15,9 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.databinding.ActivityMainBinding
+import org.joml.Vector2f
 
 class MainActivity : AppCompatActivity() {
 
@@ -93,19 +95,22 @@ class MainActivity : AppCompatActivity() {
         val gameView = GameView(this)
         setContentView(gameView)
 
-        gameView.setOnTouchListener { v, event ->
-            Toast.makeText(this@MainActivity, "SurfaceView touched", Toast.LENGTH_SHORT).show()
-            true
-        }
-
         val layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
 
+       /* val gameObjectView = GameObjectView(this, gameView, Collider2D())
+        gameObjectView.setOnClickListener {
+            if(gameView.isRunning()) gameView.stop() else gameView.start()
+        }
+        gameView.addView(gameObjectView)*/
+
         val button = Button(this)
         button.text = "Stop"
         button.layoutParams = layoutParams
+        button.x = button.x + 300
+        button.setPadding(10, 10, 10, 10)
         button.setOnClickListener {
             gameView.stop()
         }
@@ -114,6 +119,7 @@ class MainActivity : AppCompatActivity() {
         val button2 = Button(this)
         button2.text = "Start"
         button2.layoutParams = layoutParams
+        button2.setPadding(10, 10, 10, 10)
         button2.setOnClickListener {
             gameView.start()
         }

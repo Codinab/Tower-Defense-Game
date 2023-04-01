@@ -15,14 +15,13 @@ import com.example.towerdefense.utility.Interfaces.Stateful
 import org.joml.Vector2f
 import java.util.concurrent.atomic.AtomicBoolean
 
-abstract class Defense(override var collider2D: Collider2D, private val game: Game) : DrawableObject(collider2D, game), InputEvent,
+class Defense(collider2D: Collider2D, private val game: Game) : DrawableObject(collider2D), InputEvent,
     Stateful, Positionable {
 
 
     override var movable = AtomicBoolean(false)
     override var fixable = AtomicBoolean(false)
-
-
+    override var layerLevel: Int = 0
     override var lastClickTime: Long = 0L
 
     override fun onTouchEvent(event: MotionEvent, position: Vector2f): Boolean {

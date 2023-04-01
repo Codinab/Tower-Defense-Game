@@ -14,7 +14,6 @@ public class Rigidbody2D  {
 
     public Rigidbody2D(float rotation, float rotationVelocity, Vector2f position, float velocity) {
         rawTransform = new Transform(position);
-        collider = new Collider2D();
         this.rotation = rotation;
         this.velocity = velocity;
         this.angularVelocity = rotationVelocity;
@@ -22,38 +21,32 @@ public class Rigidbody2D  {
 
     public Rigidbody2D(float rotation, Vector2f position, float velocity) {
         rawTransform = new Transform(position);
-        collider = new Collider2D();
         this.rotation = rotation;
         this.velocity = velocity;
     }
 
     public Rigidbody2D(float rotation, float rotationVelocity, Vector2f position) {
         rawTransform = new Transform(position);
-        collider = new Collider2D();
         this.rotation = rotation;
         this.angularVelocity = rotationVelocity;
     }
 
     public Rigidbody2D(float rotation, Vector2f position) {
         rawTransform = new Transform(position);
-        collider = new Collider2D();
         this.rotation = rotation;
         velocity = 0f;
     }
 
     public Rigidbody2D(Vector2f position) {
         rawTransform = new Transform(position);
-        collider = new Collider2D();
         velocity = 0f;
     }
 
     public Rigidbody2D() {
         rawTransform = new Transform();
-        collider = new Collider2D();
         velocity = 0f;
     }
     private Transform rawTransform;
-    private Collider2D collider;
     private float rotation = 0.0f;
 
     private Float velocity;
@@ -93,13 +86,9 @@ public class Rigidbody2D  {
         this.rawTransform = rawTransform;
     }
 
-    public Collider2D getCollider() {
-        return collider;
-    }
 
-    public void setCollider(Collider2D collider) {
-        this.collider = collider;
-    }
+
+
 
     public float getCor() {
         return cor;
@@ -130,7 +119,6 @@ public class Rigidbody2D  {
     public void setAngularVelocity(float angularVelocity) {
         this.angularVelocity = angularVelocity;
     }
-
     public void update() {
         positionUpdate();
         rotationUpdate();
@@ -149,7 +137,6 @@ public class Rigidbody2D  {
     public String toString() {
         return "Rigidbody2D{" +
                 "rawTransform=" + rawTransform +
-                ", collider=" + collider +
                 ", rotation=" + rotation +
                 ", velocity=" + velocity +
                 ", angularVelocity=" + angularVelocity +
