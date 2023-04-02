@@ -7,10 +7,10 @@ import org.joml.Vector2f
 import org.joml.Vector2i
 import java.io.Serializable
 
-class Road(private var startVector: Vector2i, multiVector: MultiVector) : Serializable {
+class Road(val startVector: Vector2i, multiVector: MultiVector) : Serializable {
 
-    private val roadHeight: Int = 10
-    private val roadWidth: Int = 10
+    private val roadHeight: Int = 100
+    private val roadWidth: Int = 100
     private val roadPaint: Paint = Paint()
     private var roadDirections: ArrayList<Pair<Vector2i, Direction2D>> = ArrayList()
     private var roadCorners : ArrayList<Pair<Vector2i, Direction2D>> = ArrayList()
@@ -18,6 +18,7 @@ class Road(private var startVector: Vector2i, multiVector: MultiVector) : Serial
 
     init {
         if (!roadFormat(multiVector)) throw IncorrectFormatException
+
 
         multiVector.positions.remove(startVector)
         val positions = multiVector.positions
@@ -45,6 +46,7 @@ class Road(private var startVector: Vector2i, multiVector: MultiVector) : Serial
         roadPaint.strokeWidth = 10f
         roadPaint.color = android.graphics.Color.RED
 
+        roadCorners.add(roadDirections.first())
         for (i in 0 until roadDirections.size - 1) {
             if (roadDirections[i].second != roadDirections[i + 1].second) {
                 roadCorners.add(roadDirections[i + 1])
@@ -52,27 +54,39 @@ class Road(private var startVector: Vector2i, multiVector: MultiVector) : Serial
         }
 
         roadCorners.forEach { println(it.first) }
-
     }
 
     fun getRoadDirection(position: Vector2i): Direction2D {
         return roadDirections.first { it.first == position }.second
     }
+    fun getRoadDirection(position: Vector2f): Direction2D {
+        val positionInt = position.toVector2i()
+        return roadDirections.first { it.first == positionInt }.second
+    }
+
+    fun getRoadCorners(): ArrayList<Pair<Vector2i, Direction2D>> {
+        return roadCorners
+    }
 
 
-    fun getAllDirections(): List<Direction2D> {
-        return roadDirections.map { it.second }
+    fun getAllDirections(): ArrayList<Pair<Vector2i, Direction2D>> {
+        return roadDirections
+    }
+
+    fun getFirstDirection(): Direction2D {
+        return roadDirections.first().second
     }
 
     //Returns the next position in the road that changes direction
     fun getNextCorner(position: Vector2f?): Vector2f {
         if (position == null) return roadCorners.first().first.toVector2f()
+        position.div(roadWidth.toFloat(), roadHeight.toFloat())
         for (i in 0 until roadCorners.size - 1) {
             if (roadCorners[i].first.toVector2f() == position) {
-                return roadCorners[i + 1].first.toVector2f()
+                return roadCorners[i + 1].first.toVector2f().mul(roadWidth.toFloat(), roadHeight.toFloat())
             }
         }
-        return roadCorners.last().first.toVector2f()
+        return roadCorners.last().first.toVector2f().mul(roadWidth.toFloat(), roadHeight.toFloat())
     }
 
     fun getStart(): Vector2i = roadDirections.first().first

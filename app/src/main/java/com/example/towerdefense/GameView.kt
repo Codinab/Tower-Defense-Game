@@ -2,40 +2,57 @@ package com.example.towerdefense
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.drawable.ColorDrawable
 import android.view.*
-import android.widget.LinearLayout
+import android.widget.Button
 import android.widget.RelativeLayout
-import android.widget.Toast
-import androidx.core.view.get
 import com.example.towerdefense.Physics2d.primitives.Circle
-import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
-import com.example.towerdefense.gameObjects.DrawableObject
-import com.example.towerdefense.gameObjects.Temporary
+import com.example.towerdefense.gameObjects.GameObject
 import com.example.towerdefense.utility.Direction2D
+import com.example.towerdefense.utility.Temporary
 import org.joml.Vector2f
-import java.lang.Integer.max
 
 @SuppressLint("ClickableViewAccessibility")
 class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callback {
 
     lateinit var surfaceView: GameSurfaceView
     private lateinit var gameLoop: GameLoop
-    private var movableObjects = ArrayList<Collider2D>()
 
     init {
+        //change to horizontal view
         setBackgroundColor(Color.TRANSPARENT)
         initSurfaceView(context)
 
-        val circle = Circle(100f, Rigidbody2D(Vector2f(100f, 100f)))
-        circle.body.velocity = 10f
-        circle.body.rotation = Direction2D.DOWN.toAngle()
-        movableObjects.add(circle)
-        surfaceView.toDraw.add(DrawableObject(circle))
+        val button = Button(context).apply {
+            id = View.generateViewId()
+            text = "Sell"
+            alpha = 0.8f
+            val layoutParams = LayoutParams(
+                LayoutParams.WRAP_CONTENT,
+                LayoutParams.WRAP_CONTENT
+            )
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_START)
+            layoutParams.marginStart = 0
+            this.layoutParams = layoutParams
+            addView(this)
+        }
+
+        val button2 = Button(context).apply {
+            id = View.generateViewId()
+            text = "Upgrade"
+            alpha = 0.8f
+            val layoutParams = LayoutParams(
+                LayoutParams.WRAP_CONTENT,
+                LayoutParams.WRAP_CONTENT
+            )
+            layoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, button.id)
+            layoutParams.addRule(RelativeLayout.END_OF, button.id)
+            layoutParams.marginStart = 16
+            this.layoutParams = layoutParams
+            addView(this)
+        }
     }
 
     private fun initSurfaceView(context: Context) {
@@ -43,7 +60,7 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
         surfaceView.holder.addCallback(this)
         surfaceView.visibility = VISIBLE
         surfaceView.isFocusableInTouchMode = true
-        surfaceView.setBackgroundColor(Color.GREEN)
+        surfaceView.setBackgroundColor(Color.WHITE)
         this.addView(surfaceView)
 
         surfaceView.layoutParams =
@@ -52,38 +69,8 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
         surfaceView.holder.setKeepScreenOn(true)
     }
 
-    var cameraPosition = Vector2f(0f, 0f)
-    var previousTouchX = 0f
-    var previousTouchY = 0f
-    override fun onTouchEvent(event: MotionEvent): Boolean {
-        //Check if the child view is clicked
-        when (event.action) {
-            MotionEvent.ACTION_DOWN -> {
-                previousTouchX = event.x
-                previousTouchY = event.y
-                println("ACTION_DOWN")
-            }
-            MotionEvent.ACTION_MOVE -> {
-                val x = event.x
-                val y = event.y
-                val dx = x - previousTouchX
-                val dy = y - previousTouchY
-                cameraPosition.x -= dx
-                cameraPosition.y -= dy
-                previousTouchX = x
-                previousTouchY = y
-                println("ACTION_MOVE")
-            }
-            MotionEvent.ACTION_UP -> {
-                println("ACTION_UP")
-            }
-        }
-        return true
-    }
-
-
     fun update() {
-        movableObjects.forEach { it.update() }
+        surfaceView.update()
     }
 
     fun isRunning(): Boolean {
@@ -92,7 +79,8 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
 
     fun stop() {
         if (!::gameLoop.isInitialized) return
-        gameLoop.setRunning(false)
+        if (!gameLoop.isRunning) return
+        gameLoop.stopLoop()
         gameLoop.join()
     }
 
@@ -100,6 +88,20 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
         if (::gameLoop.isInitialized && gameLoop.isRunning) return
         gameLoop = GameLoop(this)
         gameLoop.startLoop()
+        surfaceView.gameLoop = gameLoop
+        println("GameLoop started")
+    }
+
+    fun gamePause() {
+        if (!::gameLoop.isInitialized) return
+        if (!gameLoop.isRunning) return
+        surfaceView.gamePause()
+    }
+
+    fun gameResume() {
+        if (!::gameLoop.isInitialized) return
+        if (!gameLoop.isRunning) return
+        surfaceView.gameResume()
     }
 
     override fun surfaceCreated(p0: SurfaceHolder) {

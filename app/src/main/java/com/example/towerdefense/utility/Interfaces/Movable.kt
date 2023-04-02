@@ -12,4 +12,5 @@ interface Movable {
     fun setRotation(rotation: Float)
     fun getRotation(): Float
     fun addRotation(rotation: Float)
+    fun update()
 }

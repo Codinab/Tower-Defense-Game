@@ -3,6 +3,7 @@ package com.example.towerdefense
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -15,6 +16,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import com.example.towerdefense.Physics2d.primitives.Circle
 import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.databinding.ActivityMainBinding
 import org.joml.Vector2f
@@ -29,8 +31,16 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        //Set orientation to landscape
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+
+        //Hide title bar
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
+
+        //Hide action bar
         supportActionBar?.hide()
+
+        //New fullscreen method only for android 11
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
         saveWindowSizes()
@@ -95,35 +105,18 @@ class MainActivity : AppCompatActivity() {
         val gameView = GameView(this)
         setContentView(gameView)
 
-        val layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-
-       /* val gameObjectView = GameObjectView(this, gameView, Collider2D())
+        val gameObjectView = GameObjectView(this, gameView, Circle(1f, Vector2f(screenWidth!!.toFloat() -100f, 100f)))
+        var bool = true
         gameObjectView.setOnClickListener {
-            if(gameView.isRunning()) gameView.stop() else gameView.start()
+            if (bool) {
+                if (!gameView.isRunning()) gameView.start()
+                gameView.gamePause()
+            } else {
+                gameView.gameResume()
+            }
+            bool = !bool
         }
-        gameView.addView(gameObjectView)*/
-
-        val button = Button(this)
-        button.text = "Stop"
-        button.layoutParams = layoutParams
-        button.x = button.x + 300
-        button.setPadding(10, 10, 10, 10)
-        button.setOnClickListener {
-            gameView.stop()
-        }
-        gameView.addView(button)
-
-        val button2 = Button(this)
-        button2.text = "Start"
-        button2.layoutParams = layoutParams
-        button2.setPadding(10, 10, 10, 10)
-        button2.setOnClickListener {
-            gameView.start()
-        }
-        gameView.addView(button2)
+        gameView.addView(gameObjectView)
 
     }
 

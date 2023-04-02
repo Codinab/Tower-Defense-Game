@@ -23,6 +23,7 @@ class GameLoop(private val game: GameView) : Thread() , java.io.Serializable {
 
     fun startLoop() {
         isRunning = true
+        view.isRunning = true
         start()
     }
 
@@ -85,8 +86,9 @@ class GameLoop(private val game: GameView) : Thread() , java.io.Serializable {
         }
     }
 
-    fun setRunning(b: Boolean) {
-        isRunning = b
+    fun stopLoop() {
+        isRunning = false
+        view.isRunning = false
     }
 
     companion object {

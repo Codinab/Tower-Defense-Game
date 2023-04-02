@@ -15,13 +15,14 @@ import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import org.joml.Vector2f
 
-class GameObjectView(context: Context, viewGroup: ViewGroup, var collider2D: Collider2D) : androidx.appcompat.widget.AppCompatButton(context) {
+class GameObjectView(context: Context, viewGroup: ViewGroup, var collider2D: Collider2D) : View(context) {
 
     var lastClickTime: Long = 0
     var movable: Boolean = true
     var fixable: Boolean = true
     init {
         layoutParams = ViewGroup.LayoutParams(200, 200)
+        setPosition(collider2D.body.position)
         setBackgroundColor(Color.TRANSPARENT)
     }
 

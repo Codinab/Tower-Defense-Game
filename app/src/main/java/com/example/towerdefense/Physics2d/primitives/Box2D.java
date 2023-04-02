@@ -17,18 +17,18 @@ public class Box2D extends Collider2D {
     public Box2D(Vector2f min, Vector2f max) {
         this.size = new Vector2f(max).sub(min);
         this.halfSize =  new Vector2f(size).mul(0.5f);
-        body = new Rigidbody2D();
+        body = new Rigidbody2D(new Vector2f(min).add(this.halfSize));
     }
-    public Box2D(Vector2f size, Vector2f halfSize, Rigidbody2D rigidbody) {
+    public Box2D(Vector2f size, Vector2f halfSize, Rigidbody2D body) {
         this.size = size;
         this.halfSize = halfSize;
-        this.body = rigidbody;
+        this.body = body;
     }
 
-    public Box2D(Vector2f size, Rigidbody2D rigidbody) {
+    public Box2D(Vector2f size, Rigidbody2D body) {
         this.size = size;
         this.halfSize =  new Vector2f(size).mul(0.5f);
-        this.body = rigidbody;
+        this.body = body;
     }
 
     public Vector2f getLocalMin(){
@@ -84,5 +84,11 @@ public class Box2D extends Collider2D {
         this.halfSize.set(this.size).mul(0.5f);
     }
 
-
+    @Override
+    public String toString() {
+        return "Box2D{" +
+                "size=" + size +
+                ", body=" + body.getPosition() +
+                '}';
+    }
 }

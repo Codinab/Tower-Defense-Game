@@ -9,11 +9,14 @@ public class Circle extends Collider2D {
         this.radius = radius;
         this.body = center;
     }
+    public Circle(float radius, Vector2f center) {
+        this.radius = radius;
+        this.body = new Rigidbody2D(center);
+    }
 
     public float getRadius() {
         return this.radius;
     }
-
 
     public Vector2f getCenter() {
         return this.body.getPosition();

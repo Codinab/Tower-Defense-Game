@@ -106,13 +106,6 @@ public class Rigidbody2D  {
         this.velocity = velocity;
     }
 
-    public void addVelocity(Float velocity) {
-        this.velocity += velocity;
-    }
-
-    public void addAngularVelocity(float angularVelocity) {
-        this.angularVelocity += angularVelocity;
-    }
     public float getAngularVelocity() {
         return angularVelocity;
     }
