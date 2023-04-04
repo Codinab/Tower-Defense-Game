@@ -26,14 +26,14 @@ class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collide
     private var positionTo : Vector2f
     private var health : Int = 100
     private var toDelete : Boolean = false
-    var paused : Boolean = true
+    var paused : Boolean = false
 
 
     init {
         movable.set(false)
         fixable.set(false)
         positionFrom = road.startVector.toVector2f()
-        setPosition(positionFrom)
+        position(positionFrom)
         setVelocity(3f)
         positionTo = road.getNextCorner(positionFrom)
         setRotation(road.getFirstDirection().toAngle())
@@ -58,7 +58,7 @@ class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collide
     override fun update() {
         if (paused) return
         super.update()
-        if (positionTo.distanceSquared(getPosition()) < getVelocity())
+        if (positionTo.distanceSquared(position()) < getVelocity())
         {
             println(road.getAllDirections())
             positionFrom = positionTo
@@ -80,7 +80,7 @@ class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collide
     }
 
     override fun toString(): String {
-        return "Enemy(position=${getPosition()}, velocity=${getVelocity()}, rotation=${getRotation()})"
+        return "Enemy(position=${position()}, velocity=${getVelocity()}, rotation=${getRotation()})"
     }
 
 

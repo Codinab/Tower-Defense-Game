@@ -3,8 +3,10 @@ import android.view.MotionEvent
 import com.example.towerdefense.gameObjects.Enemy
 import com.example.towerdefense.gameObjects.GameObject
 import org.joml.Vector2f
+import java.util.Vector
+import java.util.concurrent.CopyOnWriteArrayList
 
-class GameObjectList(private val gameObjects: MutableList<GameObject> = mutableListOf()) :
+class GameObjectList(private val gameObjects : CopyOnWriteArrayList<GameObject> = CopyOnWriteArrayList()) :
     MutableList<GameObject> by gameObjects {
     fun update() : ArrayList<Enemy>{
         val enemies = ArrayList<Enemy>()
@@ -18,6 +20,14 @@ class GameObjectList(private val gameObjects: MutableList<GameObject> = mutableL
         return enemies
     }
 
+
+    override fun add(gameObject: GameObject): Boolean {
+        return gameObjects.add(gameObject)
+    }
+
+    override fun remove(gameObject: GameObject): Boolean {
+        return gameObjects.remove(gameObject)
+    }
     fun draw(canvas: Canvas) {
         gameObjects.forEach { it.draw(canvas) }
     }

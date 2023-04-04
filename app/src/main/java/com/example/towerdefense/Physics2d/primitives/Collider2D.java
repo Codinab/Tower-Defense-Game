@@ -40,4 +40,15 @@ public class Collider2D {
             );
         }
     }
+
+    public Vector2f layoutSize() {
+        if (this instanceof Circle) {
+            Circle circle = (Circle) this;
+            return new Vector2f(circle.getRadius() * 2, circle.getRadius() * 2);
+        } else if (this instanceof Box2D) {
+            Box2D box = (Box2D) this;
+            return new Vector2f(box.getSize());
+        }
+        return new Vector2f();
+    }
 }

@@ -23,23 +23,26 @@ open class GameObject(private var collider2D: Collider2D) : InputEvent, Movable,
     }
 
     override fun onTouchEvent(event: MotionEvent, position: Vector2f): Boolean {
-        when (event.action) {
+        return when (event.action) {
             MotionEvent.ACTION_DOWN -> handleDownEvent(event, position)
             MotionEvent.ACTION_MOVE -> handleMoveEvent(event, position)
             MotionEvent.ACTION_UP -> handleUpEvent(event, position)
+            else -> false
+        }
+    }
+
+    open fun handleUpEvent(event: MotionEvent, position: Vector2f) : Boolean {
+        if (fixable.get()) {
+            fixable.set(false)
+            movable.set(false)
+            return true
         }
         return false
     }
 
-    open fun handleUpEvent(event: MotionEvent, position: Vector2f) : Boolean {
-        fixable.set(false)
-        movable.set(false)
-        return true
-    }
-
     private fun handleMoveEvent(event: MotionEvent, position: Vector2f) : Boolean  {
         if (movable.get()) {
-            setPosition(position)
+            position(position)
             return true
         }
         return false
@@ -47,7 +50,7 @@ open class GameObject(private var collider2D: Collider2D) : InputEvent, Movable,
 
     private fun handleDownEvent(event: MotionEvent, position: Vector2f) : Boolean {
         if (movable.get()) {
-            setPosition(position)
+            position(position)
             return true
         } else if (isClicked(position)) {
             clicked = !clicked
@@ -102,11 +105,11 @@ open class GameObject(private var collider2D: Collider2D) : InputEvent, Movable,
         collider2D.update()
     }
 
-    override fun setPosition(position: Vector2f) {
+    override fun position(position: Vector2f) {
         collider2D.body.position = position
     }
 
-    override fun getPosition(): Vector2f {
+    override fun position(): Vector2f {
         return collider2D.body.position
     }
 
@@ -119,7 +122,7 @@ open class GameObject(private var collider2D: Collider2D) : InputEvent, Movable,
     override var layerLevel: Int = 0
 
     override fun toString(): String {
-        return "GameObject(position=${getPosition()}, velocity=${getVelocity()}, rotation=${getRotation()})"
+        return "GameObject(position=${position()}, velocity=${getVelocity()}, rotation=${getRotation()})"
     }
 
     override fun equals(other: Any?): Boolean {

@@ -268,4 +268,21 @@ public class IntersectionDetector2D {
         }
         return false;
     }
+
+    public static boolean intersection(@NotNull Collider2D collider2D, @NotNull Collider2D collider2D1) {
+        if (collider2D instanceof Box2D) {
+            if (collider2D1 instanceof Box2D) {
+                return intersection((Box2D) collider2D, (Box2D) collider2D1);
+            } else if (collider2D1 instanceof Circle) {
+                return intersection((Box2D) collider2D, (Circle) collider2D1);
+            }
+        } else if (collider2D instanceof Circle) {
+            if (collider2D1 instanceof Box2D) {
+                return intersection((Circle) collider2D, (Box2D) collider2D1);
+            } else if (collider2D1 instanceof Circle) {
+                return intersection((Circle) collider2D, (Circle) collider2D1);
+            }
+        }
+        return false;
+    }
 }

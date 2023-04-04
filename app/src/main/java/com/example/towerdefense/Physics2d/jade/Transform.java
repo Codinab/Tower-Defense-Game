@@ -17,17 +17,9 @@ public class Transform {
         init(position, new Vector2f());
     }
 
-    public Transform(Vector2f position, Vector2f scale) {
-        init(position, scale);
-    }
-
     public void init(Vector2f position, Vector2f scale) {
         this.position = position;
         this.scale = scale;
-    }
-
-    public Transform copy() {
-        return new Transform(new Vector2f(position), new Vector2f(scale));
     }
 
     public void paste(Transform to) {

@@ -5,35 +5,36 @@ import android.view.MotionEvent
 import org.joml.Vector2f
 
 class Camera {
-    private var cameraPosition = Vector2f(0f, 0f)
-    var previousTouchX = 0f
-    var previousTouchY = 0f
-    var moving = false
+    private var position = Vector2f(0f, 0f)
+    private var previousTouchX = 0f
+    private var previousTouchY = 0f
+    internal var moving = false
 
     fun cameraPosition(): Vector2f {
-        return cameraPosition
+        return position
     }
 
     fun x(): Float {
-        return cameraPosition.x
+        return position.x
     }
     fun y(): Float {
-        return cameraPosition.y
+        return position.y
     }
 
     fun updateCanvas(canvas: Canvas) {
-        canvas.translate(-cameraPosition.x, -cameraPosition.y)
+        canvas.translate(-position.x, -position.y)
     }
 
     fun update(event: MotionEvent) {
-        cameraPosition.x -= event.x - previousTouchX
-        cameraPosition.y -= event.y - previousTouchY
+        position.x -= event.x - previousTouchX
+        position.y -= event.y - previousTouchY
         previousTouchX = event.x
         previousTouchY = event.y
+        com.example.towerdefense.utility.cameraPosition = position
     }
 
     fun adjustedPosition(event: MotionEvent): Vector2f {
-        return Vector2f(event.x + cameraPosition.x, event.y + cameraPosition.y)
+        return Vector2f(event.x + position.x, event.y + position.y)
     }
 
     fun touch(event: MotionEvent) {

@@ -6,12 +6,7 @@ import android.graphics.Color
 import android.view.*
 import android.widget.Button
 import android.widget.RelativeLayout
-import com.example.towerdefense.Physics2d.primitives.Circle
-import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
-import com.example.towerdefense.gameObjects.GameObject
-import com.example.towerdefense.utility.Direction2D
-import com.example.towerdefense.utility.Temporary
-import org.joml.Vector2f
+import com.example.towerdefense.utility.TimeController
 
 @SuppressLint("ClickableViewAccessibility")
 class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callback {
@@ -52,11 +47,16 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
             layoutParams.marginStart = 16
             this.layoutParams = layoutParams
             addView(this)
+            setOnClickListener(object : OnClickListener {
+                override fun onClick(v: View?) {
+                    start()
+                }
+            })
         }
     }
 
     private fun initSurfaceView(context: Context) {
-        surfaceView = GameSurfaceView(context)
+        surfaceView = GameSurfaceView(context, this)
         surfaceView.holder.addCallback(this)
         surfaceView.visibility = VISIBLE
         surfaceView.isFocusableInTouchMode = true
@@ -82,6 +82,7 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
         if (!gameLoop.isRunning) return
         gameLoop.stopLoop()
         gameLoop.join()
+        surfaceView.gameLoop = gameLoop
     }
 
     fun start() {
@@ -95,12 +96,14 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
     fun gamePause() {
         if (!::gameLoop.isInitialized) return
         if (!gameLoop.isRunning) return
+        TimeController.pause()
         surfaceView.gamePause()
     }
 
     fun gameResume() {
         if (!::gameLoop.isInitialized) return
         if (!gameLoop.isRunning) return
+        TimeController.resume()
         surfaceView.gameResume()
     }
 

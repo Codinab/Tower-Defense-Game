@@ -16,15 +16,19 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.primitives.Circle
 import com.example.towerdefense.Physics2d.primitives.Collider2D
+import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.databinding.ActivityMainBinding
+import com.example.towerdefense.gameObjects.TowerSpawner
+import com.example.towerdefense.utility.lastPauseTime
+import com.example.towerdefense.utility.lastResumeTime
+import com.example.towerdefense.utility.screenSize
 import org.joml.Vector2f
+import org.joml.Vector2i
 
 class MainActivity : AppCompatActivity() {
-
-    var screenHeight : Int? = null
-    var screenWidth : Int? = null
 
     lateinit var startForResult : ActivityResultLauncher<Intent>
     @RequiresApi(Build.VERSION_CODES.R)
@@ -65,8 +69,7 @@ class MainActivity : AppCompatActivity() {
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
 
-        screenHeight = displayMetrics.heightPixels
-        screenWidth = displayMetrics.widthPixels
+        screenSize = Vector2i(displayMetrics.widthPixels, displayMetrics.heightPixels)
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
@@ -101,18 +104,23 @@ class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.R)
     fun createGame() {
 
-
         val gameView = GameView(this)
         setContentView(gameView)
 
-        val gameObjectView = GameObjectView(this, gameView, Circle(1f, Vector2f(screenWidth!!.toFloat() -100f, 100f)))
-        var bool = true
+
+        val gameObjectView = GameObjectView(this, gameView, Box2D(Vector2f(200f, 100f), Rigidbody2D(Vector2f(
+            screenSize.x - 200f, 0f))))
+        var bool = false
+        gameObjectView.text = "Start"
+        gameObjectView.textSize = 50f
+
         gameObjectView.setOnClickListener {
             if (bool) {
-                if (!gameView.isRunning()) gameView.start()
                 gameView.gamePause()
+                lastPauseTime = System.currentTimeMillis()
             } else {
                 gameView.gameResume()
+                lastResumeTime = System.currentTimeMillis()
             }
             bool = !bool
         }

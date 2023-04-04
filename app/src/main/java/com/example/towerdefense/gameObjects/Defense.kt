@@ -1,10 +1,5 @@
 package com.example.towerdefense.gameObjects
 
-import android.graphics.Canvas
-import android.graphics.ColorFilter
-import android.graphics.Paint
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.view.MotionEvent
 import com.example.towerdefense.Game
 import com.example.towerdefense.Physics2d.primitives.Collider2D
@@ -43,11 +38,11 @@ class Defense(collider2D: Collider2D, private val game: Game) : DrawableObject(c
     }
 
     private fun handleMoveEvent(event: MotionEvent, position: Vector2f) {
-        if (movable.get()) setPosition(position)
+        if (movable.get()) position(position)
     }
 
     private fun handleDownEvent(event: MotionEvent, position: Vector2f) {
-        if (movable.get()) setPosition(position)
+        if (movable.get()) position(position)
         else if (isClicked(position)) {
             val currentTime = System.currentTimeMillis()
             if (currentTime - lastClickTime < 300) {
@@ -62,11 +57,11 @@ class Defense(collider2D: Collider2D, private val game: Game) : DrawableObject(c
         return IntersectionDetector2D.intersection(position, collider2D)
     }
 
-    override fun setPosition(position: Vector2f) {
+    override fun position(position: Vector2f) {
         collider2D.body.position = position
     }
 
-    override fun getPosition(): Vector2f {
+    override fun position(): Vector2f {
         return collider2D.body.position
     }
 

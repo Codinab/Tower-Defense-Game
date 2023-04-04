@@ -26,6 +26,10 @@ public class JMath {
         return new Vector2f(x, y);
     }
 
+    public static float vectorToAngle(Vector2f vec) {
+        return (float) Math.toDegrees(Math.atan2(vec.y, vec.x));
+    }
+
     public static boolean compare(float a, float b, float epsilon) {
         return Math.abs(a - b) <= epsilon * Math.max(Math.abs(a), Math.abs(b));
     }
