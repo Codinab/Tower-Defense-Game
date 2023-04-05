@@ -4,6 +4,7 @@ import GameObjectList
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.view.MotionEvent
 import android.view.SurfaceHolder
@@ -31,11 +32,11 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
 
     init {
 
-        println("GameSurfaceView init")
         val multiVector = MultiVector(Vector2i(0, 0))
-        multiVector.addLine(Vector2i(0, 0), Direction2D.DOWN, 10)
-        multiVector.addLine(Vector2i(0, 10), Direction2D.RIGHT, 10)
-        multiVector.addLine(Vector2i(10, 10), Direction2D.UP, 10)
+        multiVector.addLine(Direction2D.RIGHT, 10)
+        multiVector.addLine(Direction2D.DOWN, 10)
+        multiVector.addLine(Direction2D.RIGHT, 2)
+        multiVector.addLine(Direction2D.UP, 10)
         road = Road(Vector2i(0, 0), multiVector)
 
 
@@ -56,8 +57,8 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         if (fps) drawUPS(canvas)
         if (fps) drawFPS(canvas)
         drawMoney(canvas)
-
-
+        drawGameHealth(canvas)
+        drawGameTime(canvas)
     }
 
     val camera = Camera()
@@ -110,7 +111,7 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
                     Rigidbody2D(Vector2f(screenSize.x.toFloat() - 100f, 100f))
                 ), this, context, gameView
             )
-
+        towerSpawner.damageType = TowerArea.DamageType.LEAST_HEALTHY
         addTowerSpawner(towerSpawner)
 
         val towerSpawner2 =
@@ -120,7 +121,7 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
                     Rigidbody2D(Vector2f(screenSize.x.toFloat() - 100f, 210f))
                 ), this, context, gameView
             )
-        towerSpawner2.towerDPS = 20
+        towerSpawner2.towerDPS = 2
         addTowerSpawner(towerSpawner2)
 
         val towerSpawner3 =
@@ -130,7 +131,7 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
                     Rigidbody2D(Vector2f(screenSize.x.toFloat() - 100f, 320f))
                 ), this, context, gameView
             )
-        towerSpawner3.towerDPS = 30
+        towerSpawner3.towerDPS = 3
         addTowerSpawner(towerSpawner3)
 
         val towerSpawner4 =
@@ -140,7 +141,7 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
                     Rigidbody2D(Vector2f(screenSize.x.toFloat() - 100f, 430f))
                 ), this, context, gameView
             )
-        towerSpawner4.towerDPS = 40
+        towerSpawner4.towerDPS = 4
         addTowerSpawner(towerSpawner4)
 
         val towerSpawner5 =
@@ -150,7 +151,7 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
                     Rigidbody2D(Vector2f(screenSize.x.toFloat() - 210f, 100f))
                 ), this, context, gameView
             )
-        towerSpawner5.towerDPS = 50
+        towerSpawner5.towerDPS = 5
         addTowerSpawner(towerSpawner5)
 
         val towerSpawner6 =
@@ -160,7 +161,7 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
                     Rigidbody2D(Vector2f(screenSize.x.toFloat() - 210f, 210f))
                 ), this, context, gameView
             )
-        towerSpawner6.towerDPS = 60
+        towerSpawner6.towerDPS = 6
         addTowerSpawner(towerSpawner6)
 
         val towerSpawner7 =
@@ -170,7 +171,7 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
                     Rigidbody2D(Vector2f(screenSize.x.toFloat() - 210f, 320f))
                 ), this, context, gameView
             )
-        towerSpawner7.towerDPS = 70
+        towerSpawner7.towerDPS = 7
         addTowerSpawner(towerSpawner7)
 
         val towerSpawner8 =
@@ -180,7 +181,7 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
                     Rigidbody2D(Vector2f(screenSize.x.toFloat() - 210f, 430f))
                 ), this, context, gameView
             )
-        towerSpawner8.towerDPS = 80
+        towerSpawner8.towerDPS = 8
         addTowerSpawner(towerSpawner8)
     }
 
@@ -216,13 +217,25 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
     }
 
     private var timeLastSpawn = 0L
+    var health = 10
     fun update() {
+        if (gameHealth.get() <= 0) gameEnd()
         updateGameObjects()
         enemyInTowerRange()
+
         if (TimeController.getGameTime() - timeLastSpawn > 1000) {
-            gameObjectList.add(Enemy(Box2D(Vector2f(0f, 0f), Vector2f(100f, 100f)), road))
+            gameObjectList.add(
+                Enemy(Box2D(Vector2f(0f, 0f), Vector2f(100f, 100f)), road).apply {
+                    this.setHealth(health)
+                }
+            )
             timeLastSpawn = TimeController.getGameTime()
+            health = (health * 1.1).toInt()
         }
+    }
+
+    private fun gameEnd() {
+        gameView.gamePause()
     }
 
 
@@ -230,6 +243,7 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         towerSpawners.forEach() { it.update() }
         towers.forEach() { it.update() }
         gameObjectList.update().forEach { towers.forEach { tower -> tower.towerArea.remove(it) } }
+
         movableTowers.forEach { movableTower ->
             if (!movableTower.movable.get()) movableTowers.remove(movableTower)
             var fixable = true
@@ -268,7 +282,7 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         paint.color = color
         paint.textSize = 50f
         canvas?.drawText(
-            "UPS: $averageUPS", 100f + camera.x(), 100f + camera.y(), paint
+            "UPS: $averageUPS", 100f + camera.x(), 300f + camera.y(), paint
         )
     }
 
@@ -285,13 +299,27 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
     }
 
     fun drawMoney(canvas: Canvas?) {
-        val color = ContextCompat.getColor(context, R.color.purple_500)
+        val color = Color.CYAN
         val paint = Paint()
         paint.color = color
         paint.textSize = 50f
         canvas?.drawText(
-            "Money: $money", 100f + camera.x(), 300f + camera.y(), paint
+            "Money: $money", 100f + camera.x(), 100f + camera.y(), paint
         )
+    }
+
+    private fun drawGameTime(canvas: Canvas) {
+        val paint = Paint()
+        paint.color = Color.CYAN
+        paint.textSize = 50f
+        canvas.drawText("Time: ${TimeController.getGameTime().toFloat() / 1000}", camera.x() + 100, camera.y() + 200f, paint)
+    }
+
+    private fun drawGameHealth(canvas: Canvas) {
+        val paint = Paint()
+        paint.color = Color.CYAN
+        paint.textSize = 50f
+        canvas.drawText("Health: $gameHealth", camera.x() + 100f, camera.y() + 300f, paint)
     }
 
     override fun surfaceCreated(p0: SurfaceHolder) {

@@ -5,9 +5,10 @@ import org.joml.Vector2f
 import org.joml.Vector2i
 import java.util.concurrent.atomic.AtomicInteger
 
+var fps = false
+
 var screenSize = Vector2i(0, 0)
 var cameraPosition = Vector2f(0f, 0f)
-var fps = true
 var gameView : GameView? = null
 
 var lastResumeTime = System.currentTimeMillis()
@@ -18,3 +19,4 @@ fun getDeltaTime(): Float {
 }
 
 var money = AtomicInteger(1000)
+var gameHealth = AtomicInteger(10)

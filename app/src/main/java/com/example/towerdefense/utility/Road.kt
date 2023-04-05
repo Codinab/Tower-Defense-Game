@@ -52,8 +52,6 @@ class Road(val startVector: Vector2i, multiVector: MultiVector) : Serializable {
                 roadCorners.add(roadDirections[i + 1])
             }
         }
-
-        roadCorners.forEach { println(it.first) }
     }
 
     fun getRoadDirection(position: Vector2i): Direction2D {

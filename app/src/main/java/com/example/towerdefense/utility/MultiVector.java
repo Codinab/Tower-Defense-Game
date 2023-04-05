@@ -1,6 +1,8 @@
 package com.example.towerdefense.utility;
 
+import org.joml.Vector2f;
 import org.joml.Vector2i;
+import org.joml.Vector2ic;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -19,11 +21,11 @@ public class MultiVector implements Serializable {
     }
     public MultiVector(Vector2i position) {
         this(position, Directions2D.UNDEFINED);
-    }
+        lastAddedPosition = position;    }
     private MultiVector(Vector2i position, Directions2D directions2D) {
         vectorConnections = new HashMap<>();
         vectorConnections.put(position, directions2D);
-    }
+        lastAddedPosition = position;    }
 
     protected boolean addNotSafe(Vector2i position, Directions2D directions2D) {
         vectorConnections.put(position, directions2D);
@@ -33,16 +35,20 @@ public class MultiVector implements Serializable {
         vectorConnections.put(position, Directions2D.UNDEFINED);
         return true;
     }
+
+    private Vector2i lastAddedPosition;
     protected boolean add(Vector2i position, Directions2D directions2D) {
         if(!nexTo(position)) return false;
         vectorConnections.put(position, directions2D);
         update();
+        lastAddedPosition = position;
         return true;
     }
     public Collection<Vector2i> add(Vector2i[] positions) {
         Collection<Vector2i> notAdded = new ArrayList<>();
         for(Vector2i position : positions) {
             if(!add(position)) notAdded.add(position);
+            else lastAddedPosition = position;
         }
         return notAdded;
     }
@@ -50,12 +56,13 @@ public class MultiVector implements Serializable {
         if(!nexTo(position)) return false;
         vectorConnections.put(position, Directions2D.UNDEFINED);
         update();
-        return true;
+        lastAddedPosition = position;        return true;
     }
     public boolean add(MultiVector multiVector) {
         if(!nexTo(multiVector)) return false;
         vectorConnections.putAll(multiVector.vectorConnections);
         update();
+        lastAddedPosition = new Vector2i(multiVector.lastAddedPosition);
         return true;
     }
 
@@ -66,6 +73,21 @@ public class MultiVector implements Serializable {
             if(!add(newPosition)) return false;
         }
         return true;
+    }
+
+    public boolean addLine(Vector2i position, Direction2D direction) {
+        if(!vectorConnections.containsKey(position)) return false;
+        Vector2i newPosition = new Vector2i(position).add(direction.getVector());
+        return add(newPosition);
+    }
+
+    public boolean addLine(Direction2D direction, int length) {
+        if(lastAddedPosition == null) return false;
+        return addLine(lastAddedPosition, direction, length);
+    }
+    public boolean addLine(Direction2D direction) {
+        if(lastAddedPosition == null) return false;
+        return addLine(lastAddedPosition, direction, 1);
     }
 
     public Collection<Vector2i> getPositions() {

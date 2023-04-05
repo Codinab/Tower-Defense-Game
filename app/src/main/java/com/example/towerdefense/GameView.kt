@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.example.towerdefense.utility.TimeController
+import com.example.towerdefense.utility.gameHealth
 import com.example.towerdefense.utility.money
 import org.w3c.dom.Text
 
@@ -100,6 +101,8 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
     fun gameResume() {
         if (!::gameLoop.isInitialized) return
         if (!gameLoop.isRunning) return
+        if (gameHealth.get() <= 0) return
+
         TimeController.resume()
         surfaceView.gameResume()
     }

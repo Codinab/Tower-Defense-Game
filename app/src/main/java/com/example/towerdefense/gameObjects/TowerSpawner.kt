@@ -34,6 +34,7 @@ class TowerSpawner(
     var towerDimensions = Vector2f(100f, 100f)
     var towerDPS = 10
     private var lastTower: Tower? = null
+    var damageType = TowerArea.DamageType.FIRST
     override fun onTouchEvent(event: MotionEvent, position: Vector2f): Boolean {
         if (lastTower != null && lastTower!!.movable.get()) {
             return false
@@ -44,6 +45,7 @@ class TowerSpawner(
                 val tower =
                     Tower(areaRadius, Box2D(towerDimensions, Rigidbody2D(Vector2f(position))))
                 tower.dps = towerDPS
+                tower.setToDamageType(damageType)
                 gameSurfaceView.towers.add(tower)
                 gameSurfaceView.movableTowers.add(tower)
                 lastTower = tower
@@ -58,6 +60,10 @@ class TowerSpawner(
         canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), Paint().apply {
             color = Color.CYAN
         })
+    }
+
+    fun damageType(damageType: TowerArea.DamageType) {
+        this.damageType = damageType
     }
 
 

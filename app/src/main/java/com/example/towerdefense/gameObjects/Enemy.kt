@@ -9,6 +9,7 @@ import com.example.towerdefense.utility.Direction2D
 import com.example.towerdefense.utility.Drawing
 import com.example.towerdefense.utility.Road
 import com.example.towerdefense.utility.Road.Companion.toVector2f
+import com.example.towerdefense.utility.gameHealth
 import org.joml.Vector2f
 
 class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collider2D)
@@ -29,6 +30,7 @@ class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collide
     private var positionFrom : Vector2f
     private var positionTo : Vector2f
     private var health : Int = 100
+    private var maxHealth : Int = 100
     private var toDelete : Boolean = false
     var paused : Boolean = false
 
@@ -66,6 +68,8 @@ class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collide
             val direction = road.getRoadDirection(positionFrom)
             if (direction == Direction2D.UNDEFINED || toDelete) {
                 setVelocity(0f)
+                gameHealth.getAndAdd(-1)
+                toDelete = true
             }
             setRotation(road.getRoadDirection(positionFrom).toAngle())
         }
@@ -79,7 +83,7 @@ class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collide
         val topLeft = position().sub(collider2D().layoutSize().mul(0.5f))
         val topRight = Vector2f(topLeft).add(collider2D().layoutSize().x, 0f)
 
-        Drawing.drawHealthBar(canvas, topLeft, topRight, health, 100)
+        Drawing.drawHealthBar(canvas, topLeft, topRight, health, maxHealth)
     }
 
     override fun onTouchEvent(event: MotionEvent, position: Vector2f): Boolean {
@@ -97,5 +101,10 @@ class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collide
     fun getHealth() : Int
     {
         return health
+    }
+    fun setHealth(health : Int)
+    {
+        this.health = health
+        this.maxHealth = health
     }
 }
