@@ -6,6 +6,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.view.MotionEvent
+import android.view.SurfaceHolder
 import android.view.SurfaceView
 import androidx.core.content.ContextCompat
 import com.example.towerdefense.Physics2d.primitives.Box2D
@@ -17,7 +18,8 @@ import org.joml.Vector2f
 import org.joml.Vector2i
 import java.util.*
 
-class GameSurfaceView(context: Context, private val gameView: GameView) : SurfaceView(context) {
+open class GameSurfaceView(context: Context, private val gameView: GameView) : SurfaceView(context),
+    SurfaceHolder.Callback {
 
     var gameObjectList = GameObjectList()
     var movableTowers = GameObjectList()
@@ -29,13 +31,14 @@ class GameSurfaceView(context: Context, private val gameView: GameView) : Surfac
 
     init {
 
+        println("GameSurfaceView init")
         val multiVector = MultiVector(Vector2i(0, 0))
         multiVector.addLine(Vector2i(0, 0), Direction2D.DOWN, 10)
         multiVector.addLine(Vector2i(0, 10), Direction2D.RIGHT, 10)
         multiVector.addLine(Vector2i(10, 10), Direction2D.UP, 10)
         road = Road(Vector2i(0, 0), multiVector)
-        val enemy = Enemy(Box2D(Vector2f(0f, 0f), Vector2f(100f, 100f)), road)
-        gameObjectList.add(enemy)
+
+
     }
 
     override fun draw(canvas: Canvas?) {
@@ -45,14 +48,16 @@ class GameSurfaceView(context: Context, private val gameView: GameView) : Surfac
         //towerSpawners.forEach { it.draw(canvas) }
 
         camera.updateCanvas(canvas)
+        road.draw(canvas)
 
         gameObjectList.draw(canvas)
         towers.forEach { it.draw(canvas) }
 
-        road.draw(canvas)
-
         if (fps) drawUPS(canvas)
         if (fps) drawFPS(canvas)
+        drawMoney(canvas)
+
+
     }
 
     val camera = Camera()
@@ -97,110 +102,86 @@ class GameSurfaceView(context: Context, private val gameView: GameView) : Surfac
         return true
     }
 
-    @SuppressLint("DrawAllocation")
-    override fun onDraw(canvas: Canvas?) {
-        super.onDraw(canvas)
+    fun initTowerSpawners() {
+        val towerSpawner =
+            TowerSpawner(
+                Box2D(
+                    Vector2f(100f, 100f),
+                    Rigidbody2D(Vector2f(screenSize.x.toFloat() - 100f, 100f))
+                ), this, context, gameView
+            )
 
-        if (!gameView.isRunning()) {
-            gameView.start()
-            gameView.gamePause()
-            val towerSpawner =
-                TowerSpawner(
-                    Box2D(
-                        Vector2f(100f, 100f),
-                        Rigidbody2D(Vector2f(screenSize.x.toFloat() - 100f, 100f))
-                    ), this, context, gameView
-                )
+        addTowerSpawner(towerSpawner)
 
-            addTowerSpawner(towerSpawner)
+        val towerSpawner2 =
+            TowerSpawner(
+                Box2D(
+                    Vector2f(100f, 100f),
+                    Rigidbody2D(Vector2f(screenSize.x.toFloat() - 100f, 210f))
+                ), this, context, gameView
+            )
+        towerSpawner2.towerDPS = 20
+        addTowerSpawner(towerSpawner2)
 
-            val towerSpawner2 =
-                TowerSpawner(
-                    Box2D(
-                        Vector2f(100f, 100f),
-                        Rigidbody2D(Vector2f(screenSize.x.toFloat() - 100f, 210f))
-                    ), this, context, gameView
-                )
-            towerSpawner2.towerDPS = 20
-            addTowerSpawner(towerSpawner2)
+        val towerSpawner3 =
+            TowerSpawner(
+                Box2D(
+                    Vector2f(100f, 100f),
+                    Rigidbody2D(Vector2f(screenSize.x.toFloat() - 100f, 320f))
+                ), this, context, gameView
+            )
+        towerSpawner3.towerDPS = 30
+        addTowerSpawner(towerSpawner3)
 
-            val towerSpawner3 =
-                TowerSpawner(
-                    Box2D(
-                        Vector2f(100f, 100f),
-                        Rigidbody2D(Vector2f(screenSize.x.toFloat() - 100f, 320f))
-                    ), this, context, gameView
-                )
-            towerSpawner3.towerDPS = 30
-            addTowerSpawner(towerSpawner3)
+        val towerSpawner4 =
+            TowerSpawner(
+                Box2D(
+                    Vector2f(100f, 100f),
+                    Rigidbody2D(Vector2f(screenSize.x.toFloat() - 100f, 430f))
+                ), this, context, gameView
+            )
+        towerSpawner4.towerDPS = 40
+        addTowerSpawner(towerSpawner4)
 
-            val towerSpawner4 =
-                TowerSpawner(
-                    Box2D(
-                        Vector2f(100f, 100f),
-                        Rigidbody2D(Vector2f(screenSize.x.toFloat() - 100f, 430f))
-                    ), this, context, gameView
-                )
-            towerSpawner4.towerDPS = 40
-            addTowerSpawner(towerSpawner4)
+        val towerSpawner5 =
+            TowerSpawner(
+                Box2D(
+                    Vector2f(100f, 100f),
+                    Rigidbody2D(Vector2f(screenSize.x.toFloat() - 210f, 100f))
+                ), this, context, gameView
+            )
+        towerSpawner5.towerDPS = 50
+        addTowerSpawner(towerSpawner5)
 
-            val towerSpawner5 =
-                TowerSpawner(
-                    Box2D(
-                        Vector2f(100f, 100f),
-                        Rigidbody2D(Vector2f(screenSize.x.toFloat() - 210f, 100f))
-                    ), this, context, gameView
-                )
-            towerSpawner5.towerDPS = 50
-            addTowerSpawner(towerSpawner5)
+        val towerSpawner6 =
+            TowerSpawner(
+                Box2D(
+                    Vector2f(100f, 100f),
+                    Rigidbody2D(Vector2f(screenSize.x.toFloat() - 210f, 210f))
+                ), this, context, gameView
+            )
+        towerSpawner6.towerDPS = 60
+        addTowerSpawner(towerSpawner6)
 
-            val towerSpawner6 =
-                TowerSpawner(
-                    Box2D(
-                        Vector2f(100f, 100f),
-                        Rigidbody2D(Vector2f(screenSize.x.toFloat() - 210f, 210f))
-                    ), this, context, gameView
-                )
-            towerSpawner6.towerDPS = 60
-            addTowerSpawner(towerSpawner6)
+        val towerSpawner7 =
+            TowerSpawner(
+                Box2D(
+                    Vector2f(100f, 100f),
+                    Rigidbody2D(Vector2f(screenSize.x.toFloat() - 210f, 320f))
+                ), this, context, gameView
+            )
+        towerSpawner7.towerDPS = 70
+        addTowerSpawner(towerSpawner7)
 
-            val towerSpawner7 =
-                TowerSpawner(
-                    Box2D(
-                        Vector2f(100f, 100f),
-                        Rigidbody2D(Vector2f(screenSize.x.toFloat() - 210f, 320f))
-                    ), this, context, gameView
-                )
-            towerSpawner7.towerDPS = 70
-            addTowerSpawner(towerSpawner7)
-
-            val towerSpawner8 =
-                TowerSpawner(
-                    Box2D(
-                        Vector2f(100f, 100f),
-                        Rigidbody2D(Vector2f(screenSize.x.toFloat() - 210f, 430f))
-                    ), this, context, gameView
-                )
-            towerSpawner8.towerDPS = 80
-            addTowerSpawner(towerSpawner8)
-
-            Thread {
-                while (gamePaused()) {
-                    Thread.sleep(100)
-                }
-                while (true) {
-                    if (gamePaused()) {
-                        Thread.sleep(100)
-                        continue
-                    }
-                    Thread.sleep(5000)
-                    val enemy = Enemy(Box2D(Vector2f(0f, 0f), Vector2f(100f, 100f)), road)
-                    gameObjectList.add(enemy)
-                }
-            }.start()
-
-        }
-
+        val towerSpawner8 =
+            TowerSpawner(
+                Box2D(
+                    Vector2f(100f, 100f),
+                    Rigidbody2D(Vector2f(screenSize.x.toFloat() - 210f, 430f))
+                ), this, context, gameView
+            )
+        towerSpawner8.towerDPS = 80
+        addTowerSpawner(towerSpawner8)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -218,9 +199,10 @@ class GameSurfaceView(context: Context, private val gameView: GameView) : Surfac
 
     private var gamePaused: Boolean? = null
     fun gamePaused(): Boolean {
-        if (gamePaused == null) gamePaused = false
+        if (gamePaused == null) gamePaused = true
         return gamePaused!!
     }
+
     fun gamePause() {
         gamePaused = true
         towers.forEach { it.paused = true }
@@ -233,9 +215,14 @@ class GameSurfaceView(context: Context, private val gameView: GameView) : Surfac
         gameObjectList.forEach { if (it is Enemy) it.paused = false }
     }
 
+    private var timeLastSpawn = 0L
     fun update() {
         updateGameObjects()
         enemyInTowerRange()
+        if (TimeController.getGameTime() - timeLastSpawn > 1000) {
+            gameObjectList.add(Enemy(Box2D(Vector2f(0f, 0f), Vector2f(100f, 100f)), road))
+            timeLastSpawn = TimeController.getGameTime()
+        }
     }
 
 
@@ -247,7 +234,6 @@ class GameSurfaceView(context: Context, private val gameView: GameView) : Surfac
             if (!movableTower.movable.get()) movableTowers.remove(movableTower)
             var fixable = true
             towers.forEach { tower ->
-                println("Compare movable: ${movableTower.position()} with ${tower.position()}")
                 if (movableTower != tower) {
                     if (IntersectionDetector2D.intersection(
                             movableTower.collider2D(),
@@ -296,5 +282,25 @@ class GameSurfaceView(context: Context, private val gameView: GameView) : Surfac
         canvas?.drawText(
             "FPS: $averageFPS", 100f + camera.x(), 200f + camera.y(), paint
         )
+    }
+
+    fun drawMoney(canvas: Canvas?) {
+        val color = ContextCompat.getColor(context, R.color.purple_500)
+        val paint = Paint()
+        paint.color = color
+        paint.textSize = 50f
+        canvas?.drawText(
+            "Money: $money", 100f + camera.x(), 300f + camera.y(), paint
+        )
+    }
+
+    override fun surfaceCreated(p0: SurfaceHolder) {
+
+    }
+
+    override fun surfaceChanged(p0: SurfaceHolder, p1: Int, p2: Int, p3: Int) {
+    }
+
+    override fun surfaceDestroyed(p0: SurfaceHolder) {
     }
 }

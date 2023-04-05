@@ -6,7 +6,10 @@ import android.graphics.Color
 import android.view.*
 import android.widget.Button
 import android.widget.RelativeLayout
+import android.widget.TextView
 import com.example.towerdefense.utility.TimeController
+import com.example.towerdefense.utility.money
+import org.w3c.dom.Text
 
 @SuppressLint("ClickableViewAccessibility")
 class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callback {
@@ -19,7 +22,7 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
         setBackgroundColor(Color.TRANSPARENT)
         initSurfaceView(context)
 
-        val button = Button(context).apply {
+        Button(context).apply {
             id = View.generateViewId()
             text = "Sell"
             alpha = 0.8f
@@ -34,7 +37,7 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
             addView(this)
         }
 
-        val button2 = Button(context).apply {
+        Button(context).apply {
             id = View.generateViewId()
             text = "Upgrade"
             alpha = 0.8f
@@ -42,16 +45,11 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
                 LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT
             )
-            layoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, button.id)
-            layoutParams.addRule(RelativeLayout.END_OF, button.id)
+            layoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, this.id)
+            layoutParams.addRule(RelativeLayout.END_OF, this.id)
             layoutParams.marginStart = 16
             this.layoutParams = layoutParams
             addView(this)
-            setOnClickListener(object : OnClickListener {
-                override fun onClick(v: View?) {
-                    start()
-                }
-            })
         }
     }
 
@@ -90,7 +88,6 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
         gameLoop = GameLoop(this)
         gameLoop.startLoop()
         surfaceView.gameLoop = gameLoop
-        println("GameLoop started")
     }
 
     fun gamePause() {
@@ -108,15 +105,17 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
     }
 
     override fun surfaceCreated(p0: SurfaceHolder) {
-        stop()
     }
 
     override fun surfaceChanged(p0: SurfaceHolder, p1: Int, p2: Int, p3: Int) {
-        stop()
+        if (!isRunning()) {
+            start()
+            gamePause()
+        }
+        surfaceView.initTowerSpawners()
     }
 
     override fun surfaceDestroyed(p0: SurfaceHolder) {
-        stop()
     }
 }
 

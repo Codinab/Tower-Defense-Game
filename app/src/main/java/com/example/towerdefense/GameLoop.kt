@@ -29,10 +29,6 @@ class GameLoop(private val game: GameView) : Thread() , java.io.Serializable {
 
     override fun run() {
         super.run()
-
-        println("Valid?: " + view.holder.surface.isValid)
-        println(view.holder.surface)
-
         var updateCount: Int = 0
         var frameCount: Int = 0
 

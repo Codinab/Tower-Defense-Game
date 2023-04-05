@@ -110,7 +110,7 @@ open class GameObject(private var collider2D: Collider2D) : InputEvent, Movable,
     }
 
     override fun position(): Vector2f {
-        return collider2D.body.position
+        return Vector2f(collider2D.body.position)
     }
 
     override fun draw(canvas: Canvas) {

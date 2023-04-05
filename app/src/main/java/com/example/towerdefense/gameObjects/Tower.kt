@@ -1,12 +1,12 @@
 package com.example.towerdefense.gameObjects
 
 import android.graphics.Canvas
+import android.view.MotionEvent
+import androidx.core.view.allViews
 import com.example.towerdefense.Physics2d.JMath
 import com.example.towerdefense.Physics2d.primitives.Collider2D
-import com.example.towerdefense.utility.Drawing
+import com.example.towerdefense.utility.*
 import com.example.towerdefense.utility.Interfaces.Drawable
-import com.example.towerdefense.utility.TimeController
-import com.example.towerdefense.utility.cameraPosition
 import org.joml.Vector2f
 
 class Tower(var radius: Float, private val collider2D: Collider2D) : GameObject(collider2D),
@@ -28,6 +28,15 @@ class Tower(var radius: Float, private val collider2D: Collider2D) : GameObject(
         Drawing.drawLine(canvas, collider2D.body.position, enemyHit!!.position(), 6f)
     }
 
+    override fun handleUpEvent(event: MotionEvent, position: Vector2f): Boolean {
+        if (fixable.get()) {
+            fixable.set(false)
+            movable.set(false)
+            return true
+
+        }
+        return false
+    }
 
     override fun update() {
         if (movable.get()) return
@@ -39,14 +48,12 @@ class Tower(var radius: Float, private val collider2D: Collider2D) : GameObject(
     private var hitAngle = 0f
     private var timeLastDamage = 0L
     private fun applyDamageInArea() {
-        println(TimeController.getGameTime())
         if (towerArea.inArea.isNotEmpty()) {
             if (TimeController.getGameTime() - timeLastDamage > 1000) {
-                towerArea.getFirst()?.let {
+                towerArea.toDamage()?.let {
+                    enemyHit = it
                     it.damage(dps)
                     damaged = !damaged
-                    enemyHit = it
-                    println(hitAngle)
                 }
                 timeLastDamage = TimeController.getGameTime()
             }
@@ -58,5 +65,13 @@ class Tower(var radius: Float, private val collider2D: Collider2D) : GameObject(
         damaged = false
         hitAngle = 0f
     }
+
+    fun setToDamageType(type: TowerArea.DamageType) {
+        towerArea.setToDamageType(type)
+    }
+    fun getToDamageType(): TowerArea.DamageType {
+        return towerArea.getToDamageType()
+    }
+
 
 }

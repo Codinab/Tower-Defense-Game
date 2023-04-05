@@ -8,20 +8,15 @@ import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.*
-import android.widget.Button
-import android.widget.FrameLayout
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.towerdefense.Physics2d.primitives.Box2D
-import com.example.towerdefense.Physics2d.primitives.Circle
-import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.databinding.ActivityMainBinding
-import com.example.towerdefense.gameObjects.TowerSpawner
+import com.example.towerdefense.utility.gameView
 import com.example.towerdefense.utility.lastPauseTime
 import com.example.towerdefense.utility.lastResumeTime
 import com.example.towerdefense.utility.screenSize
@@ -104,11 +99,12 @@ class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.R)
     fun createGame() {
 
-        val gameView = GameView(this)
-        setContentView(gameView)
+        val view = GameView(this)
+        setContentView(view)
+        gameView = view
 
 
-        val gameObjectView = GameObjectView(this, gameView, Box2D(Vector2f(200f, 100f), Rigidbody2D(Vector2f(
+        val gameObjectView = GameObjectView(this, view, Box2D(Vector2f(200f, 100f), Rigidbody2D(Vector2f(
             screenSize.x - 200f, 0f))))
         var bool = false
         gameObjectView.text = "Start"
@@ -116,15 +112,15 @@ class MainActivity : AppCompatActivity() {
 
         gameObjectView.setOnClickListener {
             if (bool) {
-                gameView.gamePause()
+                view.gamePause()
                 lastPauseTime = System.currentTimeMillis()
             } else {
-                gameView.gameResume()
+                view.gameResume()
                 lastResumeTime = System.currentTimeMillis()
             }
             bool = !bool
         }
-        gameView.addView(gameObjectView)
+        view.addView(gameObjectView)
 
     }
 

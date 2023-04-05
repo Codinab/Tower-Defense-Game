@@ -1,8 +1,12 @@
 package com.example.towerdefense.gameObjects
 
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import android.view.MotionEvent
 import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.utility.Direction2D
+import com.example.towerdefense.utility.Drawing
 import com.example.towerdefense.utility.Road
 import com.example.towerdefense.utility.Road.Companion.toVector2f
 import org.joml.Vector2f
@@ -37,8 +41,6 @@ class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collide
         setVelocity(3f)
         positionTo = road.getNextCorner(positionFrom)
         setRotation(road.getFirstDirection().toAngle())
-
-        println(road.getRoadCorners())
     }
 
     fun getDelete() : Boolean
@@ -52,7 +54,6 @@ class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collide
         {
             toDelete = true
         }
-        println(" $health ")
     }
 
     override fun update() {
@@ -60,7 +61,6 @@ class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collide
         super.update()
         if (positionTo.distanceSquared(position()) < getVelocity())
         {
-            println(road.getAllDirections())
             positionFrom = positionTo
             positionTo = road.getNextCorner(positionFrom)
             val direction = road.getRoadDirection(positionFrom)
@@ -69,6 +69,17 @@ class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collide
             }
             setRotation(road.getRoadDirection(positionFrom).toAngle())
         }
+    }
+
+    override fun draw(canvas: Canvas) {
+        super.draw(canvas)
+        val paint = Paint()
+        paint.color = Color.BLUE
+        paint.textSize = 50f
+        val topLeft = position().sub(collider2D().layoutSize().mul(0.5f))
+        val topRight = Vector2f(topLeft).add(collider2D().layoutSize().x, 0f)
+
+        Drawing.drawHealthBar(canvas, topLeft, topRight, health, 100)
     }
 
     override fun onTouchEvent(event: MotionEvent, position: Vector2f): Boolean {
@@ -83,5 +94,8 @@ class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collide
         return "Enemy(position=${position()}, velocity=${getVelocity()}, rotation=${getRotation()})"
     }
 
-
+    fun getHealth() : Int
+    {
+        return health
+    }
 }
