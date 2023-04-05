@@ -2,12 +2,12 @@ import android.graphics.Canvas
 import android.view.MotionEvent
 import com.example.towerdefense.gameObjects.Enemy
 import com.example.towerdefense.gameObjects.GameObject
+import com.example.towerdefense.gameObjects.Tower
 import com.example.towerdefense.utility.money
 import org.joml.Vector2f
-import java.util.Vector
 import java.util.concurrent.CopyOnWriteArrayList
 
-class GameObjectList(private val gameObjects : CopyOnWriteArrayList<GameObject> = CopyOnWriteArrayList()) :
+open class GameObjectList(private val gameObjects: CopyOnWriteArrayList<GameObject> = CopyOnWriteArrayList()) :
     MutableList<GameObject> by gameObjects {
     fun update() : ArrayList<Enemy>{
         val enemies = ArrayList<Enemy>()

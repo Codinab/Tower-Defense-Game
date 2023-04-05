@@ -6,11 +6,10 @@ import android.graphics.Color
 import android.view.*
 import android.widget.Button
 import android.widget.RelativeLayout
-import android.widget.TextView
 import com.example.towerdefense.utility.TimeController
 import com.example.towerdefense.utility.gameHealth
 import com.example.towerdefense.utility.money
-import org.w3c.dom.Text
+import com.example.towerdefense.utility.towerClicked
 
 @SuppressLint("ClickableViewAccessibility")
 class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callback {
@@ -23,7 +22,7 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
         setBackgroundColor(Color.TRANSPARENT)
         initSurfaceView(context)
 
-        Button(context).apply {
+        val sell = Button(context).apply {
             id = View.generateViewId()
             text = "Sell"
             alpha = 0.8f
@@ -35,6 +34,12 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_START)
             layoutParams.marginStart = 0
             this.layoutParams = layoutParams
+            setOnClickListener {
+                if (towerClicked != null) {
+                    money.addAndGet(towerClicked!!.dph * 10)
+                    towerClicked!!.destroy()
+                }
+            }
             addView(this)
         }
 
@@ -46,14 +51,20 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
                 LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT
             )
-            layoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, this.id)
-            layoutParams.addRule(RelativeLayout.END_OF, this.id)
+            layoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, sell.id)
+            layoutParams.addRule(RelativeLayout.END_OF, sell.id)
             layoutParams.marginStart = 16
             this.layoutParams = layoutParams
+            setOnClickListener {
+                if (towerClicked != null) {
+                    if (money.getAndAdd(-100) >= 100) towerClicked!!.upgrade()
+                    else money.addAndGet(100)
+                    println("Tower damage: " + towerClicked!!.dph)
+                }
+            }
             addView(this)
         }
     }
-
     private fun initSurfaceView(context: Context) {
         surfaceView = GameSurfaceView(context, this)
         surfaceView.holder.addCallback(this)

@@ -6,6 +6,7 @@ import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.utility.*
 import com.example.towerdefense.utility.Interfaces.Drawable
 import org.joml.Vector2f
+import kotlin.math.max
 
 class Tower(var radius: Float, private val collider2D: Collider2D) : GameObject(collider2D),
     Drawable {
@@ -15,10 +16,10 @@ class Tower(var radius: Float, private val collider2D: Collider2D) : GameObject(
     private var lastHit = false
     override lateinit var drawableObject: DrawableObject
     var towerArea: TowerArea = TowerArea(radius, collider2D.body)
-    var dps = 1
+    var dph = 1
     var paused = false
     override fun draw(canvas: Canvas) {
-        if (clicked) towerArea.draw(canvas)
+        if (towerClicked == this) towerArea.draw(canvas)
         collider2D.draw(canvas)
         drawHit(canvas)
     }
@@ -53,7 +54,7 @@ class Tower(var radius: Float, private val collider2D: Collider2D) : GameObject(
             if (TimeController.getGameTime() - timeLastDamage > hitDelay) {
                 towerArea.toDamage()?.let {
                     enemyHit = it
-                    it.damage(dps)
+                    it.damage(dph)
                     if (it.getHealth() <= 0) lastHit = true
                 }
                 timeLastDamage = TimeController.getGameTime()
@@ -65,8 +66,35 @@ class Tower(var radius: Float, private val collider2D: Collider2D) : GameObject(
         towerArea.setToDamageType(type)
     }
 
+    override fun handleDownEvent(event: MotionEvent, position: Vector2f): Boolean {
+        if (movable.get()) {
+            position(position)
+            return true
+        } else if (isClicked(position)) {
+            towerClicked = if (towerClicked == this) null else this
+            val currentTime = System.currentTimeMillis()
+            lastClickTime = currentTime
+            return true
+        }
+        return false
+    }
+
     fun getToDamageType(): TowerArea.DamageType {
         return towerArea.getToDamageType()
+    }
+
+    fun upgrade() {
+        val dpsTmp = dph.toFloat()
+        dph = max((dpsTmp * 1.1f).toInt(), dph + 2)
+    }
+
+    private var toDestroy = false
+    fun destroy() {
+        toDestroy = true
+    }
+
+    fun getDestroyed(): Boolean {
+        return toDestroy
     }
 
 

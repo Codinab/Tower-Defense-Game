@@ -5,10 +5,13 @@ import android.view.MotionEvent
 import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.utility.Interfaces.*
+import com.example.towerdefense.utility.gameView
+import com.example.towerdefense.utility.towerClicked
 import org.joml.Vector2f
 import java.util.concurrent.atomic.AtomicBoolean
 
-open class GameObject(private var collider2D: Collider2D) : InputEvent, Movable, Positionable, Stateful, Drawable {
+open class GameObject(private var collider2D: Collider2D) : InputEvent, Movable, Positionable,
+    Stateful, Drawable {
     constructor(collider2D: Collider2D, movable: Boolean, fixable: Boolean) : this(collider2D) {
         this.movable.set(movable)
         this.fixable.set(fixable)
@@ -16,7 +19,6 @@ open class GameObject(private var collider2D: Collider2D) : InputEvent, Movable,
 
     override var drawableObject: DrawableObject = DrawableObject(collider2D)
     override var lastClickTime: Long = 0L
-    var clicked = true
 
     fun collider2D(): Collider2D {
         return collider2D
@@ -31,7 +33,7 @@ open class GameObject(private var collider2D: Collider2D) : InputEvent, Movable,
         }
     }
 
-    open fun handleUpEvent(event: MotionEvent, position: Vector2f) : Boolean {
+    open fun handleUpEvent(event: MotionEvent, position: Vector2f): Boolean {
         if (fixable.get()) {
             fixable.set(false)
             movable.set(false)
@@ -40,7 +42,7 @@ open class GameObject(private var collider2D: Collider2D) : InputEvent, Movable,
         return false
     }
 
-    private fun handleMoveEvent(event: MotionEvent, position: Vector2f) : Boolean  {
+    private fun handleMoveEvent(event: MotionEvent, position: Vector2f): Boolean {
         if (movable.get()) {
             position(position)
             return true
@@ -48,12 +50,11 @@ open class GameObject(private var collider2D: Collider2D) : InputEvent, Movable,
         return false
     }
 
-    private fun handleDownEvent(event: MotionEvent, position: Vector2f) : Boolean {
+    open fun handleDownEvent(event: MotionEvent, position: Vector2f): Boolean {
         if (movable.get()) {
             position(position)
             return true
         } else if (isClicked(position)) {
-            clicked = !clicked
             val currentTime = System.currentTimeMillis()
             lastClickTime = currentTime
             return true

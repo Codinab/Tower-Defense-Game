@@ -1,7 +1,6 @@
 package com.example.towerdefense.gameObjects
 
 import android.content.Context
-import android.content.SyncRequest
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -13,6 +12,7 @@ import com.example.towerdefense.GameView
 import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.utility.money
+import com.example.towerdefense.utility.towerClicked
 import org.joml.Vector2f
 
 class TowerSpawner(
@@ -44,11 +44,12 @@ class TowerSpawner(
                 if (money.getAndAdd(-100) < 100) return false
                 val tower =
                     Tower(areaRadius, Box2D(towerDimensions, Rigidbody2D(Vector2f(position))))
-                tower.dps = towerDPS
+                tower.dph = towerDPS
                 tower.setToDamageType(damageType)
                 gameSurfaceView.towers.add(tower)
                 gameSurfaceView.movableTowers.add(tower)
                 lastTower = tower
+                towerClicked = tower
                 true
             }
             else -> false

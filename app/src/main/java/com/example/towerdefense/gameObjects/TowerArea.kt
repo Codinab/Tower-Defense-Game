@@ -1,9 +1,7 @@
 package com.example.towerdefense.gameObjects
 
 import android.graphics.Canvas
-import android.graphics.Paint
 import com.example.towerdefense.Physics2d.primitives.Circle
-import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.utility.Interfaces.Drawable
@@ -52,8 +50,8 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center), Drawable
             DamageType.FIRST -> getFirst()
             DamageType.LAST -> getLast()
             DamageType.RANDOM -> getRandom()
-            DamageType.MOST_HEALTHY -> getMostHealthy()
-            DamageType.LEAST_HEALTHY -> getLeastHealthy()
+            DamageType.MOST_HEALTH -> getMostHealthy()
+            DamageType.LEAST_HEALTH -> getLeastHealthy()
             else -> getFirst()
         }
     }
@@ -93,7 +91,7 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center), Drawable
     }
 
     enum class DamageType {
-        FIRST, LAST, RANDOM, STRONGEST, WEAKEST, MOST_HEALTHY, LEAST_HEALTHY
+        FIRST, LAST, RANDOM, MOST_HEALTH, LEAST_HEALTH
     }
 
 

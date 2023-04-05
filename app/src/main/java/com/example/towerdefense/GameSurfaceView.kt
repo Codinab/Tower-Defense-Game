@@ -1,6 +1,7 @@
 package com.example.towerdefense
 
 import GameObjectList
+import TowerList
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
@@ -24,7 +25,7 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
 
     var gameObjectList = GameObjectList()
     var movableTowers = GameObjectList()
-    var towers = Vector<Tower>()
+    var towers = TowerList()
     var towerSpawners = Vector<TowerSpawner>()
     var gameLoop: GameLoop? = null
     var isRunning = false
@@ -34,9 +35,9 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
 
         val multiVector = MultiVector(Vector2i(0, 0))
         multiVector.addLine(Direction2D.RIGHT, 10)
-        multiVector.addLine(Direction2D.DOWN, 10)
+        multiVector.addLine(Direction2D.DOWN, 2)
         multiVector.addLine(Direction2D.RIGHT, 2)
-        multiVector.addLine(Direction2D.UP, 10)
+        multiVector.addLine(Direction2D.UP, 20)
         road = Road(Vector2i(0, 0), multiVector)
 
 
@@ -111,7 +112,7 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
                     Rigidbody2D(Vector2f(screenSize.x.toFloat() - 100f, 100f))
                 ), this, context, gameView
             )
-        towerSpawner.damageType = TowerArea.DamageType.LEAST_HEALTHY
+        towerSpawner.damageType = TowerArea.DamageType.LEAST_HEALTH
         addTowerSpawner(towerSpawner)
 
         val towerSpawner2 =
@@ -312,7 +313,7 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         val paint = Paint()
         paint.color = Color.CYAN
         paint.textSize = 50f
-        canvas.drawText("Time: ${TimeController.getGameTime().toFloat() / 1000}", camera.x() + 100, camera.y() + 200f, paint)
+        canvas.drawText("Time: ${TimeController.getGameTime() / 1000} ${TimeController.getSinceAppStart() / 1000}", camera.x() + 100, camera.y() + 200f, paint)
     }
 
     private fun drawGameHealth(canvas: Canvas) {

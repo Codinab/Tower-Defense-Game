@@ -17,8 +17,6 @@ import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.databinding.ActivityMainBinding
 import com.example.towerdefense.utility.gameView
-import com.example.towerdefense.utility.lastPauseTime
-import com.example.towerdefense.utility.lastResumeTime
 import com.example.towerdefense.utility.screenSize
 import org.joml.Vector2f
 import org.joml.Vector2i
@@ -113,10 +111,8 @@ class MainActivity : AppCompatActivity() {
         gameObjectView.setOnClickListener {
             if (bool) {
                 view.gamePause()
-                lastPauseTime = System.currentTimeMillis()
             } else {
                 view.gameResume()
-                lastResumeTime = System.currentTimeMillis()
             }
             bool = !bool
         }
