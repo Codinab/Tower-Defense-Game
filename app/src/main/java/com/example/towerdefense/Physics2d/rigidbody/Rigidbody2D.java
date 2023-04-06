@@ -112,6 +112,9 @@ public class Rigidbody2D  {
         return lastAngle;
     }
 
+    public Rigidbody2D clone() {
+        return new Rigidbody2D(rotation, angularVelocity, new Vector2f(position), velocity);
+    }
 
 
     @Override

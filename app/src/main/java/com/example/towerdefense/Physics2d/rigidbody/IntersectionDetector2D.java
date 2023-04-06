@@ -1,9 +1,7 @@
 package com.example.towerdefense.Physics2d.rigidbody;
 
-import com.example.towerdefense.gameObjects.GameObject;
 import com.example.towerdefense.Physics2d.JMath;
 import com.example.towerdefense.Physics2d.primitives.*;
-import com.example.towerdefense.gameObjects.TowerArea;
 
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2f;

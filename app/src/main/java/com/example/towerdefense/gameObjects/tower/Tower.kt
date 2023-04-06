@@ -1,19 +1,28 @@
-package com.example.towerdefense.gameObjects
+package com.example.towerdefense.gameObjects.tower
 
 import android.graphics.Canvas
 import android.view.MotionEvent
 import com.example.towerdefense.Physics2d.primitives.Collider2D
+import com.example.towerdefense.gameObjects.DrawableObject
+import com.example.towerdefense.gameObjects.Enemy
+import com.example.towerdefense.gameObjects.GameObject
 import com.example.towerdefense.utility.*
 import com.example.towerdefense.utility.Interfaces.Drawable
 import org.joml.Vector2f
 import kotlin.math.max
 
-class Tower(var radius: Float, private val collider2D: Collider2D) : GameObject(collider2D),
+open class Tower(var radius: Float, private val collider2D: Collider2D) : GameObject(collider2D),
     Drawable {
-    constructor(collider2D: Collider2D) : this(300f, collider2D)
+    constructor(radius: Float, collider2D: Collider2D, dph: Int, hitDelay: Float) : this(
+        radius,
+        collider2D
+    ) {
+        this.dph = dph
+        this.hitDelay = hitDelay
+    }
 
-    private var enemyHit: Enemy? = null
-    private var lastHit = false
+    protected var enemyHit: Enemy? = null
+    protected var lastHit = false
     override lateinit var drawableObject: DrawableObject
     var towerArea: TowerArea = TowerArea(radius, collider2D.body)
     var dph = 1
@@ -32,35 +41,27 @@ class Tower(var radius: Float, private val collider2D: Collider2D) : GameObject(
         Drawing.drawLine(canvas, collider2D.body.position, enemyHit!!.position(), 6f)
     }
 
-    override fun handleUpEvent(event: MotionEvent, position: Vector2f): Boolean {
-        if (fixable.get()) {
-            fixable.set(false)
-            movable.set(false)
-            return true
-        }
-        return false
-    }
-
     override fun update() {
         if (movable.get()) return
         super.update()
         applyDamageInArea()
     }
 
-    private var timeLastDamage = 0L
+    protected var timeLastDamage = 0L
     var hitDelay = 100f
-    private fun applyDamageInArea() {
-        if (towerArea.inArea.isNotEmpty()) {
-            if (TimeController.getGameTime() - timeLastDamage > hitDelay) {
-                towerArea.toDamage()?.let {
-                    enemyHit = it
-                    it.damage(dph)
-                    if (it.getHealth() <= 0) lastHit = true
-                }
-                timeLastDamage = TimeController.getGameTime()
+    protected open fun applyDamageInArea() {
+        if (readyToDamage()) {
+            towerArea.toDamage()?.let {
+                enemyHit = it
+                it.damage(dph)
+                if (it.getHealth() <= 0) lastHit = true
             }
+            timeLastDamage = TimeController.getGameTime()
         }
     }
+
+    protected fun readyToDamage() =
+        towerArea.inArea.isNotEmpty() && TimeController.getGameTime() - timeLastDamage > hitDelay
 
     fun setToDamageType(type: TowerArea.DamageType) {
         towerArea.setToDamageType(type)
@@ -79,9 +80,16 @@ class Tower(var radius: Float, private val collider2D: Collider2D) : GameObject(
         return false
     }
 
-    fun getToDamageType(): TowerArea.DamageType {
-        return towerArea.getToDamageType()
+    override fun handleUpEvent(event: MotionEvent, position: Vector2f): Boolean {
+        if (fixable.get()) {
+            fixable.set(false)
+            movable.set(false)
+            return true
+        }
+        return false
     }
+
+    fun getToDamageType(): TowerArea.DamageType = towerArea.getToDamageType()
 
     fun upgrade() {
         val dpsTmp = dph.toFloat()
@@ -93,9 +101,8 @@ class Tower(var radius: Float, private val collider2D: Collider2D) : GameObject(
         toDestroy = true
     }
 
-    fun getDestroyed(): Boolean {
-        return toDestroy
-    }
+    fun getDestroyed(): Boolean = toDestroy
 
+    fun clone(): Tower = Tower(radius, collider2D.clone(), dph, hitDelay)
 
 }

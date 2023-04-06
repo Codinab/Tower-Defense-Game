@@ -1,7 +1,7 @@
 import android.graphics.Canvas
 import android.view.MotionEvent
 import com.example.towerdefense.gameObjects.Enemy
-import com.example.towerdefense.gameObjects.Tower
+import com.example.towerdefense.gameObjects.tower.Tower
 import org.joml.Vector2f
 import java.util.concurrent.CopyOnWriteArrayList
 

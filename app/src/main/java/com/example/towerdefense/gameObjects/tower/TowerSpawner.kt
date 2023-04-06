@@ -1,4 +1,4 @@
-package com.example.towerdefense.gameObjects
+package com.example.towerdefense.gameObjects.tower
 
 import android.content.Context
 import android.graphics.Canvas
@@ -7,21 +7,15 @@ import android.graphics.Paint
 import android.view.MotionEvent
 import android.view.ViewGroup
 import com.example.towerdefense.GameObjectView
-import com.example.towerdefense.GameSurfaceView
-import com.example.towerdefense.GameView
 import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
+import com.example.towerdefense.utility.gameView
 import com.example.towerdefense.utility.money
 import com.example.towerdefense.utility.towerClicked
 import org.joml.Vector2f
 
-class TowerSpawner(
-    box2D: Box2D,
-    private val gameSurfaceView: GameSurfaceView,
-    context: Context,
-    gameView: GameView,
-) :
-    GameObjectView(context, gameView, box2D) {
+class TowerSpawner(context: Context, box2D: Box2D, var modelTower: Tower = Tower(300f, box2D)) :
+    GameObjectView(context, box2D) {
 
     init {
         val layoutSize = box2D.layoutSize()
@@ -30,9 +24,6 @@ class TowerSpawner(
         setBackgroundColor(Color.TRANSPARENT)
     }
 
-    var areaRadius = 300f
-    var towerDimensions = Vector2f(100f, 100f)
-    var towerDPS = 10
     private var lastTower: Tower? = null
     var damageType = TowerArea.DamageType.FIRST
     override fun onTouchEvent(event: MotionEvent, position: Vector2f): Boolean {
@@ -41,13 +32,16 @@ class TowerSpawner(
         }
         return when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                if (money.getAndAdd(-100) < 100) return false
-                val tower =
-                    Tower(areaRadius, Box2D(towerDimensions, Rigidbody2D(Vector2f(position))))
-                tower.dph = towerDPS
-                tower.setToDamageType(damageType)
-                gameSurfaceView.towers.add(tower)
-                gameSurfaceView.movableTowers.add(tower)
+                if (money.getAndAdd(-100) < 100 || gameView!!.surfaceView.movableTowers.isNotEmpty()) return false.also {
+                    money.getAndAdd(
+                        100
+                    )
+                }
+                val tower = modelTower.clone()
+
+                gameView!!.surfaceView.towers.add(tower)
+                gameView!!.surfaceView.movableTowers.add(tower)
+
                 lastTower = tower
                 towerClicked = tower
                 true

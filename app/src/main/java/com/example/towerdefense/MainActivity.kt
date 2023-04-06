@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity() {
         gameView = view
 
 
-        val gameObjectView = GameObjectView(this, view, Box2D(Vector2f(200f, 100f), Rigidbody2D(Vector2f(
+        val gameObjectView = GameObjectView(this, Box2D(Vector2f(200f, 100f), Rigidbody2D(Vector2f(
             screenSize.x - 200f, 0f))))
         var bool = false
         gameObjectView.text = "Start"

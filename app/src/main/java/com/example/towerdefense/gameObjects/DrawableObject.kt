@@ -15,7 +15,7 @@ open class DrawableObject(var collider2D: Collider2D) : Drawable() {
     }
 
     internal val paint = Paint()
-    public var bitmapDrawable: BitmapDrawable? = null
+    var bitmapDrawable: BitmapDrawable? = null
 
     open fun update() {
         collider2D.body.update()

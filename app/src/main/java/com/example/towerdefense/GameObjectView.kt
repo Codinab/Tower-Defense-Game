@@ -15,7 +15,7 @@ import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import org.joml.Vector2f
 
-open class GameObjectView(context: Context, viewGroup: ViewGroup, var collider2D: Collider2D) : View(context) {
+open class GameObjectView(context: Context, var collider2D: Collider2D) : View(context) {
 
     var lastClickTime: Long = 0
     var movable: Boolean = true

@@ -14,27 +14,14 @@ import org.joml.Vector2f
 
 class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collider2D)
 {
-    constructor(collider2D: Collider2D, road: Road, health: Int) : this(collider2D, road)
-    {
-        this.health = health
-    }
-    constructor(collider2D: Collider2D, drawableObject: DrawableObject, road: Road) : this(collider2D, road)
-    {
-        this.drawableObject = drawableObject
-    }
-    constructor(collider2D: Collider2D, drawableObject: DrawableObject, road: Road, health: Int) : this(collider2D, drawableObject, road)
-    {
-        this.health = health
-    }
-
     private var positionFrom : Vector2f
     private var positionTo : Vector2f
+
     private var health : Int = 100
     private var maxHealth : Int = 100
+
     private var toDelete : Boolean = false
     var paused : Boolean = false
-
-
     init {
         movable.set(false)
         fixable.set(false)
@@ -52,6 +39,7 @@ class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collide
     fun damage(damage : Int)
     {
         health -= damage
+        println(health)
         if (health <= 0)
         {
             toDelete = true

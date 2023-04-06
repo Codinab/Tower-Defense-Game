@@ -14,11 +14,10 @@ class TimeController {
             return if (elapsed < 0L) 0L else elapsed
         }
 
+        // Returns the time since the app started in milliseconds
         fun getSinceAppStart(): Long {
             return System.currentTimeMillis() - startTime
         }
-
-
 
         // Resumes the game time
         @Synchronized

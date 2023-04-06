@@ -11,7 +11,7 @@ import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2f;
 
-public class Collider2D {
+public abstract class Collider2D {
 
     public Rigidbody2D body;
 
@@ -25,7 +25,7 @@ public class Collider2D {
         return super.toString();
     }
 
-    public void draw(@NotNull Canvas canvas) {
+    public abstract void draw(@NotNull Canvas canvas); /*{
         if (this instanceof Circle) {
             Circle circle = (Circle) this;
             canvas.drawCircle(circle.getCenter().x, circle.getCenter().y, circle.getRadius(), new Paint());
@@ -39,9 +39,9 @@ public class Collider2D {
                     new Paint()
             );
         }
-    }
+    }*/
 
-    public Vector2f layoutSize() {
+    public abstract Vector2f layoutSize(); /*{
         if (this instanceof Circle) {
             Circle circle = (Circle) this;
             return new Vector2f(circle.getRadius() * 2, circle.getRadius() * 2);
@@ -50,5 +50,8 @@ public class Collider2D {
             return new Vector2f(box.getSize());
         }
         return new Vector2f();
-    }
+    }*/
+
+
+    public abstract Collider2D clone();
 }

@@ -19,7 +19,6 @@ open class GameObject(private var collider2D: Collider2D) : InputEvent, Movable,
 
     override var drawableObject: DrawableObject = DrawableObject(collider2D)
     override var lastClickTime: Long = 0L
-
     fun collider2D(): Collider2D {
         return collider2D
     }

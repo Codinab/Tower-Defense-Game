@@ -1,28 +1,29 @@
-package com.example.towerdefense.gameObjects
+package com.example.towerdefense.gameObjects.tower
 
 import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import com.example.towerdefense.Physics2d.primitives.Circle
+import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
+import com.example.towerdefense.gameObjects.DrawableObject
+import com.example.towerdefense.gameObjects.Enemy
 import com.example.towerdefense.utility.Interfaces.Drawable
 import org.joml.Vector2f
 
-class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center), Drawable {
+class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
     constructor(radius: Float, center: Vector2f) : this(radius, Rigidbody2D(center))
 
-    override var drawableObject: DrawableObject = DrawableTowerArea(this)
     var damageType = DamageType.FIRST
-    private class DrawableTowerArea(var circle: Circle) : DrawableObject(circle) {
-        init {
-            paint.color = android.graphics.Color.RED
-            paint.alpha = 100
-        }
-        override fun draw(p0: Canvas) {
-            //Draw circle with radius radius
-            p0.drawCircle(collider2D.body.position.x, collider2D.body.position.y, circle.radius, paint)
-        }
-    }
 
+    override fun draw(p0: Canvas) {
+        //Draw circle with radius radius
+        val paint = Paint()
+        paint.color = Color.RED
+        paint.alpha = 100
+        p0.drawCircle(center.x, center.y, radius, paint)
+    }
     var inArea = ArrayDeque<Enemy>()
 
     fun isInside(enemy: Enemy): Boolean {
@@ -41,7 +42,7 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center), Drawable
         inArea.remove(enemy)
     }
 
-    fun getFirst(): Enemy? {
+    private fun getFirst(): Enemy? {
         return inArea.firstOrNull()
     }
 
@@ -77,9 +78,8 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center), Drawable
     fun getLast(): Enemy? {
         return inArea.lastOrNull()
     }
-
-    override fun draw(canvas: Canvas) {
-        drawableObject.draw(canvas)
+    override fun clone(): Collider2D {
+        return TowerArea(radius, Vector2f(center))
     }
 
     override fun toString(): String {
@@ -93,8 +93,4 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center), Drawable
     enum class DamageType {
         FIRST, LAST, RANDOM, MOST_HEALTH, LEAST_HEALTH
     }
-
-
-
-
 }
