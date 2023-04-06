@@ -102,14 +102,6 @@ class Road(val startVector: Vector2i, multiVector: MultiVector) : Serializable {
     }
 
     companion object {
-
-        fun Vector2i.toVector2f(): Vector2f {
-            return Vector2f(this.x.toFloat(), this.y.toFloat())
-        }
-        fun Vector2f.toVector2i(): Vector2i {
-            return Vector2i(this.x.toInt(), this.y.toInt())
-        }
-
         fun roadFormat(multiVector: MultiVector): Boolean {
             var oneDirection = 2
             for (directions in multiVector.allDirections) {

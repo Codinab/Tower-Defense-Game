@@ -24,6 +24,7 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
         paint.alpha = 100
         p0.drawCircle(center.x, center.y, radius, paint)
     }
+
     var inArea = ArrayDeque<Enemy>()
 
     fun isInside(enemy: Enemy): Boolean {
@@ -42,7 +43,7 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
         inArea.remove(enemy)
     }
 
-    private fun getFirst(): Enemy? {
+    fun getFirst(): Enemy? {
         return inArea.firstOrNull()
     }
 
@@ -56,9 +57,11 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
             else -> getFirst()
         }
     }
+
     fun setToDamageType(damageType: DamageType) {
         this.damageType = damageType
     }
+
     fun getToDamageType(): DamageType {
         return damageType
     }
@@ -78,6 +81,7 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
     fun getLast(): Enemy? {
         return inArea.lastOrNull()
     }
+
     override fun clone(): Collider2D {
         return TowerArea(radius, Vector2f(center))
     }

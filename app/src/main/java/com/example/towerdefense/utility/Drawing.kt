@@ -57,16 +57,7 @@ class Drawing {
         fun drawBox2D(canvas: Canvas, box2D: Box2D) {
             val paint = Paint()
             paint.color = Color.BLACK
-            canvas.save()
-            canvas.rotate(box2D.body.rotation, box2D.body.position.x, box2D.body.position.y)
-            canvas.drawRect(
-                box2D.body.position.x - box2D.size.x / 2,
-                box2D.body.position.y - box2D.size.y / 2,
-                box2D.body.position.x + box2D.size.x / 2,
-                box2D.body.position.y + box2D.size.y / 2,
-                paint
-            )
-            canvas.restore()
+            drawBox2D(canvas, box2D, paint)
         }
 
         fun drawHealthBar(canvas: Canvas, leftBottomHealthBarPos: Vector2f, rightBottomHealthBarPos: Vector2f, health: Int, maxHealth: Int) {

@@ -25,7 +25,7 @@ open class Tower(var radius: Float, private val collider2D: Collider2D) : GameOb
     protected var lastHit = false
     override lateinit var drawableObject: DrawableObject
     var towerArea: TowerArea = TowerArea(radius, collider2D.body)
-    var dph = 1
+    open var dph = 1
     var paused = false
     override fun draw(canvas: Canvas) {
         if (towerClicked == this) towerArea.draw(canvas)
@@ -48,7 +48,7 @@ open class Tower(var radius: Float, private val collider2D: Collider2D) : GameOb
     }
 
     protected var timeLastDamage = 0L
-    var hitDelay = 100f
+    open var hitDelay = 100f
     protected open fun applyDamageInArea() {
         if (readyToDamage()) {
             towerArea.toDamage()?.let {
@@ -101,8 +101,10 @@ open class Tower(var radius: Float, private val collider2D: Collider2D) : GameOb
         toDestroy = true
     }
 
+    fun cost(): Int = 100
+
     fun getDestroyed(): Boolean = toDestroy
 
-    fun clone(): Tower = Tower(radius, collider2D.clone(), dph, hitDelay)
+    open fun clone(): Tower = Tower(radius, collider2D.clone(), dph, hitDelay)
 
 }

@@ -5,6 +5,7 @@ import com.example.towerdefense.gameObjects.tower.Tower
 import org.joml.Vector2f
 import org.joml.Vector2i
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.math.atan2
 
 var fps = false
 
@@ -15,3 +16,19 @@ var towerClicked : Tower? = null
 
 var money = AtomicInteger(100)
 var gameHealth = AtomicInteger(10)
+var gameVelocity = 10
+
+fun Vector2i.toVector2f(): Vector2f {
+    return Vector2f(this.x.toFloat(), this.y.toFloat())
+}
+fun Vector2f.toVector2i(): Vector2i {
+    return Vector2i(this.x.toInt(), this.y.toInt())
+}
+
+fun Vector2f.angle(): Float {
+    return atan2(this.y.toDouble(), this.x.toDouble()).toFloat().toDegrees()
+}
+
+private fun Float.toDegrees(): Float {
+    return this * 180 / Math.PI.toFloat()
+}

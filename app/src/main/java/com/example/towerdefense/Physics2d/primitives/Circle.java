@@ -6,6 +6,8 @@ import android.graphics.Paint;
 import androidx.annotation.NonNull;
 
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D;
+import com.example.towerdefense.utility.Drawing;
+
 import org.joml.Vector2f;
 
 public class Circle extends Collider2D {

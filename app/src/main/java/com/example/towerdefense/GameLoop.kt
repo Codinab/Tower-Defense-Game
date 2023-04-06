@@ -2,6 +2,7 @@ package com.example.towerdefense
 
 import android.graphics.Canvas
 import android.view.SurfaceView
+import com.example.towerdefense.utility.gameVelocity
 
 /**
  *
@@ -88,8 +89,7 @@ class GameLoop(private val game: GameView) : Thread() , java.io.Serializable {
     }
 
     companion object {
-        private const val MAX_UPS = 60
-        private const val UPS_PERIOD: Double = 1E+3 / MAX_UPS
+        private var MAX_UPS = 60
+        private var UPS_PERIOD: Double = 1E+3 / MAX_UPS
     }
-
 }

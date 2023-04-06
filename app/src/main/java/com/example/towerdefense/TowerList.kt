@@ -67,8 +67,9 @@ class TowerList(private val towers: CopyOnWriteArrayList<Tower> = CopyOnWriteArr
     }
 
     override fun toString(): String {
-        var string = ""
-        towers.forEach { string += it.toString() + " " }
+        var string = "TowerList: {"
+        towers.forEach { string += "$it " }
+        string += "}"
         return string
     }
 }

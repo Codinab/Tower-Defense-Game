@@ -5,11 +5,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.view.MotionEvent
 import com.example.towerdefense.Physics2d.primitives.Collider2D
-import com.example.towerdefense.utility.Direction2D
-import com.example.towerdefense.utility.Drawing
-import com.example.towerdefense.utility.Road
-import com.example.towerdefense.utility.Road.Companion.toVector2f
-import com.example.towerdefense.utility.gameHealth
+import com.example.towerdefense.utility.*
 import org.joml.Vector2f
 
 class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collider2D)

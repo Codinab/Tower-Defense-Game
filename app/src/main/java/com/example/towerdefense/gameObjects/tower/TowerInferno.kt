@@ -1,14 +1,13 @@
 package com.example.towerdefense.gameObjects.tower
 
 import com.example.towerdefense.Physics2d.primitives.Collider2D
-import com.example.towerdefense.gameObjects.Enemy
 import com.example.towerdefense.utility.TimeController
-import kotlin.math.max
 
-class TowerTesla(radius: Float, collider2D: Collider2D) : Tower(radius, collider2D) {
+class TowerInferno(radius: Float, collider2D: Collider2D) : Tower(radius, collider2D) {
 
 
-    private var dphLog = dph.toFloat()
+    override var dph = 0;
+    private var dphLog = this.dph.toFloat()
 
     override fun applyDamageInArea() {
         if (readyToDamage()) {
@@ -19,7 +18,7 @@ class TowerTesla(radius: Float, collider2D: Collider2D) : Tower(radius, collider
                     enemyHit = it
                 }
                 it.damage(dphLog.toInt())
-                dphLog *= 1.1f
+                dphLog *= 1.01f
                 if (it.getHealth() <= 0) lastHit = true
             }
             timeLastDamage = TimeController.getGameTime()

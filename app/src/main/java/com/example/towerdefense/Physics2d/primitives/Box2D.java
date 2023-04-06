@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.example.towerdefense.Physics2d.JMath;
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D;
+import com.example.towerdefense.utility.Drawing;
 
 import org.joml.Vector2f;
 
@@ -101,13 +102,7 @@ public class Box2D extends Collider2D {
 
     @Override
     public void draw(@NonNull Canvas canvas) {
-        canvas.drawRect(
-                body.getPosition().x - halfSize.x,
-                body.getPosition().y - halfSize.y,
-                body.getPosition().x + halfSize.x,
-                body.getPosition().y + halfSize.y,
-                new android.graphics.Paint()
-        );
+        Drawing.Companion.drawBox2D(canvas, this);
     }
 
     @Override

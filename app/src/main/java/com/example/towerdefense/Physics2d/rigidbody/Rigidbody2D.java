@@ -3,6 +3,7 @@ package com.example.towerdefense.Physics2d.rigidbody;
 
 
 import com.example.towerdefense.Physics2d.JMath;
+import com.example.towerdefense.utility.PublicVariablesKt;
 
 import org.joml.Vector2f;
 
@@ -97,10 +98,10 @@ public class Rigidbody2D  {
 
     private void rotationUpdate() {
         angleUpdated = true;
-        rotation += angularVelocity;
+        rotation += angularVelocity * PublicVariablesKt.getGameVelocity();
     }
     private void positionUpdate() {
-        this.position.add(getAngleVector().mul(velocity));
+        this.position.add(getAngleVector().mul(velocity * PublicVariablesKt.getGameVelocity()));
     }
     private Vector2f lastAngle = null;
     public Boolean angleUpdated = false;

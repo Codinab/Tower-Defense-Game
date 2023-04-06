@@ -15,6 +15,7 @@ import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.gameObjects.*
+import com.example.towerdefense.gameObjects.tower.Canon
 import com.example.towerdefense.gameObjects.tower.Tower
 import com.example.towerdefense.gameObjects.tower.TowerArea
 import com.example.towerdefense.gameObjects.tower.TowerSpawner
@@ -26,10 +27,12 @@ import java.util.*
 open class GameSurfaceView(context: Context, private val gameView: GameView) : SurfaceView(context),
     SurfaceHolder.Callback {
 
-    var gameObjectList = GameObjectList()
+    var enemies = EnemyList()
     var movableTowers = GameObjectList()
     var towers = TowerList()
     var towerSpawners = Vector<TowerSpawner>()
+    var projectiles = GameObjectList()
+
     var gameLoop: GameLoop? = null
     var isRunning = false
     private var road: Road
@@ -42,7 +45,6 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         multiVector.addLine(Direction2D.RIGHT, 20)
         multiVector.addLine(Direction2D.UP, 20)
         road = Road(Vector2i(0, 0), multiVector)
-
     }
 
     override fun draw(canvas: Canvas?) {
@@ -54,8 +56,9 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         camera.updateCanvas(canvas)
         road.draw(canvas)
 
-        gameObjectList.draw(canvas)
+        enemies.draw(canvas)
         towers.forEach { it.draw(canvas) }
+        projectiles.draw(canvas)
 
         if (fps) drawUPS(canvas)
         if (fps) drawFPS(canvas)
@@ -69,8 +72,6 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val adjustedPosition = camera.adjustedPosition(event)
-        val movable = gameObjectList.getMovable()
-        val clicked = gameObjectList.getClicked(adjustedPosition)
 
         if (!isRunning) return false
 
@@ -90,16 +91,12 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         //Check if the child view is clicked
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                if (clicked.isNotEmpty()) clicked[0].onTouchEvent(event, adjustedPosition)
-                else camera.touch(event)
+                camera.touch(event)
             }
             MotionEvent.ACTION_MOVE -> {
-                if (movable.isNotEmpty()) return movable[0].onTouchEvent(event, adjustedPosition)
-                else if (clicked.isNotEmpty()) return true
-                else if (camera.moving) camera.update(event)
+                if (camera.moving) camera.update(event)
             }
             MotionEvent.ACTION_UP -> {
-                if (movable.isNotEmpty()) return movable[0].onTouchEvent(event, adjustedPosition)
                 camera.moving = false
             }
         }
@@ -107,16 +104,18 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
     }
 
     fun initTowerSpawners() {
-        val towerSpawner =
+        /*val towerSpawner =
             TowerSpawner(
                 context,
                 Box2D(
                     Vector2f(100f, 100f),
                     Rigidbody2D(Vector2f(screenSize.x.toFloat() - 100f, 100f))
                 ),
+                Tower(300f, Box2D(Vector2f(100f, 100f), Rigidbody2D(Vector2f(screenSize.x.toFloat() - 100f, 210f)))) as Canon
+
             )
         towerSpawner.damageType = TowerArea.DamageType.LEAST_HEALTH
-        addTowerSpawner(towerSpawner)
+        addTowerSpawner(towerSpawner)*/
 
         val towerSpawner2 =
             TowerSpawner(
@@ -124,11 +123,11 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
                 Box2D(
                     Vector2f(100f, 100f),
                     Rigidbody2D(Vector2f(screenSize.x.toFloat() - 100f, 210f))
-                )
+                ),
+                Canon(300f, Box2D(Vector2f(100f, 100f), Rigidbody2D(Vector2f(screenSize.x.toFloat() - 100f, 210f))))
             )
-        towerSpawner2.modelTower.dph = 2
         addTowerSpawner(towerSpawner2)
-
+/*
         val towerSpawner3 =
             TowerSpawner(
                 context,
@@ -193,7 +192,7 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
                 )
             )
         towerSpawner8.modelTower.dph = 8
-        addTowerSpawner(towerSpawner8)
+        addTowerSpawner(towerSpawner8)*/
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -218,13 +217,13 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
     fun gamePause() {
         gamePaused = true
         towers.forEach { it.paused = true }
-        gameObjectList.forEach { if (it is Enemy) it.paused = true }
+        enemies.forEach { if (it is Enemy) it.paused = true }
     }
 
     fun gameResume() {
         gamePaused = false
         towers.forEach { it.paused = false }
-        gameObjectList.forEach { if (it is Enemy) it.paused = false }
+        enemies.forEach { if (it is Enemy) it.paused = false }
     }
 
     private var timeLastSpawn = 0L
@@ -234,15 +233,15 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         updateGameObjects()
         enemyInTowerRange()
 
-        if (TimeController.getGameTime() - timeLastSpawn > 500) {
-            gameObjectList.add(
+        if (TimeController.getGameTime() - timeLastSpawn > 1000) {
+            enemies.add(
                 Enemy(Box2D(Vector2f(0f, 0f), Vector2f(100f, 100f)), road).apply {
                     this.setHealth(health)
-                    setVelocity(0.5f)
+                    setVelocity(2f)
                 }
             )
             timeLastSpawn = TimeController.getGameTime()
-            health = (health * 1.5).toInt()
+            //health = (health * 1.5).toInt()
         }
     }
 
@@ -254,7 +253,7 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
     private fun updateGameObjects() {
         towerSpawners.forEach() { it.update() }
         towers.forEach() { it.update() }
-        gameObjectList.update().forEach { towers.forEach { tower -> tower.towerArea.remove(it) } }
+        enemies.update().forEach { towers.forEach { tower -> tower.towerArea.remove(it) } }
 
         movableTowers.forEach { movableTower ->
             if (!movableTower.movable.get()) movableTowers.remove(movableTower)
@@ -278,10 +277,8 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
 
     private fun enemyInTowerRange() {
         towers.forEach { tower ->
-            gameObjectList.forEach { enemy ->
-                if (enemy is Enemy) {
-                    tower.towerArea.isInside(enemy)
-                }
+            enemies.forEach { enemy ->
+                tower.towerArea.isInside(enemy)
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.example.towerdefense.gameObjects.tower
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -8,13 +9,13 @@ import android.view.MotionEvent
 import android.view.ViewGroup
 import com.example.towerdefense.GameObjectView
 import com.example.towerdefense.Physics2d.primitives.Box2D
-import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.utility.gameView
 import com.example.towerdefense.utility.money
 import com.example.towerdefense.utility.towerClicked
 import org.joml.Vector2f
 
-class TowerSpawner(context: Context, box2D: Box2D, var modelTower: Tower = Tower(300f, box2D)) :
+@SuppressLint("ViewConstructor")
+class TowerSpawner(context: Context, box2D: Box2D, var modelTower: Tower) :
     GameObjectView(context, box2D) {
 
     init {
@@ -32,9 +33,11 @@ class TowerSpawner(context: Context, box2D: Box2D, var modelTower: Tower = Tower
         }
         return when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                if (money.getAndAdd(-100) < 100 || gameView!!.surfaceView.movableTowers.isNotEmpty()) return false.also {
+                if (money.getAndAdd(-modelTower.cost()) < modelTower.cost() ||
+                    gameView!!.surfaceView.movableTowers.isNotEmpty()
+                ) return false.also {
                     money.getAndAdd(
-                        100
+                        modelTower.cost()
                     )
                 }
                 val tower = modelTower.clone()
@@ -60,6 +63,5 @@ class TowerSpawner(context: Context, box2D: Box2D, var modelTower: Tower = Tower
     fun damageType(damageType: TowerArea.DamageType) {
         this.damageType = damageType
     }
-
-
+    
 }
