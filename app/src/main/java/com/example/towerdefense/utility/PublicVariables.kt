@@ -14,9 +14,9 @@ var cameraPosition = Vector2f(0f, 0f)
 var gameView : GameView? = null
 var towerClicked : Tower? = null
 
-var money = AtomicInteger(100)
-var gameHealth = AtomicInteger(10)
-var gameVelocity = 10
+var money = AtomicInteger(1000)
+var gameHealth = AtomicInteger(1000)
+var gameVelocity = 1
 
 fun Vector2i.toVector2f(): Vector2f {
     return Vector2f(this.x.toFloat(), this.y.toFloat())

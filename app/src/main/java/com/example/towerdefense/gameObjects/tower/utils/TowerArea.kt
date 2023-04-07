@@ -1,21 +1,18 @@
-package com.example.towerdefense.gameObjects.tower
+package com.example.towerdefense.gameObjects.tower.utils
 
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import com.example.towerdefense.gameObjects.lists.EnemyList
 import com.example.towerdefense.Physics2d.primitives.Circle
 import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
-import com.example.towerdefense.gameObjects.DrawableObject
 import com.example.towerdefense.gameObjects.Enemy
-import com.example.towerdefense.utility.Interfaces.Drawable
 import org.joml.Vector2f
 
 class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
     constructor(radius: Float, center: Vector2f) : this(radius, Rigidbody2D(center))
-
-    var damageType = DamageType.FIRST
 
     override fun draw(p0: Canvas) {
         //Draw circle with radius radius
@@ -25,28 +22,27 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
         p0.drawCircle(center.x, center.y, radius, paint)
     }
 
-    var inArea = ArrayDeque<Enemy>()
-
-    fun isInside(enemy: Enemy): Boolean {
-        val shouldBeInside = IntersectionDetector2D.intersection(this, enemy.collider2D())
-        if (shouldBeInside) {
-            if (!inArea.contains(enemy)) {
-                inArea.add(enemy)
-            }
-        } else {
-            inArea.remove(enemy)
+    private var inArea = ArrayDeque<Enemy>()
+    fun updateArea(enemies: EnemyList): Boolean {
+        inArea.clear()
+        for (enemy in enemies) {
+            if (IntersectionDetector2D.intersection(this, enemy.collider2D())) inArea.add(enemy)
         }
-        return shouldBeInside
+        return inArea.isNotEmpty()
     }
 
     fun remove(enemy: Enemy) {
         inArea.remove(enemy)
     }
 
-    fun getFirst(): Enemy? {
-        return inArea.firstOrNull()
-    }
+    fun isEmpty(): Boolean = inArea.isEmpty()
 
+    fun isNotEmpty(): Boolean = inArea.isNotEmpty()
+
+    fun getFirst(): Enemy? = inArea.minByOrNull { it.distanceToNextCornerSquared() }
+
+
+    private var damageType = DamageType.FIRST
     fun toDamage(): Enemy? {
         return when (damageType) {
             DamageType.FIRST -> getFirst()
@@ -54,9 +50,11 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
             DamageType.RANDOM -> getRandom()
             DamageType.MOST_HEALTH -> getMostHealthy()
             DamageType.LEAST_HEALTH -> getLeastHealthy()
-            else -> getFirst()
+            DamageType.FASTEST -> getFastest()
+            DamageType.SLOWEST -> getSlowest()
         }
     }
+
 
     fun setToDamageType(damageType: DamageType) {
         this.damageType = damageType
@@ -67,11 +65,19 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
     }
 
     private fun getLeastHealthy(): Enemy? {
-        return inArea.minByOrNull { it.getHealth() }
+        return inArea.minByOrNull { it.getMaxHealth() }
     }
 
     private fun getMostHealthy(): Enemy? {
-        return inArea.maxByOrNull { it.getHealth() }
+        return inArea.maxByOrNull { it.getMaxHealth() }
+    }
+
+    private fun getFastest(): Enemy? {
+        return inArea.maxByOrNull { it.getVelocity() }
+    }
+
+    private fun getSlowest(): Enemy? {
+        return inArea.minByOrNull { it.getVelocity() }
     }
 
     private fun getRandom(): Enemy? {
@@ -87,14 +93,16 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
     }
 
     override fun toString(): String {
-        val stringBuilder = StringBuilder()
-        stringBuilder.append("TowerArea(inArea=")
-        inArea.forEach { stringBuilder.append(" $it") }
-        stringBuilder.append(")")
-        return stringBuilder.toString()
+        return "TowerArea(inArea=$inArea, damageType=$damageType)"
     }
 
     enum class DamageType {
-        FIRST, LAST, RANDOM, MOST_HEALTH, LEAST_HEALTH
+        FIRST, LAST, RANDOM, MOST_HEALTH, LEAST_HEALTH, FASTEST, SLOWEST;
+
+        fun equals(damageType: DamageType): Boolean {
+            return this == damageType
+        }
     }
+
+
 }

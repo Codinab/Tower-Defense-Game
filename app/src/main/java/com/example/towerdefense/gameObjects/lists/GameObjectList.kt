@@ -1,26 +1,16 @@
+package com.example.towerdefense.gameObjects.lists
+
 import android.graphics.Canvas
 import android.view.MotionEvent
-import com.example.towerdefense.gameObjects.Enemy
 import com.example.towerdefense.gameObjects.GameObject
-import com.example.towerdefense.utility.money
 import org.joml.Vector2f
 import java.util.concurrent.CopyOnWriteArrayList
 
 open class GameObjectList(private val gameObjects: CopyOnWriteArrayList<GameObject> = CopyOnWriteArrayList()) :
     MutableList<GameObject> by gameObjects {
-    fun update() : ArrayList<Enemy>{
-        val enemies = ArrayList<Enemy>()
-        gameObjects.forEach {
-            it.update()
-            if (it is Enemy && it.getDelete()) {
-                money.addAndGet(10)
-                enemies.add(it)
-                gameObjects.remove(it)
-            }
-        }
-        return enemies
+    fun update() {
+        gameObjects.forEach { it.update() }
     }
-
 
     override fun add(gameObject: GameObject): Boolean {
         return gameObjects.add(gameObject)

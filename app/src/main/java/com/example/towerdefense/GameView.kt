@@ -36,7 +36,7 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
             this.layoutParams = layoutParams
             setOnClickListener {
                 if (towerClicked != null) {
-                    money.addAndGet(towerClicked!!.dph * 10)
+                    money.addAndGet(towerClicked!!.cost())
                     towerClicked!!.destroy()
                 }
             }
@@ -59,7 +59,6 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
                 if (towerClicked != null) {
                     if (money.getAndAdd(-100) >= 100) towerClicked!!.upgrade()
                     else money.addAndGet(100)
-                    println("Tower damage: " + towerClicked!!.dph)
                 }
             }
             addView(this)

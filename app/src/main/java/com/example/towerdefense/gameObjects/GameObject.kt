@@ -24,6 +24,7 @@ open class GameObject(private var collider2D: Collider2D) : InputEvent, Movable,
     }
 
     override fun onTouchEvent(event: MotionEvent, position: Vector2f): Boolean {
+        if (toDelete()) return false
         return when (event.action) {
             MotionEvent.ACTION_DOWN -> handleDownEvent(event, position)
             MotionEvent.ACTION_MOVE -> handleMoveEvent(event, position)
@@ -102,6 +103,7 @@ open class GameObject(private var collider2D: Collider2D) : InputEvent, Movable,
     }
 
     override fun update() {
+        if (toDelete()) return
         collider2D.update()
     }
 
@@ -114,6 +116,7 @@ open class GameObject(private var collider2D: Collider2D) : InputEvent, Movable,
     }
 
     override fun draw(canvas: Canvas) {
+        if (toDelete()) return
         drawableObject.draw(canvas)
     }
 
@@ -151,5 +154,10 @@ open class GameObject(private var collider2D: Collider2D) : InputEvent, Movable,
         return result
     }
 
+    private var toDelete = false
+    fun destroy() {
+        toDelete = true
+    }
+    fun toDelete(): Boolean = toDelete
 
 }

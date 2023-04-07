@@ -1,4 +1,4 @@
-package com.example.towerdefense.gameObjects.tower
+package com.example.towerdefense.gameObjects.tower.utils
 
 import android.graphics.Canvas
 import android.view.MotionEvent
@@ -11,13 +11,14 @@ import com.example.towerdefense.utility.gameView
 import org.joml.Vector2f
 
 class Projectile(var circle: Circle, private var damage : Int) : GameObject(circle, false, false) {
-
+    
+    private var pause: Boolean = false
     private var toDelete = false
     private var timeToLive = 4000L
     private val spawnTime = TimeController.getGameTime()
     private var enemyHits = mutableListOf<Enemy>()
     override fun update() {
-        if (toDelete) return
+        if (toDelete || pause) return
         super.update()
         if (TimeController.getGameTime() - spawnTime > timeToLive) {
             destroy()
@@ -35,12 +36,14 @@ class Projectile(var circle: Circle, private var damage : Int) : GameObject(circ
         super.draw(canvas)
     }
 
-    private fun destroy() {
-        toDelete = true
-        gameView!!.surfaceView.projectiles.remove(this)
-    }
-
     override fun onTouchEvent(event: MotionEvent, position: Vector2f): Boolean {
         return false
+    }
+    
+    fun pause() {
+        pause = true
+    }
+    fun resume() {
+        pause = false
     }
 }

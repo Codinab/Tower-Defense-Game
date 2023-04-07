@@ -1,4 +1,4 @@
-package com.example.towerdefense.gameObjects.tower
+package com.example.towerdefense.gameObjects
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -9,6 +9,8 @@ import android.view.MotionEvent
 import android.view.ViewGroup
 import com.example.towerdefense.GameObjectView
 import com.example.towerdefense.Physics2d.primitives.Box2D
+import com.example.towerdefense.gameObjects.tower.Tower
+import com.example.towerdefense.gameObjects.tower.utils.TowerArea
 import com.example.towerdefense.utility.gameView
 import com.example.towerdefense.utility.money
 import com.example.towerdefense.utility.towerClicked
@@ -34,7 +36,7 @@ class TowerSpawner(context: Context, box2D: Box2D, var modelTower: Tower) :
         return when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 if (money.getAndAdd(-modelTower.cost()) < modelTower.cost() ||
-                    gameView!!.surfaceView.movableTowers.isNotEmpty()
+                    gameView!!.surfaceView.movableTower != null
                 ) return false.also {
                     money.getAndAdd(
                         modelTower.cost()
@@ -43,7 +45,7 @@ class TowerSpawner(context: Context, box2D: Box2D, var modelTower: Tower) :
                 val tower = modelTower.clone()
 
                 gameView!!.surfaceView.towers.add(tower)
-                gameView!!.surfaceView.movableTowers.add(tower)
+                gameView!!.surfaceView.movableTower = tower
 
                 lastTower = tower
                 towerClicked = tower

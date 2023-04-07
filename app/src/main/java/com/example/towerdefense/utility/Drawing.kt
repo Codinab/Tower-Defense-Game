@@ -35,6 +35,12 @@ class Drawing {
         fun drawText(canvas: Canvas, text: String, position: Vector2f, paint: Paint) {
             canvas.drawText(text, position.x, position.y, paint)
         }
+        fun drawText(canvas: Canvas, text: String, position: Vector2f, size: Float) {
+            val paint = Paint()
+            paint.textSize = size
+            paint.color = Color.BLACK
+            canvas.drawText(text, position.x, position.y, paint)
+        }
 
         fun drawText(canvas: Canvas, text: String, position: Vector2f) {
             val paint = Paint()

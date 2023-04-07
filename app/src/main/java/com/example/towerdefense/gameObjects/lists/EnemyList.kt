@@ -1,4 +1,4 @@
-package com.example.towerdefense
+package com.example.towerdefense.gameObjects.lists
 
 import android.graphics.Canvas
 import android.view.MotionEvent
@@ -10,33 +10,27 @@ import java.util.concurrent.CopyOnWriteArrayList
 class EnemyList(private val enemies: CopyOnWriteArrayList<Enemy> = CopyOnWriteArrayList()) :
     MutableList<Enemy> by enemies {
 
-    fun update() : ArrayList<Enemy>{
-        val enemies = ArrayList<Enemy>()
+    fun update() {
         this.enemies.forEach {
             it.update()
-            if (it.getDelete()) {
+            if (it.toDelete()) {
                 money.addAndGet(10)
-                enemies.add(it)
-                this.enemies.remove(it)
             }
         }
-        return enemies
     }
 
 
-    override fun add(enemy: Enemy): Boolean {
-        return enemies.add(enemy)
+    override fun add(element: Enemy): Boolean {
+        return enemies.add(element)
     }
 
-    override fun remove(enemy: Enemy): Boolean {
-        return enemies.remove(enemy)
+    override fun remove(element: Enemy): Boolean {
+        return enemies.remove(element)
     }
     fun draw(canvas: Canvas) {
         enemies.forEach { it.draw(canvas) }
     }
-
-
-
+    
     fun onTouchEvent(event: MotionEvent, position: Vector2f): Boolean {
         return enemies.any { it.onTouchEvent(event, position) }
     }
@@ -51,5 +45,8 @@ class EnemyList(private val enemies: CopyOnWriteArrayList<Enemy> = CopyOnWriteAr
         string += "}"
         return string
     }
-
+    
+    fun pause() = forEach { it.paused = true }
+    fun resume() = forEach { it.paused = false }
+    
 }

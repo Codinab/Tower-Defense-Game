@@ -25,8 +25,8 @@ class Game{}
 /*@Deprecated("Use GameView instead")
 class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder.Callback {
     private var gameLoop: GameLoop
-    var gameObjectList = GameObjectList()
-    var gameObjectListToRemove = GameObjectList()
+    var gameObjectList = com.example.towerdefense.gameObjects.lists.GameObjectList()
+    var gameObjectListToRemove = com.example.towerdefense.gameObjects.lists.GameObjectList()
     var health = 3
     var money = 1000
     var level = 1
@@ -184,7 +184,7 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
     }
     
     private fun handleUpEvent(
-        movable: GameObjectList,
+        movable: com.example.towerdefense.gameObjects.lists.GameObjectList,
         event: MotionEvent,
         adjustedPosition: Vector2f
     ) {
@@ -192,10 +192,10 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
     }
     
     private fun handleDownEvent(
-        movable: GameObjectList,
+        movable: com.example.towerdefense.gameObjects.lists.GameObjectList,
         event: MotionEvent,
         adjustedPosition: Vector2f,
-        clicked: GameObjectList
+        clicked: com.example.towerdefense.gameObjects.lists.GameObjectList
     ) {
         if (movable.isNotEmpty()) movable.onTouchEvent(event, adjustedPosition)
         else if (clicked.isNotEmpty()) clicked.onTouchEvent(event, adjustedPosition)
@@ -219,10 +219,10 @@ class Game(context: Context) : SurfaceView(context), Serializable, SurfaceHolder
     }
     
     private fun handleMoveEvent(
-        movable: GameObjectList,
+        movable: com.example.towerdefense.gameObjects.lists.GameObjectList,
         event: MotionEvent,
         adjustedPosition: Vector2f,
-        clicked: GameObjectList
+        clicked: com.example.towerdefense.gameObjects.lists.GameObjectList
     ) {
         if (movable.isNotEmpty()) movable.onTouchEvent(event, adjustedPosition)
         else if (clicked.isNotEmpty()) return
