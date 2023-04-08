@@ -11,7 +11,7 @@ class TowerList(private val towers: CopyOnWriteArrayList<Tower> = CopyOnWriteArr
     
     
     fun pause() = forEach { it.pause() }
-
+    
     
     fun resume() = forEach { it.resume() }
     
@@ -25,9 +25,7 @@ class TowerList(private val towers: CopyOnWriteArrayList<Tower> = CopyOnWriteArr
         return towers.remove(element)
     }
     
-    fun draw(canvas: Canvas) {
-        towers.forEach { it.draw(canvas) }
-    }
+    fun draw(canvas: Canvas) = towers.forEach { it.draw(canvas) }
     
     fun getClicked(position: Vector2f?): TowerList {
         val clickedTowers = TowerList()
@@ -53,7 +51,7 @@ class TowerList(private val towers: CopyOnWriteArrayList<Tower> = CopyOnWriteArr
     fun getTowers(): List<Tower> = towers
     
     
-    fun updateAreas(enemies: EnemyList) = this.forEach { it.towerArea.updateArea(enemies) }
+    fun updateAreas(enemies: EnemyList) = this.forEach { it.updateArea(enemies) }
     
     
     override fun toString(): String {

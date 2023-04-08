@@ -7,9 +7,10 @@ import android.view.MotionEvent
 import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.utility.*
 import org.joml.Vector2f
+import java.io.Serializable
 import kotlin.math.pow
 
-class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collider2D)
+class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collider2D), Serializable
 {
     private var positionFrom : Vector2f
     private var positionTo : Vector2f

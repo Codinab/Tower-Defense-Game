@@ -36,12 +36,6 @@ open class TLaser(radius: Float, private val collider2D: Collider2D) : Tower(rad
         Drawing.drawLine(canvas, collider2D.body.position, enemyHit!!.position(), 6f)
     }
     
-    override fun update() {
-        if (movable.get()) return
-        super.update()
-        applyDamageInArea()
-    }
-
     override fun applyDamageInArea() {
         if (readyToDamage()) {
             towerArea.toDamage()?.let {
@@ -61,7 +55,7 @@ open class TLaser(radius: Float, private val collider2D: Collider2D) : Tower(rad
     override fun cost(): Int = 100
     override fun clone(): Tower = TLaser(radius, collider2D.clone(), dph, timeActionDelay)
     override fun toString(): String {
-        return "Tower(radius=$radius, collider2D=$collider2D, enemyHit=$enemyHit, lastHit=$lastHit, towerArea=$towerArea, dph=$dph, paused=$paused, timeLastDamage=$timeLastAction, hitDelay=$timeActionDelay)"
+        return "Tower(radius=$radius, collider2D=$collider2D, enemyHit=$enemyHit, lastHit=$lastHit, towerArea=$towerArea, dph=$dph, timeLastDamage=$timeLastAction, hitDelay=$timeActionDelay)"
     }
     
     

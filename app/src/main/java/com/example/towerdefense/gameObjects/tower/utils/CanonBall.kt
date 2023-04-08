@@ -10,7 +10,7 @@ import com.example.towerdefense.utility.TimeController
 import com.example.towerdefense.utility.gameView
 import org.joml.Vector2f
 
-class Projectile(var circle: Circle, private var damage : Int) : GameObject(circle, false, false) {
+class CanonBall(var circle: Circle, private var damage : Int) : GameObject(circle, false, false) {
     
     private var pause: Boolean = false
     private var toDelete = false
@@ -39,7 +39,6 @@ class Projectile(var circle: Circle, private var damage : Int) : GameObject(circ
     override fun onTouchEvent(event: MotionEvent, position: Vector2f): Boolean {
         return false
     }
-    
     fun pause() {
         pause = true
     }

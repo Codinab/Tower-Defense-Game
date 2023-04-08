@@ -38,11 +38,10 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
     fun isEmpty(): Boolean = inArea.isEmpty()
 
     fun isNotEmpty(): Boolean = inArea.isNotEmpty()
-
-    fun getFirst(): Enemy? = inArea.minByOrNull { it.distanceToNextCornerSquared() }
-
-
+    
     private var damageType = DamageType.FIRST
+    
+    
     fun toDamage(): Enemy? {
         return when (damageType) {
             DamageType.FIRST -> getFirst()
@@ -54,38 +53,46 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
             DamageType.SLOWEST -> getSlowest()
         }
     }
-
-
     fun setToDamageType(damageType: DamageType) {
         this.damageType = damageType
     }
-
+    
+    
     fun getToDamageType(): DamageType {
         return damageType
     }
-
+    
+    fun getFirst(): Enemy? = inArea.minByOrNull { it.distanceToNextCornerSquared() }
+    
+    private fun getLast(): Enemy? = inArea.maxByOrNull { it.distanceToNextCornerSquared() }
+    
     private fun getLeastHealthy(): Enemy? {
         return inArea.minByOrNull { it.getMaxHealth() }
     }
-
+    
     private fun getMostHealthy(): Enemy? {
-        return inArea.maxByOrNull { it.getMaxHealth() }
+        var max = 0
+        var maxEnemy: Enemy? = null
+        for (enemy in inArea) {
+            if (enemy == null) continue
+            if (enemy.getHealth() > max) {
+                max = enemy.getHealth()
+                maxEnemy = enemy
+            }
+        }
+        return maxEnemy
     }
-
+    
     private fun getFastest(): Enemy? {
         return inArea.maxByOrNull { it.getVelocity() }
     }
-
+    
     private fun getSlowest(): Enemy? {
         return inArea.minByOrNull { it.getVelocity() }
     }
-
+    
     private fun getRandom(): Enemy? {
         return inArea.randomOrNull()
-    }
-
-    fun getLast(): Enemy? {
-        return inArea.lastOrNull()
     }
 
     override fun clone(): Collider2D {
@@ -98,10 +105,6 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
 
     enum class DamageType {
         FIRST, LAST, RANDOM, MOST_HEALTH, LEAST_HEALTH, FASTEST, SLOWEST;
-
-        fun equals(damageType: DamageType): Boolean {
-            return this == damageType
-        }
     }
 
 

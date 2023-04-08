@@ -22,7 +22,7 @@ class TInferno(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
     
     private var dphInferno = 0.1f
     private var dphLog = this.dphInferno
-    override var timeActionDelay: Float = 1000f
+    override var timeActionDelay: Float = 100f
     
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
@@ -87,7 +87,8 @@ class TInferno(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
     
     
     private fun drawTowerDamage(canvas: Canvas) {
-        towerArea.toDamage()?.let { drawCircleAnimation(canvas, it.position(), 20f) }
+        val enemy = towerArea.toDamage() ?: return
+        drawCircleAnimation(canvas, enemy.position(), 20f)
     }
     
     private fun drawRayParts(canvas: Canvas, vectors: List<Vector2f>) {
@@ -117,12 +118,12 @@ class TInferno(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
         if (readyToDamage()) {
             towerArea.toDamage()?.let {
                 it.damage(dphLog.toInt())
-                for (i in 0 until gameVelocity) dphLog *= 1.01f
+                for (i in 0 until gameVelocity) dphLog *= 1.03f
                 if (it.getHealth() <= 0) it.destroy()
             }
             timeLastAction = TimeController.getGameTime()
         } else if (towerArea.isEmpty()) for (i in 0 until gameVelocity) dphLog =
-            max(dphInferno, dphLog / 1.01f)
+            max(dphInferno, dphLog.div(1.0001f))
         
     }
     

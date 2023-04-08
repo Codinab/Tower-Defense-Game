@@ -5,6 +5,7 @@ import android.view.MotionEvent
 import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.gameObjects.DrawableObject
 import com.example.towerdefense.gameObjects.GameObject
+import com.example.towerdefense.gameObjects.lists.EnemyList
 import com.example.towerdefense.gameObjects.tower.utils.TowerArea
 import com.example.towerdefense.utility.*
 import com.example.towerdefense.utility.Interfaces.Drawable
@@ -30,7 +31,7 @@ abstract class Tower(var radius: Float, private val collider2D: Collider2D) : Ga
     }
     
     override fun update() {
-        if (movable.get()) return
+        if (movable.get() || paused) return
         super.update()
         applyDamageInArea()
     }
@@ -83,5 +84,7 @@ abstract class Tower(var radius: Float, private val collider2D: Collider2D) : Ga
         paused = false
     }
     
-    
+    fun updateArea(enemies: EnemyList) {
+        towerArea.updateArea(enemies)
+    }
 }

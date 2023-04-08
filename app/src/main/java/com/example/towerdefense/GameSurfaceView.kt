@@ -58,7 +58,7 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         road.draw(canvas)
         
         enemies.draw(canvas)
-        towers.forEach { it.draw(canvas) }
+        towers.draw(canvas)
         projectiles.draw(canvas)
         
         if (fps) drawUPS(canvas)
@@ -133,7 +133,7 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
                 TCanon(
                     300f,
                     Box2D(
-                        Vector2f(100f, 100f),
+                        Vector2f(150f, 150f),
                         Rigidbody2D(Vector2f(screenSize.x.toFloat() - 100f, 210f))
                     )
                 )
@@ -304,17 +304,21 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
 
 
         updateMovableTower()
-
+    
+        updateEnemies()
         updateTowerSpawners() //Does nothing
         updateTowers()
-        updateEnemies()
-        updateTowerAreas()
+        updateProjectiles()
 
 /*
         movableTowers.removeIf { !it.movable.get() }
 */
     }
-
+    
+    private fun updateProjectiles() {
+        projectiles.update()
+    }
+    
     private fun updateMovableTower() {
         if (!movableTowerUpdateConditions()) return
         towers.forEach {
@@ -345,15 +349,11 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
 }
 
 private fun updateTowers() {
-    towers.forEach() { it.update() }
+    towers.update()
+    towers.updateAreas(enemies)
 }
 
 private fun updateTowerSpawners() { towerSpawners.forEach() { it.update() } }
-
-private fun updateTowerAreas() {
-    val test = towers.updateAreas(enemies)
-    println(test)
-}
 
 fun drawUPS(canvas: Canvas?) {
     gameLoop ?: return
