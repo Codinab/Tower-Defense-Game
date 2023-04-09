@@ -123,7 +123,7 @@ class TInferno(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
             }
             timeLastAction = TimeController.getGameTime()
         } else if (towerArea.isEmpty()) for (i in 0 until gameVelocity) dphLog =
-            max(dphInferno, dphLog.div(1.0001f))
+            max(dphInferno, dphLog.div(1.001f))
         
     }
     

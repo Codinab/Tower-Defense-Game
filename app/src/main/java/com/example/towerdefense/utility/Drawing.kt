@@ -1,5 +1,6 @@
 package com.example.towerdefense.utility
 
+import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -64,6 +65,13 @@ class Drawing {
             val paint = Paint()
             paint.color = Color.BLACK
             drawBox2D(canvas, box2D, paint)
+        }
+        
+        fun drawBitmap(canvas: Canvas, bitmap: Bitmap, position: Vector2f, paint: Paint, rotation: Float) {
+            canvas.save()
+            canvas.rotate(rotation, position.x, position.y)
+            canvas.drawBitmap(bitmap, position.x, position.y, paint)
+            canvas.restore()
         }
 
         fun drawHealthBar(canvas: Canvas, leftBottomHealthBarPos: Vector2f, rightBottomHealthBarPos: Vector2f, health: Int, maxHealth: Int) {

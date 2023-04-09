@@ -14,7 +14,7 @@ var cameraPosition = Vector2f(0f, 0f)
 var gameView : GameView? = null
 var towerClicked : Tower? = null
 
-var money = AtomicInteger(1000)
+var money = AtomicInteger(100000)
 var gameHealth = AtomicInteger(1000)
 var gameVelocity = 1
 
