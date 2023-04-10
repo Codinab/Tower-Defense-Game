@@ -156,18 +156,18 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
                 ).also { it.dph = 3 }
             )
         addTowerSpawner(towerSpawner3)
-/*
+
         val towerSpawner4 =
             TowerSpawner(
                 context,
                 Box2D(
                     Vector2f(100f, 100f),
                     Rigidbody2D(Vector2f(screenSize.x.toFloat() - 100f, 430f))
-                )
+                ),
+                TRocketLauncher(200f, Box2D(Vector2f(100f, 100f), Rigidbody2D(Vector2f(screenSize.x.toFloat() - 100f, 430f))))
             )
-        towerSpawner4.modelTower.dph = 4
         addTowerSpawner(towerSpawner4)
-
+/*
         val towerSpawner5 =
             TowerSpawner(
                 context,

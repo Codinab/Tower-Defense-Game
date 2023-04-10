@@ -14,15 +14,14 @@ import com.example.towerdefense.utility.TimeController
 import com.example.towerdefense.utility.gameView
 import org.joml.Vector2f
 
-class CanonBall(var circle: Circle, private var damage : Int) : GameObject(circle, false, false) {
+class CanonBall(var circle: Circle, private var damage : Int) : GameObject(circle, false, false), Projectile {
     
     private var pause: Boolean = false
-    private var toDelete = false
     private var timeToLive = 4000L
     private val spawnTime = TimeController.getGameTime()
     private var damagedEnemies = ArrayList<Enemy>()
     override fun update() {
-        if (toDelete || pause) return
+        if (toDelete() || pause) return
         super.update()
         if (TimeController.getGameTime() - spawnTime > timeToLive) {
             destroy()
@@ -38,25 +37,19 @@ class CanonBall(var circle: Circle, private var damage : Int) : GameObject(circl
     }
 
     override fun draw(canvas: Canvas) {
-        if (toDelete) return
-        //super.draw(canvas)
+        if (toDelete()) return
+        super.draw(canvas)
         //Draw cohete.png in drawable
-        val bitmap = BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.cohete)
-        val paint = Paint().apply {
-            isAntiAlias = true
-            isFilterBitmap = true
-            isDither = true
-        }
-        Drawing.drawBitmap(canvas, bitmap, position(),  paint, getRotation())
+        
     }
 
     override fun onTouchEvent(event: MotionEvent, position: Vector2f): Boolean {
         return false
     }
-    fun pause() {
+    override fun pause() {
         pause = true
     }
-    fun resume() {
+    override fun resume() {
         pause = false
     }
 }

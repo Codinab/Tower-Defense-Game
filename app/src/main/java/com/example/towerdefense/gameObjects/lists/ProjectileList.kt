@@ -1,14 +1,14 @@
 package com.example.towerdefense.gameObjects.lists
 
 import android.graphics.Canvas
-import com.example.towerdefense.gameObjects.tower.utils.CanonBall
+import com.example.towerdefense.gameObjects.tower.utils.Projectile
 import java.util.concurrent.CopyOnWriteArrayList
 
-class ProjectileList(private val canonBalls: CopyOnWriteArrayList<CanonBall> = CopyOnWriteArrayList()) :
-    MutableList<CanonBall> by canonBalls {
+class ProjectileList(private val projectiles: CopyOnWriteArrayList<Projectile> = CopyOnWriteArrayList()) :
+    MutableList<Projectile> by projectiles {
     
     
-    fun draw(canvas: Canvas) = canonBalls.forEach { it.draw(canvas) }
+    fun draw(canvas: Canvas) = projectiles.forEach { it.draw(canvas) }
     fun pause() = forEach { it.pause() }
     fun resume() = forEach { it.resume() }
     fun update() = forEach { it.update() }
