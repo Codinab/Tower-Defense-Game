@@ -5,19 +5,16 @@ import android.view.MotionEvent
 import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.utility.Interfaces.*
-import com.example.towerdefense.utility.gameView
-import com.example.towerdefense.utility.towerClicked
 import org.joml.Vector2f
 import java.util.concurrent.atomic.AtomicBoolean
 
 open class GameObject(private var collider2D: Collider2D) : InputEvent, Movable, Positionable,
-    Stateful, Drawable {
+    Stateful {
     constructor(collider2D: Collider2D, movable: Boolean, fixable: Boolean) : this(collider2D) {
         this.movable.set(movable)
         this.fixable.set(fixable)
     }
 
-    override var drawableObject: DrawableObject = DrawableObject(collider2D)
     override var lastClickTime: Long = 0L
     fun collider2D(): Collider2D {
         return collider2D
@@ -70,11 +67,11 @@ open class GameObject(private var collider2D: Collider2D) : InputEvent, Movable,
         collider2D.body.velocity += velocity
     }
 
-    override fun getVelocity(): Float {
+    override fun velocity(): Float {
         return collider2D.body.velocity
     }
 
-    override fun setVelocity(velocity: Float) {
+    override fun velocity(velocity: Float) {
         collider2D.body.velocity = velocity
     }
 
@@ -115,9 +112,9 @@ open class GameObject(private var collider2D: Collider2D) : InputEvent, Movable,
         return Vector2f(collider2D.body.position)
     }
 
-    override fun draw(canvas: Canvas) {
+    open fun draw(canvas: Canvas) {
         if (toDelete()) return
-        drawableObject.draw(canvas)
+        collider2D.draw(canvas)
     }
 
     override var movable: AtomicBoolean = AtomicBoolean(true)
@@ -125,7 +122,7 @@ open class GameObject(private var collider2D: Collider2D) : InputEvent, Movable,
     override var layerLevel: Int = 0
 
     override fun toString(): String {
-        return "GameObject(position=${position()}, velocity=${getVelocity()}, rotation=${getRotation()})"
+        return "GameObject(position=${position()}, velocity=${velocity()}, rotation=${getRotation()})"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -135,7 +132,6 @@ open class GameObject(private var collider2D: Collider2D) : InputEvent, Movable,
         other as GameObject
 
         if (collider2D != other.collider2D) return false
-        if (drawableObject != other.drawableObject) return false
         if (lastClickTime != other.lastClickTime) return false
         if (movable != other.movable) return false
         if (fixable != other.fixable) return false
@@ -146,7 +142,6 @@ open class GameObject(private var collider2D: Collider2D) : InputEvent, Movable,
 
     override fun hashCode(): Int {
         var result = collider2D.hashCode()
-        result = 31 * result + (drawableObject?.hashCode() ?: 0)
         result = 31 * result + lastClickTime.hashCode()
         result = 31 * result + movable.hashCode()
         result = 31 * result + fixable.hashCode()

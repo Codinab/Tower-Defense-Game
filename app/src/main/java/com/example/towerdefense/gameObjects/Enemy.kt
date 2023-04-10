@@ -24,7 +24,7 @@ class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collide
         fixable.set(false)
         positionFrom = road.startVector.toVector2f()
         position(positionFrom)
-        setVelocity(3f)
+        velocity(3f)
         positionTo = road.getNextCorner(positionFrom)
         setRotation(road.getFirstDirection().toAngle())
     }
@@ -41,13 +41,13 @@ class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collide
     override fun update() {
         if (paused || toDelete()) return
         super.update()
-        if (positionTo.distanceSquared(position()) < getVelocity().pow(2))
+        if (positionTo.distanceSquared(position()) < velocity().pow(2))
         {
             positionFrom = positionTo
             positionTo = road.getNextCorner(positionFrom)
             val direction = road.getRoadDirection(positionFrom)
             if (direction == Direction2D.UNDEFINED || toDelete()) {
-                setVelocity(0f)
+                velocity(0f)
                 gameHealth.getAndAdd(-1)
                 destroy()
             }
@@ -81,7 +81,7 @@ class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collide
     }
 
     override fun toString(): String {
-        return "Enemy(position=${position()}, velocity=${getVelocity()}, rotation=${getRotation()})"
+        return "Enemy(position=${position()}, velocity=${velocity()}, rotation=${getRotation()})"
     }
 
     fun getHealth() : Int
@@ -97,4 +97,6 @@ class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collide
         this.health = health
         this.maxHealth = health
     }
+    
+    
 }

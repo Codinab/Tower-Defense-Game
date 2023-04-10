@@ -283,7 +283,7 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
             enemies.add(
                 Enemy(Box2D(Vector2f(0f, 0f), Vector2f(100f, 100f)), road).apply {
                     this.setHealth(randomInt(1, 200, TimeController.getGameTime().toInt()))
-                    setVelocity(randomFloat(0.5f, 15f, TimeController.getGameTime().toInt()))
+                    velocity(randomFloat(0.5f, 15f, TimeController.getGameTime().toInt()))
                 }
             )
             timeLastSpawn = TimeController.getGameTime()

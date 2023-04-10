@@ -4,11 +4,32 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import com.example.towerdefense.Physics2d.JMath
 import com.example.towerdefense.Physics2d.primitives.Box2D
 import org.joml.Vector2f
 
 //static class Drawing
 class Drawing {
+    
+    class Animation(private val frames: Array<Bitmap>, var frameTime: Float) {
+        private var currentFrame = 0
+        private var lastFrameTime = 0L
+        
+        init {
+            //Set frame time to milliseconds
+        }
+        fun draw(canvas: Canvas, position: Vector2f, paint: Paint, rotation: Float) {
+            val elapsedFrameTime = TimeController.getGameTime() - lastFrameTime
+            if (elapsedFrameTime >= frameTime) {
+                currentFrame = (currentFrame + 1) % frames.size
+                
+                lastFrameTime = TimeController.getGameTime()
+            }
+            val frame = frames[currentFrame]
+            drawBitmap(canvas, frame, position, paint, rotation)
+        }
+    }
+    
     companion object {
 
         fun drawLine(canvas: Canvas, start: Vector2f, end: Vector2f, paint: Paint) {
@@ -31,6 +52,14 @@ class Drawing {
             paint.color = Color.BLACK
             paint.strokeWidth = width
             canvas.drawLine(start.x, start.y, end.x, end.y, paint)
+        }
+        
+        fun drawLine(canvas: Canvas, start: Vector2f, rotation: Float, length: Float) {
+            val end = Vector2f(start).normalize().mul(length)
+            JMath.rotate(end, rotation, start)
+            val paint = Paint()
+            paint.strokeWidth = 10f
+            drawLine(canvas, start, end, paint)
         }
 
         fun drawText(canvas: Canvas, text: String, position: Vector2f, paint: Paint) {
@@ -66,14 +95,17 @@ class Drawing {
             paint.color = Color.BLACK
             drawBox2D(canvas, box2D, paint)
         }
-        
+    
         fun drawBitmap(canvas: Canvas, bitmap: Bitmap, position: Vector2f, paint: Paint, rotation: Float) {
+            val x = position.x - bitmap.width * 0.5f
+            val y = position.y - bitmap.height * 0.5f
             canvas.save()
             canvas.rotate(rotation, position.x, position.y)
-            canvas.drawBitmap(bitmap, position.x, position.y, paint)
+            canvas.drawBitmap(bitmap, x, y, paint)
             canvas.restore()
         }
-
+    
+    
         fun drawHealthBar(canvas: Canvas, leftBottomHealthBarPos: Vector2f, rightBottomHealthBarPos: Vector2f, health: Int, maxHealth: Int) {
             val width = 10f
             val start = Vector2f(leftBottomHealthBarPos).add(0f, -width)

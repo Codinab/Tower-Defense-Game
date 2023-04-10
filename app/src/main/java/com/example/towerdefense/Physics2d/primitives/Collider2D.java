@@ -25,33 +25,9 @@ public abstract class Collider2D {
         return super.toString();
     }
 
-    public abstract void draw(@NotNull Canvas canvas); /*{
-        if (this instanceof Circle) {
-            Circle circle = (Circle) this;
-            canvas.drawCircle(circle.getCenter().x, circle.getCenter().y, circle.getRadius(), new Paint());
-        } else if (this instanceof Box2D) {
-            Box2D box = (Box2D) this;
-            canvas.drawRect(
-                    body.getPosition().x - box.getHalfSize().x,
-                    body.getPosition().y - box.getHalfSize().y,
-                    body.getPosition().x + box.getHalfSize().x,
-                    body.getPosition().y + box.getHalfSize().y,
-                    new Paint()
-            );
-        }
-    }*/
+    public abstract void draw(@NotNull Canvas canvas);
 
-    public abstract Vector2f layoutSize(); /*{
-        if (this instanceof Circle) {
-            Circle circle = (Circle) this;
-            return new Vector2f(circle.getRadius() * 2, circle.getRadius() * 2);
-        } else if (this instanceof Box2D) {
-            Box2D box = (Box2D) this;
-            return new Vector2f(box.getSize());
-        }
-        return new Vector2f();
-    }*/
-
+    public abstract Vector2f layoutSize();
 
     public abstract Collider2D clone();
 }

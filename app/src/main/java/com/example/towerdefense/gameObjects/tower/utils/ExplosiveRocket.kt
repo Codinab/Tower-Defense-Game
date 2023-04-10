@@ -11,63 +11,71 @@ import com.example.towerdefense.gameObjects.Enemy
 import com.example.towerdefense.gameObjects.GameObject
 import com.example.towerdefense.utility.Drawing
 import com.example.towerdefense.utility.TimeController
+import com.example.towerdefense.utility.angle
 import com.example.towerdefense.utility.gameView
 import org.joml.Vector2f
 
-class ExplosiveRocket(var circle: Circle) : GameObject(circle, false, false), Projectile {
+class ExplosiveRocket(var circle: Circle, var enemy: Enemy) : GameObject(circle, false, false), Projectile {
     
     private var pause: Boolean = false
-    private var timeToLive = 4000L
+    private var timeToLive = 4000f
     private val spawnTime = TimeController.getGameTime()
+    private var animation : Drawing.Animation
+    
+    init {
+        val frame1 = BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.cohete)
+        val frame2 = BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.cohete2)
+        val frame3 = BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.cohete3)
+        val frames = arrayOf(frame1, frame2, frame3)
+        animation = Drawing.Animation(frames, 100f)
+    }
     override fun update() {
         if (toDelete() || pause) return
-        if (explosionArea != null && TimeController.getGameTime() > timeToDestroy) {
-            destroy()
-            return
-        }
-        if (explosionArea != null) {
-            gameView!!.surfaceView.enemies.forEach { enemy ->
-                if (IntersectionDetector2D.intersection(explosionArea!!, enemy.collider2D()))
-                    enemy.damage(Int.MAX_VALUE)
-            }
-            return
-        }
         super.update()
-        if (TimeController.getGameTime() - spawnTime > timeToLive) {
-            if(explosionArea == null) destroy()
+        if (TimeController.getGameTime() > spawnTime + timeToLive && !explosion) {
+            generateExplosion()
         }
-        gameView!!.surfaceView.enemies.forEach { enemy ->
-            if (IntersectionDetector2D.intersection(circle, enemy.collider2D())) {
-                setVelocity(0f)
-                generateExplosion()
-                destroyInSeconds(15.5f)
+        if (TimeController.getGameTime() > timeToDestroy) {
+            destroy()
+        }
+        if (enemy.toDelete()) generateExplosion()
+        else circle.body.rotation = Vector2f(enemy.position()).sub(circle.body.position).normalize().angle()
+        gameView!!.surfaceView.enemies.forEach {
+            if (IntersectionDetector2D.intersection(circle, it.collider2D())) {
+                if (!explosion) generateExplosion()
+                else it.damage(100)
             }
         }
     }
     
-    private var timeToDestroy : Float = 0f
+    private var timeToDestroy: Float = Float.MAX_VALUE
     private fun destroyInSeconds(d: Float) {
         timeToDestroy = TimeController.getGameTime().toFloat() + d
     }
     
-    
-    var explosionArea : Circle? = null
+    private var explosion = false
     
     private fun generateExplosion() {
-        explosionArea = Circle(100f, Vector2f(position()))
+        velocity(0f)
+        explosion = true
+        circle.radius = circle.radius * 3
+        destroyInSeconds(15.5f)
     }
     
     override fun draw(canvas: Canvas) {
         if (toDelete()) return
-        val bitmap = BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.cohete)
         val paint = Paint().apply {
             isAntiAlias = true
             isFilterBitmap = true
             isDither = true
         }
         //super.draw(canvas)
-        if (explosionArea != null) explosionArea!!.draw(canvas)
-        else Drawing.drawBitmap(canvas, bitmap, position(),  paint, getRotation())
+        if (explosion) drawExplosion(canvas)
+        else animation.draw(canvas, circle.body.position, paint, getRotation())
+    }
+    
+    private fun drawExplosion(canvas: Canvas) {
+        circle.draw(canvas)
     }
     
     override fun onTouchEvent(event: MotionEvent, position: Vector2f): Boolean {

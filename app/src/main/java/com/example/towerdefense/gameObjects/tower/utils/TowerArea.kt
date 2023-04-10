@@ -84,11 +84,11 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
     }
     
     private fun getFastest(): Enemy? {
-        return inArea.maxByOrNull { it.getVelocity() }
+        return inArea.maxByOrNull { it.velocity() }
     }
     
     private fun getSlowest(): Enemy? {
-        return inArea.minByOrNull { it.getVelocity() }
+        return inArea.minByOrNull { it.velocity() }
     }
     
     private fun getRandom(): Enemy? {

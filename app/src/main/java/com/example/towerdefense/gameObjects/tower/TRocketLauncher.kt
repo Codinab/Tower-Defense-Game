@@ -3,6 +3,7 @@ package com.example.towerdefense.gameObjects.tower
 import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.primitives.Circle
 import com.example.towerdefense.gameObjects.tower.utils.ExplosiveRocket
+import com.example.towerdefense.utility.KMath.Companion.aim
 import com.example.towerdefense.utility.TimeController
 import com.example.towerdefense.utility.angle
 import com.example.towerdefense.utility.gameView
@@ -12,10 +13,10 @@ class TRocketLauncher(radius: Float, private val box2D: Box2D) : Tower(radius, b
     override var timeActionDelay: Float = 1000f
     override fun applyDamageInArea() {
         if (readyToDamage()) {
-            val explosiveRocket = ExplosiveRocket(Circle(30f, Vector2f(box2D.body.position)))
-            explosiveRocket.setVelocity(10f)
             val enemy = towerArea.getFirst()!!
-            val rotation = Vector2f(enemy.position()).sub(box2D.body.position).normalize().angle()
+            val explosiveRocket = ExplosiveRocket(Circle(30f, Vector2f(box2D.body.position)), enemy)
+            explosiveRocket.velocity(10f)
+            val rotation = Vector2f(enemy.position()).sub(box2D.body.position).angle()
             explosiveRocket.setRotation(rotation)
             gameView!!.surfaceView.projectiles.add(explosiveRocket)
             timeLastAction = TimeController.getGameTime()

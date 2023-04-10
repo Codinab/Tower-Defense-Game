@@ -29,6 +29,6 @@ fun Vector2f.angle(): Float {
     return atan2(this.y.toDouble(), this.x.toDouble()).toFloat().toDegrees()
 }
 
-private fun Float.toDegrees(): Float {
+fun Float.toDegrees(): Float {
     return this * 180 / Math.PI.toFloat()
 }

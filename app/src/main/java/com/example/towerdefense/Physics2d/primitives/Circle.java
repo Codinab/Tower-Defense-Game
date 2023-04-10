@@ -11,11 +11,13 @@ import com.example.towerdefense.utility.Drawing;
 import org.joml.Vector2f;
 
 public class Circle extends Collider2D {
-    protected float radius;
+    private float radius;
+
     public Circle(float radius, Rigidbody2D center) {
         this.radius = radius;
         this.body = center;
     }
+
     public Circle(float radius, Vector2f center) {
         this.radius = radius;
         this.body = new Rigidbody2D(center);
@@ -23,6 +25,11 @@ public class Circle extends Collider2D {
 
     public float getRadius() {
         return this.radius;
+    }
+
+
+    public void setRadius(float radius) {
+        this.radius = radius;
     }
 
     public Vector2f getCenter() {
