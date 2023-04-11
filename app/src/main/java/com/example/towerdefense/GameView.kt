@@ -6,10 +6,7 @@ import android.graphics.Color
 import android.view.*
 import android.widget.Button
 import android.widget.RelativeLayout
-import com.example.towerdefense.utility.TimeController
-import com.example.towerdefense.utility.gameHealth
-import com.example.towerdefense.utility.money
-import com.example.towerdefense.utility.towerClicked
+import com.example.towerdefense.utility.*
 
 @SuppressLint("ClickableViewAccessibility")
 class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callback {
@@ -36,7 +33,7 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
             this.layoutParams = layoutParams
             setOnClickListener {
                 if (towerClicked != null) {
-                    money.addAndGet(towerClicked!!.cost())
+                    money.addAndGet(towerClicked!!.buildCost())
                     towerClicked!!.destroy()
                 }
             }
@@ -57,12 +54,45 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
             this.layoutParams = layoutParams
             setOnClickListener {
                 if (towerClicked != null) {
-                    if (money.getAndAdd(-100) >= 100) towerClicked!!.upgrade()
-                    else money.addAndGet(100)
+                    if (money.getAndAdd(-towerClicked!!.upgradeCost()) >= 100) towerClicked!!.upgrade()
+                    else money.addAndGet(towerClicked!!.upgradeCost())
                 }
             }
             addView(this)
         }
+        
+        //Button for gameVelocity on top right
+        Button(context).apply {
+            id = View.generateViewId()
+            text = "x1"
+            alpha = 0.8f
+            val layoutParams = LayoutParams(
+                LayoutParams.WRAP_CONTENT,
+                LayoutParams.WRAP_CONTENT
+            )
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP)
+            layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL)
+            layoutParams.marginEnd = 0
+            this.layoutParams = layoutParams
+            setOnClickListener {
+                when (gameVelocity) {
+                    1 -> {
+                        gameVelocity = 2
+                        text = "x2"
+                    }
+                    2 -> {
+                        gameVelocity = 3
+                        text = "x3"
+                    }
+                    3 -> {
+                        gameVelocity = 1
+                        text = "x1"
+                    }
+                }
+            }
+            addView(this)
+        }
+        
     }
     private fun initSurfaceView(context: Context) {
         surfaceView = GameSurfaceView(context, this)
@@ -105,7 +135,6 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
         if (!::gameLoop.isInitialized) return
         if (!gameLoop.isRunning) return
         TimeController.pause()
-        surfaceView.gamePause()
     }
 
     fun gameResume() {
@@ -114,7 +143,6 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
         if (gameHealth.get() <= 0) return
 
         TimeController.resume()
-        surfaceView.gameResume()
     }
 
     override fun surfaceCreated(p0: SurfaceHolder) {

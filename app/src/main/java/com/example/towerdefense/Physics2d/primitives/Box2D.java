@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.example.towerdefense.Physics2d.JMath;
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D;
-import com.example.towerdefense.utility.Drawing;
+import com.example.towerdefense.utility.textures.Drawing;
 
 import org.joml.Vector2f;
 

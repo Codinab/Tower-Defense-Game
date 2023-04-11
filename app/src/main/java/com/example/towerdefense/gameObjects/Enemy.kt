@@ -1,11 +1,12 @@
 package com.example.towerdefense.gameObjects
 
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
+import android.graphics.*
 import android.view.MotionEvent
 import com.example.towerdefense.Physics2d.primitives.Collider2D
+import com.example.towerdefense.R
 import com.example.towerdefense.utility.*
+import com.example.towerdefense.utility.textures.Animation
+import com.example.towerdefense.utility.textures.Drawing
 import org.joml.Vector2f
 import java.io.Serializable
 import kotlin.math.pow
@@ -17,16 +18,27 @@ class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collide
 
     private var health : Int = 100
     private var maxHealth : Int = health
-
-    var paused : Boolean = false
+    private var animation : Animation
     init {
         movable.set(false)
         fixable.set(false)
         positionFrom = road.startVector.toVector2f()
         position(positionFrom)
-        velocity(3f)
         positionTo = road.getNextCorner(positionFrom)
         setRotation(road.getFirstDirection().toAngle())
+    
+        val frame1 = BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.slime_f1)
+        val frame2 = BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.slime_f2)
+        val frame3 = BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.slime_f3)
+        val frame4 = BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.slime_f4)
+        val frame5 = BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.slime_f5)
+        val frame6 = BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.slime_f6)
+        val frame7 = BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.slime_f7)
+        
+        
+        val frames = arrayOf(frame1, frame2, frame3, frame4, frame5, frame6, frame7)
+        animation = Animation(frames, 100f)
+        velocity(9f)
     }
 
     fun damage(damage : Int)
@@ -37,11 +49,16 @@ class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collide
             destroy()
         }
     }
+    
+    override fun velocity(v: Float) {
+        super.velocity(v)
+        animation.updateFrameTime(500f / v)
+    }
 
     override fun update() {
-        if (paused || toDelete()) return
+        if (TimeController.isPaused() || toDelete()) return
         super.update()
-        if (positionTo.distanceSquared(position()) < velocity().pow(2))
+        if (positionTo.distanceSquared(position()) < (velocity() * gameVelocity).pow(2))
         {
             positionFrom = positionTo
             positionTo = road.getNextCorner(positionFrom)
@@ -57,7 +74,8 @@ class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collide
 
     override fun draw(canvas: Canvas) {
         if (toDelete()) return
-        super.draw(canvas)
+        
+        //super.draw(canvas)
         val paint = Paint()
         paint.color = Color.BLUE
         paint.textSize = 50f
@@ -65,6 +83,7 @@ class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collide
         val topRight = Vector2f(topLeft).add(collider2D().layoutSize().x, 0f)
 
         Drawing.drawHealthBar(canvas, topLeft, topRight, health, maxHealth)
+        animation.draw(canvas, position())
     }
 
     fun distanceToNextCornerSquared() : Float

@@ -46,7 +46,4 @@ class EnemyList(private val enemies: CopyOnWriteArrayList<Enemy> = CopyOnWriteAr
         return string
     }
     
-    fun pause() = forEach { it.paused = true }
-    fun resume() = forEach { it.paused = false }
-    
 }
