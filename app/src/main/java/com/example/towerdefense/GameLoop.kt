@@ -1,23 +1,18 @@
 package com.example.towerdefense
 
 import android.graphics.Canvas
-import android.view.SurfaceHolder
+import android.view.SurfaceView
+import com.example.towerdefense.utility.gameVelocity
 
 /**
  *
  * */
-class GameLoop(game: Game, holder: SurfaceHolder) : Thread() , java.io.Serializable {
+class GameLoop(private val game: GameView) : Thread() , java.io.Serializable {
 
-    private val surfaceHolder: SurfaceHolder
-    private val game: Game
-    private var isRunning = false
+    private val view: GameSurfaceView = game.surfaceView
+    internal var isRunning = false
     private var averageUPS: Double = 0.0
     private var averageFPS: Double = 0.0
-
-    init {
-        surfaceHolder = holder
-        this.game = game
-    }
 
     fun averageUPS(): Double {
         return averageUPS
@@ -29,12 +24,12 @@ class GameLoop(game: Game, holder: SurfaceHolder) : Thread() , java.io.Serializa
 
     fun startLoop() {
         isRunning = true
+        view.isRunning = true
         start()
     }
 
     override fun run() {
         super.run()
-
         var updateCount: Int = 0
         var frameCount: Int = 0
 
@@ -42,29 +37,19 @@ class GameLoop(game: Game, holder: SurfaceHolder) : Thread() , java.io.Serializa
         var elapsedTime: Long
         var sleepTime: Long
 
-        var canvas: Canvas? = null
         startTime = System.currentTimeMillis()
         //Game loop
         while (isRunning) {
 
             try { //Update and render
-                canvas = surfaceHolder.lockCanvas()
-                synchronized(surfaceHolder) {
+                synchronized(view.holder) {
                     game.update()
                     updateCount++
-                    game.draw(canvas)
+                    view.postInvalidate()
+                    frameCount++
                 }
             } catch (e: IllegalArgumentException) {
                 e.printStackTrace()
-            } finally {
-                if (canvas != null) {
-                    try {
-                        surfaceHolder.unlockCanvasAndPost(canvas)
-                        frameCount++
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
             }
 
             //Pause to maintain target UPS
@@ -98,9 +83,13 @@ class GameLoop(game: Game, holder: SurfaceHolder) : Thread() , java.io.Serializa
         }
     }
 
-    companion object {
-        private const val MAX_UPS = 60
-        private const val UPS_PERIOD: Double = 1E+3 / MAX_UPS
+    fun stopLoop() {
+        isRunning = false
+        view.isRunning = false
     }
 
+    companion object {
+        private var MAX_UPS = 60
+        private var UPS_PERIOD: Double = 1E+3 / MAX_UPS
+    }
 }

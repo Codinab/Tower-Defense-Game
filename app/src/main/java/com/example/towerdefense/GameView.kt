@@ -1,32 +1,136 @@
 package com.example.towerdefense
 
-import GameObjectView
+import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Canvas
-import android.util.AttributeSet
+import android.graphics.Color
 import android.view.*
-import android.widget.FrameLayout
-import com.example.towerdefense.gameObjects.Temporary
-import org.joml.Vector2f
+import android.widget.Button
+import android.widget.RelativeLayout
+import com.example.towerdefense.utility.TimeController
+import com.example.towerdefense.utility.gameHealth
+import com.example.towerdefense.utility.money
+import com.example.towerdefense.utility.towerClicked
 
-@Temporary
-class GameView(context: Context) : ViewGroup(context) {
+@SuppressLint("ClickableViewAccessibility")
+class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callback {
 
-    fun addGameObjectView(gameObjectView: GameObjectView) {
-        addView(gameObjectView)
-    }
+    lateinit var surfaceView: GameSurfaceView
+    private lateinit var gameLoop: GameLoop
 
+    init {
+        //change to horizontal view
+        setBackgroundColor(Color.TRANSPARENT)
+        initSurfaceView(context)
 
-    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        for (i in 0 until childCount) {
-            val child = getChildAt(i)
-            val lp = child.layoutParams as LayoutParams
-            child.layout(left, top, left + lp.width, top + lp.height)
+        val sell = Button(context).apply {
+            id = View.generateViewId()
+            text = "Sell"
+            alpha = 0.8f
+            val layoutParams = LayoutParams(
+                LayoutParams.WRAP_CONTENT,
+                LayoutParams.WRAP_CONTENT
+            )
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_START)
+            layoutParams.marginStart = 0
+            this.layoutParams = layoutParams
+            setOnClickListener {
+                if (towerClicked != null) {
+                    money.addAndGet(towerClicked!!.cost())
+                    towerClicked!!.destroy()
+                }
+            }
+            addView(this)
+        }
+
+        Button(context).apply {
+            id = View.generateViewId()
+            text = "Upgrade"
+            alpha = 0.8f
+            val layoutParams = LayoutParams(
+                LayoutParams.WRAP_CONTENT,
+                LayoutParams.WRAP_CONTENT
+            )
+            layoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, sell.id)
+            layoutParams.addRule(RelativeLayout.END_OF, sell.id)
+            layoutParams.marginStart = 16
+            this.layoutParams = layoutParams
+            setOnClickListener {
+                if (towerClicked != null) {
+                    if (money.getAndAdd(-100) >= 100) towerClicked!!.upgrade()
+                    else money.addAndGet(100)
+                }
+            }
+            addView(this)
         }
     }
+    private fun initSurfaceView(context: Context) {
+        surfaceView = GameSurfaceView(context, this)
+        surfaceView.holder.addCallback(this)
+        surfaceView.visibility = VISIBLE
+        surfaceView.isFocusableInTouchMode = true
+        surfaceView.setBackgroundColor(Color.WHITE)
+        this.addView(surfaceView)
+
+        surfaceView.layoutParams =
+            LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+
+        surfaceView.holder.setKeepScreenOn(true)
+    }
+
+    fun update() {
+        surfaceView.update()
+    }
+
+    fun isRunning(): Boolean {
+        return ::gameLoop.isInitialized && gameLoop.isRunning
+    }
+
+    fun stop() {
+        if (!::gameLoop.isInitialized) return
+        if (!gameLoop.isRunning) return
+        gameLoop.stopLoop()
+        gameLoop.join()
+        surfaceView.gameLoop = gameLoop
+    }
+
+    fun start() {
+        if (::gameLoop.isInitialized && gameLoop.isRunning) return
+        gameLoop = GameLoop(this)
+        gameLoop.startLoop()
+        surfaceView.gameLoop = gameLoop
+    }
+
+    fun gamePause() {
+        if (!::gameLoop.isInitialized) return
+        if (!gameLoop.isRunning) return
+        TimeController.pause()
+        surfaceView.gamePause()
+    }
+
+    fun gameResume() {
+        if (!::gameLoop.isInitialized) return
+        if (!gameLoop.isRunning) return
+        if (gameHealth.get() <= 0) return
+
+        TimeController.resume()
+        surfaceView.gameResume()
+    }
+
+    override fun surfaceCreated(p0: SurfaceHolder) {
+    }
+
+    override fun surfaceChanged(p0: SurfaceHolder, p1: Int, p2: Int, p3: Int) {
+        if (!isRunning()) {
+            start()
+            gamePause()
+        }
+        surfaceView.initTowerSpawners()
+    }
+
+    override fun surfaceDestroyed(p0: SurfaceHolder) {
+    }
 }
-
-
 
 
 /*    private var buttonSize: Int = 0
@@ -123,3 +227,50 @@ class GameView(context: Context) : ViewGroup(context) {
         }
         return true
     }*/*/
+/*override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+    // Measure all child views, accounting for padding and margin
+    measureChildren(widthMeasureSpec, heightMeasureSpec)
+    // Compute total width and height of this view group
+    var width = 0
+    var height = 0
+    for (i in 0 until childCount) {
+        val child = getChildAt(i)
+        if (child is SurfaceView) continue
+        val lp = child.layoutParams
+        if (lp is MarginLayoutParams) {
+            width = max(width, child.measuredWidth + lp.leftMargin + lp.rightMargin)
+            height += child.measuredHeight + lp.topMargin + lp.bottomMargin
+        } else {
+            width = max(width, child.measuredWidth)
+            height += child.measuredHeight
+        }
+    }
+    width += paddingLeft + paddingRight
+    height += paddingTop + paddingBottom
+
+    // Use the computed width and height to set the measured dimensions of this view group
+    setMeasuredDimension(
+        resolveSize(width, widthMeasureSpec),
+        resolveSize(height, heightMeasureSpec)
+    )
+}*/
+/*
+    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+        // Layout all child views within this view group, accounting for padding and margin
+        val childLeft = paddingLeft
+        var childTop = paddingTop
+        for (i in 0 until childCount) {
+            val child = getChildAt(i)
+            if (child is SurfaceView) continue
+            val lp = child.layoutParams as LinearLayout.LayoutParams
+            child.layout(
+                childLeft + lp.leftMargin,
+                childTop + lp.topMargin,
+                childLeft + lp.leftMargin + child.measuredWidth,
+                childTop + lp.topMargin + child.measuredHeight
+            )
+            childTop += child.measuredHeight + lp.topMargin + lp.bottomMargin
+        }
+        surfaceView.setBackgroundColor(Color.BLUE)
+    }
+*/

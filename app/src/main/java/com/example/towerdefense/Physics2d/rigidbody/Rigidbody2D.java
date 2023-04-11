@@ -3,55 +3,38 @@ package com.example.towerdefense.Physics2d.rigidbody;
 
 
 import com.example.towerdefense.Physics2d.JMath;
-import com.example.towerdefense.Physics2d.jade.Transform;
-import com.example.towerdefense.Physics2d.primitives.Collider2D;
+import com.example.towerdefense.utility.PublicVariablesKt;
 
 import org.joml.Vector2f;
 
 public class Rigidbody2D  {
 
     public Rigidbody2D(float rotation, float rotationVelocity, Vector2f position, float velocity) {
-        rawTransform = new Transform(position);
-        collider = new Collider2D();
-        this.rotation = rotation;
-        this.velocity = velocity;
-        this.angularVelocity = rotationVelocity;
+        init(rotation, rotationVelocity, position, velocity);
     }
-
     public Rigidbody2D(float rotation, Vector2f position, float velocity) {
-        rawTransform = new Transform(position);
-        collider = new Collider2D();
+        init(rotation, 0f, position, velocity);
+    }
+    public Rigidbody2D(float rotation, float rotationVelocity, Vector2f position) {
+        init(rotation, rotationVelocity, position, 0f);
+    }
+    public Rigidbody2D(float rotation, Vector2f position) {
+        init(rotation, 0f, position, 0f);
+    }
+    public Rigidbody2D(Vector2f position) {
+        init(0f, 0f, position, 0f);
+    }
+    public Rigidbody2D() {
+        init(0f, 0f, new Vector2f(), 0f);
+    }
+
+    private void init(float rotation, float rotationVelocity, Vector2f position, float velocity) {
+        this.position = position;
         this.rotation = rotation;
         this.velocity = velocity;
-    }
-
-    public Rigidbody2D(float rotation, float rotationVelocity, Vector2f position) {
-        rawTransform = new Transform(position);
-        collider = new Collider2D();
-        this.rotation = rotation;
         this.angularVelocity = rotationVelocity;
     }
-
-    public Rigidbody2D(float rotation, Vector2f position) {
-        rawTransform = new Transform(position);
-        collider = new Collider2D();
-        this.rotation = rotation;
-        velocity = 0f;
-    }
-
-    public Rigidbody2D(Vector2f position) {
-        rawTransform = new Transform(position);
-        collider = new Collider2D();
-        velocity = 0f;
-    }
-
-    public Rigidbody2D() {
-        rawTransform = new Transform();
-        collider = new Collider2D();
-        velocity = 0f;
-    }
-    private Transform rawTransform;
-    private Collider2D collider;
+    private Vector2f position;
     private float rotation = 0.0f;
 
     private Float velocity;
@@ -60,20 +43,20 @@ public class Rigidbody2D  {
     private float cor = 1.0f; //Correction
 
     public Vector2f getPosition() {
-        return rawTransform.position;
+        return position;
     }
 
 
 
     public void setPosition(Vector2f position, float rotation) {
         this.rotation = rotation;
-        rawTransform.position = position;
+        this.position = position;
     }
     public void addPosition(Vector2f position) {
-        rawTransform.position.add(position);
+        this.position.add(position);
     }
     public void setPosition(Vector2f position) {
-        rawTransform.position = position;
+        this.position = position;
     }
 
     public float getRotation() {
@@ -84,19 +67,6 @@ public class Rigidbody2D  {
     }
     public void addRotation(float rotation) {
         this.rotation += rotation;
-    }
-
-
-    public void setRawTransform(Transform rawTransform) {
-        this.rawTransform = rawTransform;
-    }
-
-    public Collider2D getCollider() {
-        return collider;
-    }
-
-    public void setCollider(Collider2D collider) {
-        this.collider = collider;
     }
 
     public float getCor() {
@@ -115,30 +85,47 @@ public class Rigidbody2D  {
         this.velocity = velocity;
     }
 
-    public void addVelocity(Float velocity) {
-        this.velocity += velocity;
-    }
-
-    public void addAngularVelocity(float angularVelocity) {
-        this.angularVelocity += angularVelocity;
-    }
     public float getAngularVelocity() {
         return angularVelocity;
     }
     public void setAngularVelocity(float angularVelocity) {
         this.angularVelocity = angularVelocity;
     }
-
     public void update() {
         positionUpdate();
         rotationUpdate();
     }
 
     private void rotationUpdate() {
-        rotation += angularVelocity;
+        angleUpdated = true;
+        rotation += angularVelocity * PublicVariablesKt.getGameVelocity();
+    }
+    private void positionUpdate() {
+        this.position.add(getAngleVector().mul(velocity * PublicVariablesKt.getGameVelocity()));
+    }
+    private Vector2f lastAngle = null;
+    public Boolean angleUpdated = false;
+    public Vector2f getAngleVector() {
+        if(lastAngle == null || angleUpdated) {
+            lastAngle = JMath.angleToVector(rotation);
+            angleUpdated = false;
+        }
+        return lastAngle;
     }
 
-    private void positionUpdate() {
-        rawTransform.position.add(JMath.angleToVector(rotation).mul(velocity));
+    public Rigidbody2D clone() {
+        return new Rigidbody2D(rotation, angularVelocity, new Vector2f(position), velocity);
+    }
+
+
+    @Override
+    public String toString() {
+        return "Rigid-body2D{" +
+                "position=" + position +
+                ", rotation=" + rotation +
+                ", velocity=" + velocity +
+                ", angularVelocity=" + angularVelocity +
+                ", cor=" + cor +
+                '}';
     }
 }

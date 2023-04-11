@@ -1,5 +1,9 @@
 package com.example.towerdefense.Physics2d.primitives;
 
+import android.graphics.Canvas;
+
+import androidx.annotation.NonNull;
+
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D;
 import org.joml.Vector2f;
 
@@ -55,6 +59,20 @@ public class AABB extends Collider2D{
     public void setSize(Vector2f size) {
         this.size = size;
         this.halfSize.set(size).mul(0.5f);
+    }
+
+    @Override
+    public void draw(@NonNull Canvas canvas) {
+    }
+
+    @Override
+    public Vector2f layoutSize() {
+        return null;
+    }
+
+    @Override
+    public Collider2D clone() {
+        return null;
     }
 }
 

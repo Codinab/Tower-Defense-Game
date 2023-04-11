@@ -1,6 +1,5 @@
 package com.example.towerdefense.Physics2d.rigidbody;
 
-import com.example.towerdefense.gameObjects.GameObject;
 import com.example.towerdefense.Physics2d.JMath;
 import com.example.towerdefense.Physics2d.primitives.*;
 
@@ -250,37 +249,37 @@ public class IntersectionDetector2D {
         return false;
     }
 
-    public static boolean intersection(@NotNull GameObject gameObject, @NotNull GameObject other) {
-        if (gameObject instanceof Box2D) {
-            if (other instanceof Box2D) {
-                return intersection((Box2D) gameObject, (Box2D) other);
-            } else if (other instanceof Circle) {
-                return intersection((Box2D) gameObject, (Circle) other);
-            }
-        } else if (gameObject instanceof Circle) {
-            if (other instanceof Box2D) {
-                return intersection((Box2D) other, (Circle) gameObject);
-            } else if (other instanceof Circle) {
-                return intersection((Circle) gameObject, (Circle) other);
-            }
-        }
-        return false;
-    }
-
-    public static boolean intersection(@NotNull GameObject gameObjectCreator, @NotNull Vector2f vector2f) {
-        if (gameObjectCreator instanceof Box2D) {
-            return intersection(vector2f, (Box2D) gameObjectCreator);
-        } else if (gameObjectCreator instanceof Circle) {
-            return intersection(vector2f, (Circle) gameObjectCreator);
-        }
-        return false;
-    }
-
     public static boolean intersection(Vector2f position, Collider2D collider2D) {
         if (collider2D instanceof Box2D) {
             return intersection(position, (Box2D) collider2D);
         } else if (collider2D instanceof Circle) {
             return intersection(position, (Circle) collider2D);
+        }
+        return false;
+    }
+
+    public static boolean intersection(@NotNull Circle circle, @NotNull Collider2D collider2D) {
+        if (collider2D instanceof Box2D) {
+            return intersection(circle, (Box2D) collider2D);
+        } else if (collider2D instanceof Circle) {
+            return intersection(circle, (Circle) collider2D);
+        }
+        return false;
+    }
+
+    public static boolean intersection(@NotNull Collider2D collider2D, @NotNull Collider2D collider2D1) {
+        if (collider2D instanceof Box2D) {
+            if (collider2D1 instanceof Box2D) {
+                return intersection((Box2D) collider2D, (Box2D) collider2D1);
+            } else if (collider2D1 instanceof Circle) {
+                return intersection((Box2D) collider2D, (Circle) collider2D1);
+            }
+        } else if (collider2D instanceof Circle) {
+            if (collider2D1 instanceof Box2D) {
+                return intersection((Circle) collider2D, (Box2D) collider2D1);
+            } else if (collider2D1 instanceof Circle) {
+                return intersection((Circle) collider2D, (Circle) collider2D1);
+            }
         }
         return false;
     }

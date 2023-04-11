@@ -2,79 +2,157 @@ package com.example.towerdefense.gameObjects
 
 import android.graphics.Canvas
 import android.view.MotionEvent
-import com.example.towerdefense.Game
+import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
+import com.example.towerdefense.utility.Interfaces.*
 import org.joml.Vector2f
 import java.util.concurrent.atomic.AtomicBoolean
 
-interface GameObject {
+open class GameObject(private var collider2D: Collider2D) : InputEvent, Movable, Positionable,
+    Stateful {
+    constructor(collider2D: Collider2D, movable: Boolean, fixable: Boolean) : this(collider2D) {
+        this.movable.set(movable)
+        this.fixable.set(fixable)
+    }
 
-    var game: Game
-    var movable: AtomicBoolean
-    var fixable: AtomicBoolean
-    var toDestroy: Boolean
-    var layerLevel: Int
-    fun draw(canvas: Canvas?)
-    fun update()
-    fun setPosition(position: Vector2f)
-    fun addVelocity(velocity: Float)
-    fun getVelocity(): Float
-    fun setVelocity(velocity: Float)
-    fun setAngularVelocity(angularVelocity: Float)
-    fun getAngularVelocity(): Float
-    fun addAngularVelocity(angularVelocity: Float)
-    fun setRotation(rotation: Float)
-    fun getRotation(): Float
-    fun addRotation(rotation: Float)
-    fun maxX(): Float
-    fun minX(): Float
-    fun maxY(): Float
-    fun minY(): Float
-    fun getPosition(): Vector2f
-    fun isClicked(position: Vector2f?): Boolean
+    override var lastClickTime: Long = 0L
+    fun collider2D(): Collider2D {
+        return collider2D
+    }
 
-    var lastClickTime: Long
-    fun onTouchEvent(event: MotionEvent, position: Vector2f): Boolean {
-        when (event.action) {
+    override fun onTouchEvent(event: MotionEvent, position: Vector2f): Boolean {
+        if (toDelete()) return false
+        return when (event.action) {
             MotionEvent.ACTION_DOWN -> handleDownEvent(event, position)
             MotionEvent.ACTION_MOVE -> handleMoveEvent(event, position)
             MotionEvent.ACTION_UP -> handleUpEvent(event, position)
-        }
-        return movable.get() || fixable.get()
-    }
-
-    fun handleDownEvent(event: MotionEvent, position: Vector2f) {
-        if (movable.get()) setPosition(position)
-        else if (isClicked(position)) {
-            val currentTime = System.currentTimeMillis()
-            if (currentTime - lastClickTime < 300 && game.money >= 2) {
-                game.money -= 2
-                movable.set(true)
-                fixable.set(false)
-            }
-            lastClickTime = currentTime
+            else -> false
         }
     }
 
-    fun handleUpEvent(event: MotionEvent, position: Vector2f) {
-        if (IntersectionDetector2D.intersection(this, game.gameObjectCreator)) {
-            movable.set(false)
-            game.gameObjectListToRemove.add(this)
-            game.money += 10
-        } else if (fixable.get()) {
+    open fun handleUpEvent(event: MotionEvent, position: Vector2f): Boolean {
+        if (fixable.get()) {
             fixable.set(false)
             movable.set(false)
+            return true
         }
+        return false
     }
 
-    fun handleMoveEvent(event: MotionEvent, position: Vector2f) {
-        setPosition(position)
+    private fun handleMoveEvent(event: MotionEvent, position: Vector2f): Boolean {
+        if (movable.get()) {
+            position(position)
+            return true
+        }
+        return false
     }
+
+    open fun handleDownEvent(event: MotionEvent, position: Vector2f): Boolean {
+        if (movable.get()) {
+            position(position)
+            return true
+        } else if (isClicked(position)) {
+            val currentTime = System.currentTimeMillis()
+            lastClickTime = currentTime
+            return true
+        }
+        return false
+    }
+
+    override fun isClicked(position: Vector2f?): Boolean {
+        return IntersectionDetector2D.intersection(position, collider2D)
+    }
+
+    override fun addVelocity(velocity: Float) {
+        collider2D.body.velocity += velocity
+    }
+
+    override fun velocity(): Float {
+        return collider2D.body.velocity
+    }
+
+    override fun velocity(velocity: Float) {
+        collider2D.body.velocity = velocity
+    }
+
+    override fun setAngularVelocity(angularVelocity: Float) {
+        collider2D.body.angularVelocity = angularVelocity
+    }
+
+    override fun getAngularVelocity(): Float {
+        return collider2D.body.angularVelocity
+    }
+
+    override fun addAngularVelocity(angularVelocity: Float) {
+        collider2D.body.angularVelocity += angularVelocity
+    }
+
+    override fun setRotation(rotation: Float) {
+        collider2D.body.rotation = rotation
+    }
+
+    override fun getRotation(): Float {
+        return collider2D.body.rotation
+    }
+
+    override fun addRotation(rotation: Float) {
+        collider2D.body.rotation += rotation
+    }
+
+    override fun update() {
+        if (toDelete()) return
+        collider2D.update()
+    }
+
+    override fun position(position: Vector2f) {
+        collider2D.body.position = position
+    }
+
+    override fun position(): Vector2f {
+        return Vector2f(collider2D.body.position)
+    }
+
+    open fun draw(canvas: Canvas) {
+        if (toDelete()) return
+        collider2D.draw(canvas)
+    }
+
+    override var movable: AtomicBoolean = AtomicBoolean(true)
+    override var fixable: AtomicBoolean = AtomicBoolean(true)
+    override var layerLevel: Int = 0
+
+    override fun toString(): String {
+        return "GameObject(position=${position()}, velocity=${velocity()}, rotation=${getRotation()})"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as GameObject
+
+        if (collider2D != other.collider2D) return false
+        if (lastClickTime != other.lastClickTime) return false
+        if (movable != other.movable) return false
+        if (fixable != other.fixable) return false
+        if (layerLevel != other.layerLevel) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = collider2D.hashCode()
+        result = 31 * result + lastClickTime.hashCode()
+        result = 31 * result + movable.hashCode()
+        result = 31 * result + fixable.hashCode()
+        result = 31 * result + layerLevel
+        return result
+    }
+
+    private var toDelete = false
+    fun destroy() {
+        toDelete = true
+    }
+    fun toDelete(): Boolean = toDelete
+
 }
-
-@Target(
-    AnnotationTarget.EXPRESSION, AnnotationTarget.PROPERTY, AnnotationTarget.CLASS,
-    AnnotationTarget.FUNCTION
-)
-@Retention(AnnotationRetention.SOURCE)
-annotation class Temporary

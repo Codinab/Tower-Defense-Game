@@ -1,84 +1,102 @@
 package com.example.towerdefense.gameObjects
 
-import android.graphics.drawable.BitmapDrawable
-import com.example.towerdefense.Game
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.view.MotionEvent
 import com.example.towerdefense.Physics2d.primitives.Collider2D
-import com.example.towerdefense.utility.Direction2D
-import com.example.towerdefense.utility.Interfaces.Movable
-import com.example.towerdefense.utility.Interfaces.Positionable
-import com.example.towerdefense.utility.Road.Companion.toVector2f
+import com.example.towerdefense.utility.*
 import org.joml.Vector2f
-import org.joml.Vector2i
+import java.io.Serializable
+import kotlin.math.pow
 
-class Enemy(override var collider2D: Collider2D, private val game: Game) :
-    DrawableObject(collider2D, game), Movable, Positionable {
+class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collider2D), Serializable
+{
+    private var positionFrom : Vector2f
+    private var positionTo : Vector2f
 
-    override val bitmapDrawable: BitmapDrawable? = null
-    var health = 100f
-    var nextPosition = game.road.getNextCorner(null)
+    private var health : Int = 100
+    private var maxHealth : Int = health
 
+    var paused : Boolean = false
     init {
-        setRotation(getPosition().angle(nextPosition))
+        movable.set(false)
+        fixable.set(false)
+        positionFrom = road.startVector.toVector2f()
+        position(positionFrom)
+        velocity(3f)
+        positionTo = road.getNextCorner(positionFrom)
+        setRotation(road.getFirstDirection().toAngle())
+    }
+
+    fun damage(damage : Int)
+    {
+        health -= damage
+        if (health <= 0)
+        {
+            destroy()
+        }
     }
 
     override fun update() {
+        if (paused || toDelete()) return
         super.update()
-
-        if (isAtNextPosition()) {
-            nextPosition = game.road.getNextCorner(nextPosition)
-            println("NextPosition: " + nextPosition + "Position: " + getPosition() + "Rotation: " + getRotation() + "Angle: " + getPosition().angle(nextPosition))
-            setRotation(getPosition().angle(nextPosition))
+        if (positionTo.distanceSquared(position()) < velocity().pow(2))
+        {
+            positionFrom = positionTo
+            positionTo = road.getNextCorner(positionFrom)
+            val direction = road.getRoadDirection(positionFrom)
+            if (direction == Direction2D.UNDEFINED || toDelete()) {
+                velocity(0f)
+                gameHealth.getAndAdd(-1)
+                destroy()
+            }
+            setRotation(road.getRoadDirection(positionFrom).toAngle())
         }
-        collider2D.body.update()
     }
 
-    private fun isAtNextPosition(): Boolean {
-        println("Distanve: "+ getPosition().distance(nextPosition) + "Velocity: " + collider2D.body.velocity+ "\nPosition: "+ getPosition() + "NextPositionx: "+ nextPosition.x + "NextPositiony: "+ nextPosition.y)
-        return getPosition().distance(nextPosition) <= collider2D.body.velocity
+    override fun draw(canvas: Canvas) {
+        if (toDelete()) return
+        super.draw(canvas)
+        val paint = Paint()
+        paint.color = Color.BLUE
+        paint.textSize = 50f
+        val topLeft = position().sub(collider2D().layoutSize().mul(0.5f))
+        val topRight = Vector2f(topLeft).add(collider2D().layoutSize().x, 0f)
+
+        Drawing.drawHealthBar(canvas, topLeft, topRight, health, maxHealth)
     }
 
-
-    override fun addVelocity(velocity: Float) {
-        collider2D.body.addVelocity(velocity)
+    fun distanceToNextCornerSquared() : Float
+    {
+        return positionTo.distanceSquared(position())
     }
 
-    override fun getVelocity(): Float {
-        return collider2D.body.velocity
+    override fun onTouchEvent(event: MotionEvent, position: Vector2f): Boolean {
+        return false
     }
 
-    override fun setVelocity(velocity: Float) {
-        collider2D.body.velocity = velocity
+    override fun isClicked(position: Vector2f?): Boolean {
+        return false
     }
 
-    override fun setAngularVelocity(angularVelocity: Float) {
-        collider2D.body.angularVelocity = angularVelocity
+    override fun toString(): String {
+        return "Enemy(position=${position()}, velocity=${velocity()}, rotation=${getRotation()})"
     }
 
-    override fun getAngularVelocity(): Float {
-        return collider2D.body.angularVelocity
+    fun getHealth() : Int
+    {
+        return health
     }
-
-    override fun addAngularVelocity(angularVelocity: Float) {
-        collider2D.body.addAngularVelocity(angularVelocity)
+    fun getMaxHealth() : Int
+    {
+        return maxHealth
     }
-
-    override fun setRotation(rotation: Float) {
-        collider2D.body.rotation = rotation
+    fun setHealth(health : Int)
+    {
+        this.health = health
+        this.maxHealth = health
     }
-
-    override fun getRotation(): Float {
-        return collider2D.body.rotation
-    }
-
-    override fun addRotation(rotation: Float) {
-        collider2D.body.addRotation(rotation)
-    }
-
-    override fun setPosition(position: Vector2f) {
-        collider2D.body.position = position
-    }
-
-    override fun getPosition(): Vector2f {
-        return collider2D.body.position
-    }
+    
+    
 }

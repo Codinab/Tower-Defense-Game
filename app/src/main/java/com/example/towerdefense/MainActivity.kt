@@ -1,30 +1,43 @@
 package com.example.towerdefense
 
-import GameObjectView
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.view.View
-import android.view.Window
-import android.view.WindowManager
+import android.view.*
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import com.example.towerdefense.Physics2d.primitives.Circle
+import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.databinding.ActivityMainBinding
+import com.example.towerdefense.utility.gameView
+import com.example.towerdefense.utility.screenSize
 import org.joml.Vector2f
+import org.joml.Vector2i
 
 class MainActivity : AppCompatActivity() {
 
-    var screenHeight : Int? = null
-    var screenWidth : Int? = null
+    lateinit var startForResult : ActivityResultLauncher<Intent>
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        //Set orientation to landscape
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+
+        //Hide title bar
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
+
+        //Hide action bar
         supportActionBar?.hide()
+
+        //New fullscreen method only for android 11
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
         saveWindowSizes()
@@ -34,7 +47,13 @@ class MainActivity : AppCompatActivity() {
 
         initializeButtons(binding)
 
-        setContentView(GameView(this))
+        setContentView(view)
+
+        startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                Toast.makeText(this, "Result OK", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
@@ -43,26 +62,27 @@ class MainActivity : AppCompatActivity() {
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
 
-        screenHeight = displayMetrics.heightPixels
-        screenWidth = displayMetrics.widthPixels
+        screenSize = Vector2i(displayMetrics.widthPixels, displayMetrics.heightPixels)
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
     private fun initializeButtons(binding: ActivityMainBinding) {
         val continueButton = binding.createButton
         continueButton.setOnClickListener {
-            createGame(it)
+            createGame()
         }
         val createButton = binding.continueGame
         createButton.setOnClickListener {
-            continueGame(it)
+            continueGame()
         }
     }
 
     private var lastClickTime: Long = 0
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onBackPressed() {
         //Do double back press to exit
         val currentTime = System.currentTimeMillis()
+        createGame()
         if (currentTime - lastClickTime < 400) {
             super.onBackPressed()
         } else {
@@ -73,13 +93,34 @@ class MainActivity : AppCompatActivity() {
 
 
 
+    @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(Build.VERSION_CODES.R)
-    fun createGame(view: View) {
-        val game = Game(this)
-        setContentView(game)
+    fun createGame() {
+
+        val view = GameView(this)
+        setContentView(view)
+        gameView = view
+
+
+        val gameObjectView = GameObjectView(this, Box2D(Vector2f(200f, 100f), Rigidbody2D(Vector2f(
+            screenSize.x - 200f, 0f))))
+        var bool = false
+        gameObjectView.text = "Start"
+        gameObjectView.textSize = 50f
+
+        gameObjectView.setOnClickListener {
+            if (bool) {
+                view.gamePause()
+            } else {
+                view.gameResume()
+            }
+            bool = !bool
+        }
+        view.addView(gameObjectView)
+
     }
 
-    fun continueGame(view: View) {
+    fun continueGame() {
         Toast.makeText(baseContext, getString(R.string.textoToast), Toast.LENGTH_SHORT).show()
 
         //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
