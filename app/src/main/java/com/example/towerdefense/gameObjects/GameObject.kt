@@ -9,7 +9,7 @@ import org.joml.Vector2f
 import java.util.concurrent.atomic.AtomicBoolean
 
 open class GameObject(private var collider2D: Collider2D) : InputEvent, Movable, Positionable,
-    Stateful {
+    Stateful, java.io.Serializable {
     constructor(collider2D: Collider2D, movable: Boolean, fixable: Boolean) : this(collider2D) {
         this.movable.set(movable)
         this.fixable.set(fixable)

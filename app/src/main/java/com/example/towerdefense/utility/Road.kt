@@ -11,7 +11,7 @@ class Road(val startVector: Vector2i, multiVector: MultiVector) : Serializable {
 
     private val roadHeight: Int = 100
     private val roadWidth: Int = 100
-    private val roadPaint: Paint = Paint()
+    private val roadPaint: Paint
     private var roadDirections: ArrayList<Pair<Vector2i, Direction2D>> = ArrayList()
     private var roadCorners : ArrayList<Pair<Vector2i, Direction2D>> = ArrayList()
 
@@ -19,6 +19,10 @@ class Road(val startVector: Vector2i, multiVector: MultiVector) : Serializable {
     init {
         if (!roadFormat(multiVector)) throw IncorrectFormatException
 
+        roadPaint = Paint()
+        roadPaint.strokeWidth = 100f
+        roadPaint.color = android.graphics.Color.YELLOW
+        roadPaint.alpha = 100
 
         multiVector.positions.remove(startVector)
         val positions = multiVector.positions
@@ -43,9 +47,7 @@ class Road(val startVector: Vector2i, multiVector: MultiVector) : Serializable {
             roadDirections.add(Pair(positionArray[i]!!, direction))
         }
         roadDirections.add(Pair(positionArray[positionArray.size - 1]!!, Direction2D.UNDEFINED))
-        roadPaint.strokeWidth = 10f
-        roadPaint.color = android.graphics.Color.RED
-
+        
         roadCorners.add(roadDirections.first())
         for (i in 0 until roadDirections.size - 1) {
             if (roadDirections[i].second != roadDirections[i + 1].second) {
@@ -90,17 +92,23 @@ class Road(val startVector: Vector2i, multiVector: MultiVector) : Serializable {
     fun getStart(): Vector2i = roadDirections.first().first
 
     fun draw(canvas: Canvas) {
+        debugDraw(canvas)
+    }
+    
+    private fun debugDraw(canvas: Canvas) {
         for ((start, direction) in roadDirections) {
             val startX = start.x * roadWidth
             val startY = start.y * roadHeight
             val endX = (start.x + direction.vector.x) * roadWidth
             val endY = (start.y + direction.vector.y) * roadHeight
-
-            canvas.drawLine(startX.toFloat(), startY.toFloat(), endX.toFloat(),
-                endY.toFloat(), roadPaint)
+        
+            canvas.drawLine(
+                startX.toFloat(), startY.toFloat(), endX.toFloat(),
+                endY.toFloat(), roadPaint
+            )
         }
     }
-
+    
     companion object {
         fun roadFormat(multiVector: MultiVector): Boolean {
             var oneDirection = 2

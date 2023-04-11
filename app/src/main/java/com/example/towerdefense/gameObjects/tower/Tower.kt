@@ -12,7 +12,7 @@ import com.example.towerdefense.utility.Interfaces.Drawable
 import org.joml.Vector2f
 
 abstract class Tower(var radius: Float, private val collider2D: Collider2D) : GameObject(collider2D),
-    Drawable {
+    Drawable, java.io.Serializable {
     constructor(radius: Float, collider2D: Collider2D, dph: Int, hitDelay: Float) : this(
         radius,
         collider2D
@@ -22,16 +22,16 @@ abstract class Tower(var radius: Float, private val collider2D: Collider2D) : Ga
     protected var timeLastAction: Long = 0L
     protected abstract var timeActionDelay: Float
     override lateinit var drawableObject: DrawableObject
+    protected var level: Int = 1
     
     var towerArea: TowerArea = TowerArea(radius, collider2D.body)
-    private var paused = false
     override fun draw(canvas: Canvas) {
         if (towerClicked == this) towerArea.draw(canvas)
         collider2D.draw(canvas)
     }
     
     override fun update() {
-        if (movable.get() || paused) return
+        if (movable.get() || TimeController.isPaused()) return
         super.update()
         applyDamageInArea()
     }
@@ -66,22 +66,17 @@ abstract class Tower(var radius: Float, private val collider2D: Collider2D) : Ga
     }
     
     fun readyToDamage(): Boolean {
-        return TimeController.getGameTime() - timeLastAction > timeActionDelay && towerArea.isNotEmpty() && !paused && !toDelete() && !movable.get()
+        return TimeController.getGameTime() - timeLastAction > timeActionDelay && towerArea.isNotEmpty() && !TimeController.isPaused() && !toDelete() && !movable.get()
     }
     
     
+    abstract fun buildCost(): Int
     abstract fun upgrade()
-    abstract fun cost(): Int
+    abstract fun upgradeCost(): Int
+    abstract fun upgradeInfo(): String
     abstract fun clone(): Tower
     override fun toString(): String {
-        return "Tower( radius=$radius, collider2D=$collider2D towerArea=$towerArea, paused=$paused )"
-    }
-    
-    fun pause() {
-        paused = true
-    }
-    fun resume() {
-        paused = false
+        return "Tower( radius=$radius, collider2D=$collider2D towerArea=$towerArea )"
     }
     
     fun updateArea(enemies: EnemyList) {

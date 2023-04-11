@@ -23,11 +23,19 @@ class TRocketLauncher(radius: Float, private val box2D: Box2D) : Tower(radius, b
         }
     }
     
+    override fun buildCost(): Int {
+        return 1000
+    }
+    
     override fun upgrade() {
     }
     
-    override fun cost(): Int {
+    override fun upgradeCost(): Int {
         return 200
+    }
+    
+    override fun upgradeInfo(): String {
+        return "Upgrade not available"
     }
     
     override fun clone(): Tower {

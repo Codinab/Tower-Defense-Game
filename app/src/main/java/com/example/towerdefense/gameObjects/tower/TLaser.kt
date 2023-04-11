@@ -6,6 +6,7 @@ import com.example.towerdefense.gameObjects.DrawableObject
 import com.example.towerdefense.gameObjects.Enemy
 import com.example.towerdefense.utility.*
 import com.example.towerdefense.utility.Interfaces.Drawable
+import com.example.towerdefense.utility.textures.Drawing
 import kotlin.math.max
 
 open class TLaser(radius: Float, private val collider2D: Collider2D) : Tower(radius, collider2D),
@@ -47,12 +48,20 @@ open class TLaser(radius: Float, private val collider2D: Collider2D) : Tower(rad
         }
     }
     
+    override fun buildCost(): Int {
+        return 100
+    }
+    
     override fun upgrade() {
         val dpsTmp = dph.toFloat()
         dph = max((dpsTmp * 1.1f).toInt(), dph + 2)
     }
     
-    override fun cost(): Int = 100
+    override fun upgradeCost(): Int = 100
+    override fun upgradeInfo(): String {
+        return "Damage per second: $dph"
+    }
+    
     override fun clone(): Tower = TLaser(radius, collider2D.clone(), dph, timeActionDelay)
     override fun toString(): String {
         return "Tower(radius=$radius, collider2D=$collider2D, enemyHit=$enemyHit, lastHit=$lastHit, towerArea=$towerArea, dph=$dph, timeLastDamage=$timeLastAction, hitDelay=$timeActionDelay)"

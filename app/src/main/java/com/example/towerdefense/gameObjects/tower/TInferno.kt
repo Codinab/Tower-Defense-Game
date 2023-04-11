@@ -6,7 +6,7 @@ import android.graphics.Paint
 import com.example.towerdefense.Physics2d.JMath
 import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.gameObjects.tower.utils.TowerArea
-import com.example.towerdefense.utility.Drawing
+import com.example.towerdefense.utility.textures.Drawing
 import com.example.towerdefense.utility.TimeController
 import com.example.towerdefense.utility.gameVelocity
 import org.joml.Vector2f
@@ -127,12 +127,20 @@ class TInferno(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
         
     }
     
+    override fun buildCost(): Int {
+        return 100
+    }
+    
     override fun upgrade() {
         dphInferno *= 1.5f
     }
     
-    override fun cost(): Int {
+    override fun upgradeCost(): Int {
         return 100
+    }
+    
+    override fun upgradeInfo(): String {
+        return "Damage per second: $dphInferno"
     }
     
     override fun clone(): Tower {

@@ -3,6 +3,7 @@ package com.example.towerdefense
 import com.example.towerdefense.gameObjects.lists.TowerList
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -10,6 +11,7 @@ import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
@@ -21,6 +23,8 @@ import com.example.towerdefense.gameObjects.tower.utils.TowerArea
 import com.example.towerdefense.utility.*
 import com.example.towerdefense.utility.Random.Companion.randomFloat
 import com.example.towerdefense.utility.Random.Companion.randomInt
+import com.example.towerdefense.utility.textures.BackgroundGenerator
+import com.example.towerdefense.utility.textures.Drawing
 import org.joml.Vector2f
 import org.joml.Vector2i
 import java.util.*
@@ -37,7 +41,8 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
     var gameLoop: GameLoop? = null
     var isRunning = false
     private var road: Road
-    
+    private val backgroundGenerator : BackgroundGenerator
+    private val background : Bitmap
     init {
         
         val multiVector = MultiVector(Vector2i(0, 0))
@@ -46,6 +51,10 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         multiVector.addLine(Direction2D.RIGHT, 20)
         multiVector.addLine(Direction2D.UP, 20)
         road = Road(Vector2i(0, 0), multiVector)
+        
+        backgroundGenerator = BackgroundGenerator(context)
+        background = backgroundGenerator.generateBackground(30, 10)
+        
     }
     
     override fun draw(canvas: Canvas?) {
@@ -55,6 +64,14 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         //towerSpawners.forEach { it.draw(canvas) }
         
         camera.updateCanvas(canvas)
+        
+        //For every R.draw.grass draw it 1_1 to 4_8
+        
+        drawBackGround(canvas)
+        
+        //Draw the road
+        
+        
         road.draw(canvas)
         
         enemies.draw(canvas)
@@ -67,6 +84,10 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         drawMoney(canvas)
         drawGameHealth(canvas)
         drawGameTime(canvas)
+    }
+    
+    private fun drawBackGround(canvas: Canvas) {
+        Drawing.drawBitmap(canvas, background, Vector2f((screenSize.x.toFloat() / 2), (screenSize.y.toFloat() / 2)))
     }
     
     val camera = Camera()
@@ -225,27 +246,6 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         }
     }
     
-    
-    private var gamePaused: Boolean? = null
-    fun gamePaused(): Boolean {
-        if (gamePaused == null) gamePaused = true
-        return gamePaused!!
-    }
-    
-    fun gamePause() {
-        gamePaused = true
-        towers.pause()
-        enemies.pause()
-        projectiles.pause()
-    }
-    
-    fun gameResume() {
-        gamePaused = false
-        towers.resume()
-        enemies.resume()
-        projectiles.resume()
-    }
-    
     private var timeLastSpawn = 0L
     fun update() {
         if (checkGameEnd()) gameEnd()
@@ -282,8 +282,8 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         ) {
             enemies.add(
                 Enemy(Box2D(Vector2f(0f, 0f), Vector2f(100f, 100f)), road).apply {
-                    this.setHealth(randomInt(1, 200, TimeController.getGameTime().toInt()))
-                    velocity(randomFloat(0.5f, 15f, TimeController.getGameTime().toInt()))
+                    this.setHealth(randomInt(1, 5, TimeController.getGameTime().toInt()))
+                    velocity(randomFloat(8f, 15f, TimeController.getGameTime().toInt()))
                 }
             )
             timeLastSpawn = TimeController.getGameTime()
@@ -349,8 +349,8 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
 }
 
 private fun updateTowers() {
-    towers.update()
     towers.updateAreas(enemies)
+    towers.update()
 }
 
 private fun updateTowerSpawners() { towerSpawners.forEach() { it.update() } }

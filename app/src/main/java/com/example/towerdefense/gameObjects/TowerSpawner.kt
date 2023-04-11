@@ -35,11 +35,11 @@ class TowerSpawner(context: Context, box2D: Box2D, var modelTower: Tower) :
         }
         return when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                if (money.getAndAdd(-modelTower.cost()) < modelTower.cost() ||
+                if (money.getAndAdd(-modelTower.buildCost()) < modelTower.buildCost() ||
                     gameView!!.surfaceView.movableTower != null
                 ) return false.also {
                     money.getAndAdd(
-                        modelTower.cost()
+                        modelTower.buildCost()
                     )
                 }
                 val tower = modelTower.clone()

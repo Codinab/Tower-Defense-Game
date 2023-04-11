@@ -9,12 +9,6 @@ import java.util.concurrent.CopyOnWriteArrayList
 class TowerList(private val towers: CopyOnWriteArrayList<Tower> = CopyOnWriteArrayList()) :
     MutableList<Tower> by towers {
     
-    
-    fun pause() = forEach { it.pause() }
-    
-    
-    fun resume() = forEach { it.resume() }
-    
     fun update() = towers.forEach { it.update() }
     
     override fun add(element: Tower): Boolean {

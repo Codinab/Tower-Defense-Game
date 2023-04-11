@@ -6,7 +6,7 @@ class TimeController {
         private var resumeTime: Long = 0L
         private var pauseTime: Long = 0L
         private var paused: Boolean = true
-
+    
         // Returns the current game time in milliseconds
         fun getGameTime(): Long {
             val elapsed =
@@ -30,6 +30,9 @@ class TimeController {
             }
         }
 
+        fun isPaused(): Boolean {
+            return paused
+        }
         // Pauses the game time
         @Synchronized
         fun pause() {

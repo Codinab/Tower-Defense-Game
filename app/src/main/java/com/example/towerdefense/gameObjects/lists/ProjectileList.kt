@@ -9,8 +9,6 @@ class ProjectileList(private val projectiles: CopyOnWriteArrayList<Projectile> =
     
     
     fun draw(canvas: Canvas) = projectiles.forEach { it.draw(canvas) }
-    fun pause() = forEach { it.pause() }
-    fun resume() = forEach { it.resume() }
     fun update() = forEach { it.update() }
     
     

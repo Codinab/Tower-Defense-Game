@@ -1,5 +1,6 @@
 package com.example.towerdefense.utility
 
+import org.joml.Vector2i
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
