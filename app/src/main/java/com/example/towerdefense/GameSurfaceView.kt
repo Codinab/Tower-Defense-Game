@@ -40,17 +40,15 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
     
     var gameLoop: GameLoop? = null
     var isRunning = false
-    private var road: Road
+    private var road: Road = Road(Vector2i(0, 0))
     private val backgroundGenerator : BackgroundGenerator
     private val background : Bitmap
     init {
-        
-        val multiVector = MultiVector(Vector2i(0, 0))
-        multiVector.addLine(Direction2D.RIGHT, 10)
-        multiVector.addLine(Direction2D.DOWN, 10)
-        multiVector.addLine(Direction2D.RIGHT, 20)
-        multiVector.addLine(Direction2D.UP, 20)
-        road = Road(Vector2i(0, 0), multiVector)
+    
+        road.addLine(Direction2D.RIGHT, 10)
+        road.addLine(Direction2D.DOWN, 10)
+        road.addLine(Direction2D.RIGHT, 10)
+
         
         backgroundGenerator = BackgroundGenerator(context)
         background = backgroundGenerator.generateBackground(30, 10)
@@ -70,8 +68,6 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         drawBackGround(canvas)
         
         //Draw the road
-        
-        
         road.draw(canvas)
         
         enemies.draw(canvas)

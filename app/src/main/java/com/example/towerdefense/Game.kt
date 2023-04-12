@@ -12,7 +12,6 @@ import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.gameObjects.*
 import com.example.towerdefense.utility.Direction2D
-import com.example.towerdefense.utility.MultiVector
 import com.example.towerdefense.utility.Road
 import org.joml.Vector2f
 import org.joml.Vector2i
