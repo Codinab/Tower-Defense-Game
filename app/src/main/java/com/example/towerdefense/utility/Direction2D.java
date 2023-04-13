@@ -96,6 +96,20 @@ public enum Direction2D {
         return this.angle;
     }
 
+    public static Direction2D fromAngle(float angle) {
+        if(angle == 0.0f) {
+            return RIGHT;
+        } else if(angle == 90.0f) {
+            return DOWN;
+        } else if(angle == 180.0f) {
+            return LEFT;
+        } else if(angle == 270.0f) {
+            return UP;
+        } else {
+            return UNDEFINED;
+        }
+    }
+
     public byte toFlagValue() {
         return this.flagValue;
     }
