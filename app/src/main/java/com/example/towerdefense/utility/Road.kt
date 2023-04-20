@@ -93,7 +93,7 @@ class Road(private val startVector: Vector2i) : Serializable {
     
     private fun inCorner(position: Vector2f, cornerN: Int, velocity: Float): Boolean {
         val corner = roadToCanvasPosition(roadCorners[cornerN].first)
-        return corner.distanceSquared(position) < velocity.pow(2)
+        return corner.distanceSquared(position) < (velocity * gameVelocity).pow(2)
     }
     
     fun getDirection(position: Vector2f, corner: Int, velocity: Float): Direction2D {

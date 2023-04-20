@@ -44,7 +44,7 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
     private val backgroundGenerator : BackgroundGenerator
     private val background : Bitmap
     init {
-    
+        
         road.addLine(Direction2D.RIGHT, 10)
         road.addLine(Direction2D.DOWN, 10)
         road.addLine(Direction2D.RIGHT, 10)

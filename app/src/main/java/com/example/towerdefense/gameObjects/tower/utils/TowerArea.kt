@@ -20,6 +20,7 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
         paint.color = Color.RED
         paint.alpha = 100
         p0.drawCircle(center.x, center.y, radius, paint)
+        
     }
 
     private var inArea = ArrayDeque<Enemy>()
