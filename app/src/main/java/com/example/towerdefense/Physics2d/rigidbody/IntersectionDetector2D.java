@@ -9,7 +9,7 @@ import org.joml.Vector2f;
 
 public class IntersectionDetector2D {
     //Point vs. Primitive Tests
-    public static boolean intersection(Vector2f point, Line2D line) { //point on line
+    public static boolean intersection(@NotNull Vector2f point, @NotNull Line2D line) { //point on line
         float dy = line.getEnd().y - line.getStart().y;
         float dx = line.getEnd().x - line.getStart().x;
         if (dx == 0f) {
@@ -23,22 +23,22 @@ public class IntersectionDetector2D {
     }
 
 
-    public static boolean intersection(Line2D line2D, Vector2f point) { //point on line
+    public static boolean intersection(@NotNull Line2D line2D, @NotNull Vector2f point) { //point on line
         return intersection(point, line2D);
     }
 
-    public static boolean intersection(Vector2f point, Circle circle) { //point on circle
+    public static boolean intersection(@NotNull Vector2f point, @NotNull Circle circle) { //point on circle
         Vector2f cicleCenter = circle.getCenter();
         Vector2f centerToPoint = new Vector2f(point).sub(cicleCenter);
 
         return centerToPoint.lengthSquared() <= circle.getRadius() * circle.getRadius();
     }
 
-    public static boolean intersection(Circle circle, Vector2f point) { //circle on point
+    public static boolean intersection(@NotNull Circle circle, @NotNull Vector2f point) { //circle on point
         return intersection(point, circle);
     }
 
-    public static boolean intersection(Vector2f point, AABB box) { //point on aabb
+    public static boolean intersection(@NotNull Vector2f point, @NotNull AABB box) { //point on aabb
         Vector2f min = box.getMin();
         Vector2f max = box.getMax();
 
@@ -46,11 +46,11 @@ public class IntersectionDetector2D {
                 point.y <= max.y && point.y >= min.y;
     }
 
-    public static boolean intersection(AABB box, Vector2f point) { //aabb on point
+    public static boolean intersection(@NotNull AABB box, @NotNull Vector2f point) { //aabb on point
         return intersection(point, box);
     }
 
-    public static boolean intersection(Vector2f point, Box2D box) { //point on box2d
+    public static boolean intersection(@NotNull Vector2f point, @NotNull Box2D box) { //point on box2d
         Vector2f pointLocalBox = new Vector2f(point);
         JMath.rotate(pointLocalBox, box.body.getRotation(), box.body.getPosition());
 
@@ -61,11 +61,11 @@ public class IntersectionDetector2D {
                 pointLocalBox.y <= max.y && pointLocalBox.y >= min.y;
     }
 
-    public static boolean intersection(Box2D b1, Vector2f point) { //box2d on point
+    public static boolean intersection(@NotNull Box2D b1, @NotNull Vector2f point) { //box2d on point
         return intersection(point, b1);
     }
 
-    public static boolean intersection(Line2D line1, Line2D line2) { //line on line
+    public static boolean intersection(@NotNull Line2D line1, @NotNull Line2D line2) { //line on line
         float dy1 = line1.getEnd().y - line1.getStart().y;
         float dy2 = line2.getEnd().y - line2.getStart().y;
         float dx1 = line1.getEnd().x - line1.getStart().x;
@@ -93,7 +93,7 @@ public class IntersectionDetector2D {
         return intersection(point, line1) || intersection(point, line2);
     }
 
-    public static boolean intersection(Line2D line, Circle circle) {
+    public static boolean intersection(@NotNull Line2D line, @NotNull Circle circle) {
         if (intersection(line.getStart(), circle) || intersection(line.getEnd(), circle)) {
             return true;
         }
@@ -102,7 +102,7 @@ public class IntersectionDetector2D {
         return distance <= circle.getRadius();
     }
 
-    public static Vector2f getClosestPointOnLine(Line2D line, Vector2f point) {
+    public static Vector2f getClosestPointOnLine(@NotNull Line2D line, @NotNull Vector2f point) {
         double x1 = line.getStart().x;
         double y1 = line.getStart().y;
         double x2 = line.getEnd().x;
@@ -135,11 +135,11 @@ public class IntersectionDetector2D {
     }
 
 
-    public static boolean intersection(Circle circle, Line2D line) { //Intersection of a circle and a line
+    public static boolean intersection(@NotNull Circle circle, @NotNull Line2D line) { //Intersection of a circle and a line
         return intersection(line, circle);
     }
 
-    public static boolean intersection(Line2D line, AABB box) { //line on aabb
+    public static boolean intersection(@NotNull Line2D line, @NotNull AABB box) { //line on aabb
         if (intersection(line.getStart(), box) || intersection(line.getEnd(), box)) return true;
 
         AABB boxP = new AABB(box.getMin(), box.getMax());
@@ -151,11 +151,11 @@ public class IntersectionDetector2D {
         return false;
     }
 
-    public static boolean intersection(AABB box, Line2D line) { //line on aabb
+    public static boolean intersection(@NotNull AABB box, @NotNull Line2D line) { //line on aabb
         return intersection(line, box);
     }
 
-    public static boolean intersection(Line2D line, Box2D box) { //line on box2d
+    public static boolean intersection(@NotNull Line2D line, @NotNull Box2D box) { //line on box2d
         float rotation = -box.body.getRotation();
         Vector2f position = box.body.getPosition();
         Vector2f localStart = new Vector2f(line.getStart());
@@ -169,18 +169,18 @@ public class IntersectionDetector2D {
         return intersection(localLine, aabb);
     }
 
-    public static boolean intersection(Box2D box, Line2D line) { //line on box2d
+    public static boolean intersection(@NotNull Box2D box, @NotNull Line2D line) { //line on box2d
         return intersection(line, box);
     }
 
 
-    public static boolean intersection(Circle c1, Circle c2) { //Intersection of two circles
+    public static boolean intersection(@NotNull Circle c1, @NotNull Circle c2) { //Intersection of two circles
         Vector2f vecBetwenCenters = new Vector2f(c1.getCenter()).sub(c2.getCenter());
         float radiusSum = c1.getRadius() + c2.getRadius();
         return vecBetwenCenters.lengthSquared() < radiusSum * radiusSum;
     }
 
-    public static boolean intersection(Circle c1, AABB box) { //Intersection of a circle and an AABB
+    public static boolean intersection(@NotNull Circle c1, @NotNull AABB box) { //Intersection of a circle and an AABB
         Line2D[] sides = box.getSides();
         for (Line2D side : sides) {
             if (intersection(side, c1)) {
@@ -190,11 +190,11 @@ public class IntersectionDetector2D {
         return false;
     }
 
-    public static boolean intersection(AABB box, Circle c1) { //Intersection of an AABB and a circle
+    public static boolean intersection(@NotNull AABB box, @NotNull Circle c1) { //Intersection of an AABB and a circle
         return intersection(c1, box);
     }
 
-    public static boolean intersection(Circle c1, Box2D box) { //Intersection of a circle and a Box2D
+    public static boolean intersection(@NotNull Circle c1, @NotNull Box2D box) { //Intersection of a circle and a Box2D
         if (intersection(c1.getCenter(), box)) {
             return true;
         }
@@ -207,12 +207,12 @@ public class IntersectionDetector2D {
         return false;
     }
 
-    public static boolean intersection(Box2D box2D, Circle circle) { //Intersection of a Box2D and a circle
+    public static boolean intersection(@NotNull Box2D box2D, @NotNull Circle circle) { //Intersection of a Box2D and a circle
         return intersection(circle, box2D);
     }
 
 
-    public static boolean intersection(AABB b1, AABB b2) { //Intersection of two AABB
+    public static boolean intersection(@NotNull AABB b1, @NotNull AABB b2) { //Intersection of two AABB
         Vector2f[] b1vert = b1.getVertices();
         Vector2f[] b2vert = b2.getVertices();
         for (int i = 0; i < 4; i++) {
@@ -223,7 +223,7 @@ public class IntersectionDetector2D {
         return false;
     }
 
-    public static boolean intersection(AABB b1, Box2D b2) {
+    public static boolean intersection(@NotNull AABB b1, @NotNull Box2D b2) {
         Vector2f[] b1vert = b1.getVertices();
         Vector2f[] b2vert = b2.getVertices();
         for (int i = 0; i < 4; i++) {
@@ -234,11 +234,11 @@ public class IntersectionDetector2D {
         return false;
     }
 
-    public static boolean intersection(Box2D b2, AABB b) {
+    public static boolean intersection(@NotNull Box2D b2, @NotNull AABB b) {
         return intersection(b, b2);
     }
 
-    public static boolean intersection(Box2D b1, Box2D b2) {
+    public static boolean intersection(@NotNull Box2D b1, @NotNull Box2D b2) {
         Vector2f[] b1vert = b1.getVertices();
         Vector2f[] b2vert = b2.getVertices();
         for (int i = 0; i < 4; i++) {
@@ -249,7 +249,7 @@ public class IntersectionDetector2D {
         return false;
     }
 
-    public static boolean intersection(Vector2f position, Collider2D collider2D) {
+    public static boolean intersection(@NotNull Vector2f position, @NotNull Collider2D collider2D) {
         if (collider2D instanceof Box2D) {
             return intersection(position, (Box2D) collider2D);
         } else if (collider2D instanceof Circle) {
