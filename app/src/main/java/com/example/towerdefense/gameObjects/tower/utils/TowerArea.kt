@@ -63,41 +63,33 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
     }
     
     
-    fun getToDamageType(): DamageType {
-        return damageType
-    }
+    fun getToDamageType(): DamageType = damageType
+    
     
     fun getFirst(): Enemy? = inArea.minByOrNull { it.distanceToNextCornerSquared() }
     
     private fun getLast(): Enemy? = inArea.maxByOrNull { it.distanceToNextCornerSquared() }
     
-    private fun getLeastHealthy(): Enemy? {
-        return inArea.minByOrNull { it.getMaxHealth() }
-    }
+    private fun getLeastHealthy(): Enemy? = inArea.minByOrNull { it.getMaxHealth() }
     
-    private fun getMostHealthy(): Enemy? {
-        return inArea.maxByOrNull { it.getMaxHealth() }
-    }
     
-    private fun getFastest(): Enemy? {
-        return inArea.maxByOrNull { it.velocity() }
-    }
+    private fun getMostHealthy(): Enemy? = inArea.maxByOrNull { it.getMaxHealth() }
     
-    private fun getSlowest(): Enemy? {
-        return inArea.minByOrNull { it.velocity() }
-    }
     
-    private fun getRandom(): Enemy? {
-        return inArea.randomOrNull()
-    }
+    private fun getFastest(): Enemy? = inArea.maxByOrNull { it.velocity() }
+    
+    
+    private fun getSlowest(): Enemy? = inArea.minByOrNull { it.velocity() }
+    
+    
+    private fun getRandom(): Enemy? = inArea.randomOrNull()
+    
 
-    override fun clone(): Collider2D {
-        return TowerArea(radius, Vector2f(center))
-    }
+    override fun clone(): Collider2D = TowerArea(radius, Vector2f(center))
+    
 
-    override fun toString(): String {
-        return "TowerArea(inArea=$inArea, damageType=$damageType)"
-    }
+    override fun toString(): String = "TowerArea(inArea=$inArea, damageType=$damageType)"
+    
 
     enum class DamageType {
         FIRST, LAST, RANDOM, MOST_HEALTH, LEAST_HEALTH, FASTEST, SLOWEST;
