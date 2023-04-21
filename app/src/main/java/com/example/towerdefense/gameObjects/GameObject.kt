@@ -60,6 +60,7 @@ open class GameObject(private var collider2D: Collider2D) : InputEvent, Movable,
     }
 
     override fun isClicked(position: Vector2f?): Boolean {
+        if (position == null) return false
         return IntersectionDetector2D.intersection(position, collider2D)
     }
 
