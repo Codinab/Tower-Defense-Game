@@ -3,6 +3,7 @@ package com.example.towerdefense.gameObjects.tower.utils
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.widget.Toast
 import com.example.towerdefense.gameObjects.lists.EnemyList
 import com.example.towerdefense.Physics2d.primitives.Circle
 import com.example.towerdefense.Physics2d.primitives.Collider2D
@@ -41,8 +42,6 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
     fun isNotEmpty(): Boolean = inArea.isNotEmpty()
     
     private var damageType = DamageType.FIRST
-    
-    
     fun toDamage(): Enemy? {
         return when (damageType) {
             DamageType.FIRST -> getFirst()
@@ -56,6 +55,11 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
     }
     fun setToDamageType(damageType: DamageType) {
         this.damageType = damageType
+    }
+    
+    fun nextDamageType() {
+        if (damageType == DamageType.SLOWEST) setToDamageType(DamageType.FIRST)
+        else setToDamageType(DamageType.values()[damageType.ordinal + 1])
     }
     
     
@@ -72,16 +76,7 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
     }
     
     private fun getMostHealthy(): Enemy? {
-        var max = 0
-        var maxEnemy: Enemy? = null
-        for (enemy in inArea) {
-            if (enemy == null) continue
-            if (enemy.getHealth() > max) {
-                max = enemy.getHealth()
-                maxEnemy = enemy
-            }
-        }
-        return maxEnemy
+        return inArea.maxByOrNull { it.getMaxHealth() }
     }
     
     private fun getFastest(): Enemy? {
