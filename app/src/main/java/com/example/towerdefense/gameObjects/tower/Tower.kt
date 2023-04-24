@@ -45,10 +45,16 @@ abstract class Tower(var radius: Float, private val collider2D: Collider2D) : Ga
     
     override fun handleDownEvent(event: MotionEvent, position: Vector2f): Boolean {
         if (movable.get()) {
+            gameView!!.showTowerButtons()
             position(position)
             return true
         } else if (isClicked(position)) {
             towerClicked = if (towerClicked == this) null else this
+            if (towerClicked == null) {
+                gameView!!.hideTowerButtons()
+            } else if (towerClicked == this) {
+                gameView!!.showTowerButtons()
+            }
             val currentTime = System.currentTimeMillis()
             lastClickTime = currentTime
             return true

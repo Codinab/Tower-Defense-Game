@@ -8,7 +8,6 @@ import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.gameObjects.tower.utils.TowerArea
 import com.example.towerdefense.utility.textures.Drawing
 import com.example.towerdefense.utility.TimeController
-import com.example.towerdefense.utility.gameVelocity
 import org.joml.Vector2f
 import java.lang.Float.max
 import java.lang.Float.min
@@ -42,7 +41,7 @@ class TInferno(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
             Vector2f(center.x, center.y - halfHeight)
         )
         
-        val velocity = min((dphLog / dphInferno), 20f) * gameVelocity
+        val velocity = min((dphLog / dphInferno), 20f)
         angleAnimation += velocity
         
         rotateVectors(
@@ -118,12 +117,11 @@ class TInferno(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
         if (readyToDamage()) {
             towerArea.toDamage()?.let {
                 it.damage(dphLog.toInt())
-                for (i in 0 until gameVelocity) dphLog *= 1.03f
+                dphLog *= 1.03f
                 if (it.getHealth() <= 0) it.destroy()
             }
             timeLastAction = TimeController.getGameTime()
-        } else if (towerArea.isEmpty()) for (i in 0 until gameVelocity) dphLog =
-            max(dphInferno, dphLog.div(1.001f))
+        } else if (towerArea.isEmpty()) dphLog = max(dphInferno, dphLog.div(1.001f))
         
     }
     

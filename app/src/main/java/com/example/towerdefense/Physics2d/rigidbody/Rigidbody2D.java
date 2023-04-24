@@ -98,10 +98,10 @@ public class Rigidbody2D  {
 
     private void rotationUpdate() {
         angleUpdated = true;
-        rotation += angularVelocity * PublicVariablesKt.getGameVelocity();
+        rotation += angularVelocity;
     }
     private void positionUpdate() {
-        this.position.add(getAngleVector().mul(velocity * PublicVariablesKt.getGameVelocity()));
+        this.position.add(getAngleVector().mul(velocity));
     }
     private Vector2f lastAngle = null;
     public Boolean angleUpdated = false;

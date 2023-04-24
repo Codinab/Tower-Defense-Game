@@ -16,7 +16,6 @@ var towerClicked : Tower? = null
 
 var money = AtomicInteger(100000)
 var gameHealth = AtomicInteger(1000)
-var gameVelocity = 1
 
 fun Vector2i.toVector2f(): Vector2f {
     return Vector2f(this.x.toFloat(), this.y.toFloat())

@@ -11,7 +11,7 @@ class TimeController {
         fun getGameTime(): Long {
             val elapsed =
                 if (paused) pauseTime - resumeTime else System.currentTimeMillis() - resumeTime
-            return if (elapsed < 0L) 0L else elapsed * gameVelocity
+            return if (elapsed < 0L) 0L else elapsed
         }
 
         // Returns the time since the app started in milliseconds

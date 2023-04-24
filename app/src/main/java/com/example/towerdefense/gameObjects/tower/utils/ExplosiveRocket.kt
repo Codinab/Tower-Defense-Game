@@ -53,7 +53,7 @@ class ExplosiveRocket(var circle: Circle, var enemy: Enemy) : GameObject(circle,
     private var explosion = false
     
     private fun generateExplosion() {
-        velocity(100f / gameVelocity)
+        velocity(100f)
         explosion = true
         circle.radius = circle.radius * 3
         collider2D().update()

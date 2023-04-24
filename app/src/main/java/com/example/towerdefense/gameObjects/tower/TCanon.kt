@@ -25,31 +25,39 @@ class TCanon(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
         }
     }
     
-    private fun shootSmallCanonBalls() {
-        val enemy = towerArea.getFirst()!!
-        val rotation = Vector2f(enemy.position()).sub(box2D.body.position).angle()
-        val canonBall1 = CanonBall(Circle(sizeCanonBall / 4, Vector2f(box2D.body.position)), 1)
-        canonBall1.velocity(20f)
-        canonBall1.setRotation(rotation + 10f)
-        val canonBall2 = CanonBall(Circle(sizeCanonBall / 4, Vector2f(box2D.body.position)), 1)
-        canonBall2.velocity(20f)
-        canonBall2.setRotation(rotation - 10f)
-        val canonBall3 = CanonBall(Circle(sizeCanonBall / 4, Vector2f(box2D.body.position)), 1)
-        canonBall3.velocity(20f)
-        canonBall3.setRotation(rotation + 20f)
-        val canonBall4 = CanonBall(Circle(sizeCanonBall / 4, Vector2f(box2D.body.position)), 1)
-        canonBall4.velocity(20f)
-        canonBall4.setRotation(rotation - 20f)
-        gameView!!.surfaceView.projectiles.add(canonBall1)
-        gameView!!.surfaceView.projectiles.add(canonBall2)
-        gameView!!.surfaceView.projectiles.add(canonBall3)
-        gameView!!.surfaceView.projectiles.add(canonBall4)
+    private fun calculateRotation(enemyPosition: Vector2f): Float {
+        return Vector2f(enemyPosition).sub(box2D.body.position).angle()
     }
+    
+    private fun createCanonBall(position: Vector2f, rotation: Float): CanonBall {
+        val circle = Circle(sizeCanonBall / 4, position)
+        val canonBall = CanonBall(circle, 1)
+        canonBall.velocity(20f)
+        canonBall.setRotation(rotation)
+        return canonBall
+    }
+    
+    private fun addCanonBallsToProjectiles(canonBalls: List<CanonBall>) {
+        gameView!!.surfaceView.projectiles.addAll(canonBalls)
+    }
+    
+    private fun shootSmallCanonBalls() {
+        val enemy = towerArea.toDamage()!!
+        val rotation = calculateRotation(enemy.position())
+        val canonBalls = listOf(
+            createCanonBall(Vector2f(box2D.body.position), rotation + 10f),
+            createCanonBall(Vector2f(box2D.body.position), rotation - 10f),
+            createCanonBall(Vector2f(box2D.body.position), rotation + 20f),
+            createCanonBall(Vector2f(box2D.body.position), rotation - 20f)
+        )
+        addCanonBallsToProjectiles(canonBalls)
+    }
+    
     
     private fun shootBigCanonBall() {
         val canonBall = CanonBall(Circle(sizeCanonBall, Vector2f(box2D.body.position)), dph)
         canonBall.velocity(10f)
-        val enemy = towerArea.getFirst()!!
+        val enemy = towerArea.toDamage()!!
         val rotation = Vector2f(enemy.position()).sub(box2D.body.position).normalize().angle()
         canonBall.setRotation(rotation)
         gameView!!.surfaceView.projectiles.add(canonBall)

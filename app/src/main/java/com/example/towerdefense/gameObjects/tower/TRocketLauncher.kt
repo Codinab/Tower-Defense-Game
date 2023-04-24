@@ -13,7 +13,7 @@ class TRocketLauncher(radius: Float, private val box2D: Box2D) : Tower(radius, b
     override var timeActionDelay: Float = 1000f
     override fun applyDamageInArea() {
         if (readyToDamage()) {
-            val enemy = towerArea.getFirst()!!
+            val enemy = towerArea.toDamage()!!
             val explosiveRocket = ExplosiveRocket(Circle(30f, Vector2f(box2D.body.position)), enemy)
             explosiveRocket.velocity(10f)
             val rotation = Vector2f(enemy.position()).sub(box2D.body.position).angle()

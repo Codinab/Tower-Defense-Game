@@ -2,24 +2,32 @@ package com.example.towerdefense
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.view.*
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.RelativeLayout
+import androidx.core.view.size
+import com.example.towerdefense.gameObjects.tower.utils.TowerArea
 import com.example.towerdefense.utility.*
 
 @SuppressLint("ClickableViewAccessibility")
 class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callback {
-
+    
     lateinit var surfaceView: GameSurfaceView
     private lateinit var gameLoop: GameLoop
-
+    
+    private lateinit var sell: Button
+    private lateinit var upgrade: Button
+    private lateinit var damageType: ImageButton
+    
     init {
         //change to horizontal view
         setBackgroundColor(Color.TRANSPARENT)
         initSurfaceView(context)
-
-        val sell = Button(context).apply {
+        
+        sell = Button(context).apply {
             id = View.generateViewId()
             text = "Sell"
             alpha = 0.8f
@@ -39,8 +47,8 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
             }
             addView(this)
         }
-
-        Button(context).apply {
+        
+        upgrade = Button(context).apply {
             id = View.generateViewId()
             text = "Upgrade"
             alpha = 0.8f
@@ -60,40 +68,51 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
             }
             addView(this)
         }
-        
-        //Button for gameVelocity on top right
-        Button(context).apply {
-            id = View.generateViewId()
-            text = "x1"
-            alpha = 0.8f
+    
+        damageType = ImageButton(context).apply {
+            id = generateViewId()
+            alpha = 1f
             val layoutParams = LayoutParams(
                 LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT
             )
-            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP)
-            layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL)
-            layoutParams.marginEnd = 0
+            setImageBitmap(BitmapFactory.decodeResource(resources, R.drawable.first_damage))
+            background = null
+            layoutParams.addRule(ALIGN_BOTTOM, upgrade.id)
+            layoutParams.addRule(END_OF, upgrade.id)
+            layoutParams.marginStart = 16
             this.layoutParams = layoutParams
             setOnClickListener {
-                when (gameVelocity) {
-                    1 -> {
-                        gameVelocity = 2
-                        text = "x2"
-                    }
-                    2 -> {
-                        gameVelocity = 3
-                        text = "x3"
-                    }
-                    3 -> {
-                        gameVelocity = 1
-                        text = "x1"
+                if (towerClicked != null) {
+                    if (towerClicked!!.getToDamageType() == TowerArea.DamageType.FIRST) {
+                        towerClicked!!.setToDamageType(TowerArea.DamageType.LAST)
+                        setImageBitmap(BitmapFactory.decodeResource(resources, R.drawable.last_damage))
+                    } else if (towerClicked!!.getToDamageType() == TowerArea.DamageType.LAST) {
+                        towerClicked!!.setToDamageType(TowerArea.DamageType.MOST_HEALTH)
+                        setImageBitmap(BitmapFactory.decodeResource(resources, R.drawable.more_health))
+                    } else if (towerClicked!!.getToDamageType() == TowerArea.DamageType.MOST_HEALTH) {
+                        towerClicked!!.setToDamageType(TowerArea.DamageType.LEAST_HEALTH)
+                        setImageBitmap(BitmapFactory.decodeResource(resources, R.drawable.less_health))
+                    } else if (towerClicked!!.getToDamageType() == TowerArea.DamageType.LEAST_HEALTH) {
+                        towerClicked!!.setToDamageType(TowerArea.DamageType.RANDOM)
+                        setImageBitmap(BitmapFactory.decodeResource(resources, R.drawable.random_damage))
+                    } else if (towerClicked!!.getToDamageType() == TowerArea.DamageType.RANDOM) {
+                        towerClicked!!.setToDamageType(TowerArea.DamageType.FASTEST)
+                        setImageBitmap(BitmapFactory.decodeResource(resources, R.drawable.fastest_damage))
+                    } else if (towerClicked!!.getToDamageType() == TowerArea.DamageType.FASTEST) {
+                        towerClicked!!.setToDamageType(TowerArea.DamageType.SLOWEST)
+                        setImageBitmap(BitmapFactory.decodeResource(resources, R.drawable.slowest_damage))
+                    } else if (towerClicked!!.getToDamageType() == TowerArea.DamageType.SLOWEST) {
+                        towerClicked!!.setToDamageType(TowerArea.DamageType.FIRST)
+                        setImageBitmap(BitmapFactory.decodeResource(resources, R.drawable.first_damage))
                     }
                 }
             }
             addView(this)
         }
-        
+        hideTowerButtons()
     }
+    
     private fun initSurfaceView(context: Context) {
         surfaceView = GameSurfaceView(context, this)
         surfaceView.holder.addCallback(this)
@@ -101,21 +120,32 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
         surfaceView.isFocusableInTouchMode = true
         surfaceView.setBackgroundColor(Color.WHITE)
         this.addView(surfaceView)
-
+        
         surfaceView.layoutParams =
             LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
-
+        
         surfaceView.holder.setKeepScreenOn(true)
     }
-
+    
+    fun showTowerButtons() {
+        sell.visibility = VISIBLE
+        upgrade.visibility = VISIBLE
+        damageType.visibility = VISIBLE
+    }
+    fun hideTowerButtons() {
+        sell.visibility = INVISIBLE
+        upgrade.visibility = INVISIBLE
+        damageType.visibility = INVISIBLE
+    }
+    
     fun update() {
         surfaceView.update()
     }
-
+    
     fun isRunning(): Boolean {
         return ::gameLoop.isInitialized && gameLoop.isRunning
     }
-
+    
     fun stop() {
         if (!::gameLoop.isInitialized) return
         if (!gameLoop.isRunning) return
@@ -123,31 +153,32 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
         gameLoop.join()
         surfaceView.gameLoop = gameLoop
     }
-
+    
     fun start() {
         if (::gameLoop.isInitialized && gameLoop.isRunning) return
         gameLoop = GameLoop(this)
         gameLoop.startLoop()
         surfaceView.gameLoop = gameLoop
     }
-
+    
     fun gamePause() {
         if (!::gameLoop.isInitialized) return
         if (!gameLoop.isRunning) return
         TimeController.pause()
     }
-
+    
     fun gameResume() {
         if (!::gameLoop.isInitialized) return
         if (!gameLoop.isRunning) return
         if (gameHealth.get() <= 0) return
-
+        
         TimeController.resume()
     }
-
+    
     override fun surfaceCreated(p0: SurfaceHolder) {
+    
     }
-
+    
     override fun surfaceChanged(p0: SurfaceHolder, p1: Int, p2: Int, p3: Int) {
         if (!isRunning()) {
             start()
@@ -155,7 +186,7 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
         }
         surfaceView.initTowerSpawners()
     }
-
+    
     override fun surfaceDestroyed(p0: SurfaceHolder) {
     }
 }

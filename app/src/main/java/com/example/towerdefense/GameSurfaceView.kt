@@ -121,7 +121,7 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
     }
     
     fun initTowerSpawners() {
-        val towerSpawner =
+        /*val towerSpawner =
             TowerSpawner(
                 context,
                 Box2D(
@@ -138,7 +138,7 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
             
             )
         towerSpawner.damageType = TowerArea.DamageType.LEAST_HEALTH
-        addTowerSpawner(towerSpawner)
+        addTowerSpawner(towerSpawner)*/
         
         val towerSpawner2 =
             TowerSpawner(
