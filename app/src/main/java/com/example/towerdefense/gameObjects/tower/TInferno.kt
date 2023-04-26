@@ -13,7 +13,7 @@ import java.lang.Float.max
 import java.lang.Float.min
 
 class TInferno(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
-    
+    constructor(position: Vector2f) : this(300f, Box2D(Vector2f(120f, 120f), position))
     
     init {
         setToDamageType(TowerArea.DamageType.MOST_HEALTH)

@@ -4,13 +4,12 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.widget.Toast
-import com.example.towerdefense.gameObjects.lists.EnemyList
 import com.example.towerdefense.Physics2d.primitives.Circle
 import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.gameObjects.Enemy
+import com.example.towerdefense.gameObjects.lists.EnemyList
 import org.joml.Vector2f
 
 class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
@@ -20,9 +19,12 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
         //Draw circle with radius radius
         val paint = Paint()
         paint.color = Color.RED
-        paint.alpha = 100
+        paint.alpha = 50
         p0.drawCircle(center.x, center.y, radius, paint)
-        
+        paint.alpha = 100
+        paint.style = Paint.Style.STROKE
+        paint.strokeWidth = 5f // adjust the stroke width as needed
+        p0.drawCircle(center.x, center.y, radius, paint)
     }
 
     private var inArea = ArrayDeque<Enemy>()
@@ -32,10 +34,6 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
             if (IntersectionDetector2D.intersection(this, enemy.collider2D())) inArea.add(enemy)
         }
         return inArea.isNotEmpty()
-    }
-
-    fun remove(enemy: Enemy) {
-        inArea.remove(enemy)
     }
 
     fun isEmpty(): Boolean = inArea.isEmpty()

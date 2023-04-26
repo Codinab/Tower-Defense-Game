@@ -19,14 +19,20 @@ import org.joml.Vector2f
 @SuppressLint("ViewConstructor")
 class TowerSpawner(context: Context, box2D: Box2D, var modelTower: Tower) :
     GameObjectView(context, box2D) {
-
+    
+    constructor(context: Context, position: Vector2f, modelTower: Tower) : this(
+        context,
+        Box2D(Vector2f(10f, 10f), position),
+        modelTower
+    )
+    
     init {
         val layoutSize = box2D.layoutSize()
         layoutParams = ViewGroup.LayoutParams(layoutSize.x.toInt(), layoutSize.y.toInt())
         setPosition(getPosition())
         setBackgroundColor(Color.TRANSPARENT)
     }
-
+    
     private var lastTower: Tower? = null
     var damageType = TowerArea.DamageType.FIRST
     override fun onTouchEvent(event: MotionEvent, position: Vector2f): Boolean {
@@ -43,10 +49,10 @@ class TowerSpawner(context: Context, box2D: Box2D, var modelTower: Tower) :
                     )
                 }
                 val tower = modelTower.clone()
-
+                
                 gameView!!.surfaceView.towers.add(tower)
                 gameView!!.surfaceView.movableTower = tower
-
+                
                 lastTower = tower
                 towerClicked = tower
                 true
@@ -54,14 +60,14 @@ class TowerSpawner(context: Context, box2D: Box2D, var modelTower: Tower) :
             else -> false
         }
     }
-
+    
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
         canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), Paint().apply {
             color = Color.CYAN
         })
     }
-
+    
     fun damageType(damageType: TowerArea.DamageType) {
         this.damageType = damageType
     }

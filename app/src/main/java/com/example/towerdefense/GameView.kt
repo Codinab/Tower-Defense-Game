@@ -11,9 +11,10 @@ import android.widget.RelativeLayout
 import androidx.core.view.size
 import com.example.towerdefense.gameObjects.tower.utils.TowerArea
 import com.example.towerdefense.utility.*
+import java.io.Serializable
 
 @SuppressLint("ClickableViewAccessibility")
-class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callback {
+class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callback, Serializable {
     
     lateinit var surfaceView: GameSurfaceView
     private lateinit var gameLoop: GameLoop
@@ -176,10 +177,10 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
     }
     
     override fun surfaceCreated(p0: SurfaceHolder) {
-    
     }
     
     override fun surfaceChanged(p0: SurfaceHolder, p1: Int, p2: Int, p3: Int) {
+        //onSaveInstanceState(this)
         if (!isRunning()) {
             start()
             gamePause()

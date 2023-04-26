@@ -75,7 +75,6 @@ abstract class Tower(var radius: Float, private val collider2D: Collider2D) : Ga
         return TimeController.getGameTime() - timeLastAction > timeActionDelay && towerArea.isNotEmpty() && !TimeController.isPaused() && !toDelete() && !movable.get()
     }
     
-    
     abstract fun buildCost(): Int
     abstract fun upgrade()
     abstract fun upgradeCost(): Int
