@@ -1,15 +1,14 @@
 package com.example.towerdefense.gameObjects.tower.utils
 
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
+import android.graphics.*
 import com.example.towerdefense.Physics2d.primitives.Circle
 import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
+import com.example.towerdefense.R
 import com.example.towerdefense.gameObjects.Enemy
 import com.example.towerdefense.gameObjects.lists.EnemyList
+import com.example.towerdefense.utility.gameView
 import org.joml.Vector2f
 
 class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
@@ -90,9 +89,31 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
     override fun toString(): String = "TowerArea(inArea=$inArea, damageType=$damageType)"
     
 
+
+    
     enum class DamageType {
         FIRST, LAST, RANDOM, MOST_HEALTH, LEAST_HEALTH, FASTEST, SLOWEST;
+        companion object {
+            private val firstBitmap = BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.first_damage)
+            private val lastBitmap = BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.last_damage)
+            private val randomBitmap = BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.random_damage)
+            private val mostHealthBitmap = BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.more_health)
+            private val leastHealthBitmap = BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.less_health)
+            private val fastestBitmap = BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.fastest_damage)
+            private val slowestBitmap = BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.slowest_damage)
+        }
+        
+        fun getBitmap(): Bitmap {
+            return when (this) {
+                FIRST -> firstBitmap
+                LAST -> lastBitmap
+                RANDOM -> randomBitmap
+                MOST_HEALTH -> mostHealthBitmap
+                LEAST_HEALTH -> leastHealthBitmap
+                FASTEST -> fastestBitmap
+                SLOWEST -> slowestBitmap
+            }
+        }
     }
-
 
 }

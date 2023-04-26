@@ -9,10 +9,12 @@ import android.view.MotionEvent
 import android.view.ViewGroup
 import com.example.towerdefense.GameObjectView
 import com.example.towerdefense.Physics2d.primitives.Box2D
+import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.gameObjects.tower.Tower
 import com.example.towerdefense.gameObjects.tower.utils.TowerArea
 import com.example.towerdefense.utility.gameView
 import com.example.towerdefense.utility.money
+import com.example.towerdefense.utility.screenSize
 import com.example.towerdefense.utility.towerClicked
 import org.joml.Vector2f
 
@@ -22,7 +24,7 @@ class TowerSpawner(context: Context, box2D: Box2D, var modelTower: Tower) :
     
     constructor(context: Context, position: Vector2f, modelTower: Tower) : this(
         context,
-        Box2D(Vector2f(10f, 10f), position),
+        Box2D(Vector2f(120f, 120f), Rigidbody2D(position)),
         modelTower
     )
     
@@ -70,6 +72,15 @@ class TowerSpawner(context: Context, box2D: Box2D, var modelTower: Tower) :
     
     fun damageType(damageType: TowerArea.DamageType) {
         this.damageType = damageType
+    }
+    
+    enum class SpawnerPosition(val vector2f: Vector2f) {
+        TOP_LEFT(Vector2f(screenSize.x - 400f, 200f)),
+        TOP_RIGHT(Vector2f(screenSize.x - 100f, 200f)),
+        MIDDLE_LEFT(Vector2f(screenSize.x - 400f, 500f)),
+        MIDDLE_RIGHT(Vector2f(screenSize.x - 100f, 500f)),
+        BOTTOM_LEFT(Vector2f(screenSize.x - 400f, 800f)),
+        BOTTOM_RIGHT(Vector2f(screenSize.x - 100f, 800f))
     }
     
 }

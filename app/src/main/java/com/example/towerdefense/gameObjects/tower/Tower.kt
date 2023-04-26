@@ -40,6 +40,8 @@ abstract class Tower(var radius: Float, private val collider2D: Collider2D) : Ga
     
     fun setToDamageType(type: TowerArea.DamageType) = towerArea.setToDamageType(type)
     
+    fun nextToDamageType() = towerArea.nextDamageType()
+    
     fun getToDamageType(): TowerArea.DamageType = towerArea.getToDamageType()
     
     

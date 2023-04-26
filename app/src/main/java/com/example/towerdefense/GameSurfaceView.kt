@@ -121,92 +121,29 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
     }
     
     fun initTowerSpawners() {
-        /*val towerSpawner =
-            TowerSpawner(
-                context,
-                Box2D(
-                    Vector2f(100f, 100f),
-                    Rigidbody2D(Vector2f(screenSize.x.toFloat() - 100f, 100f))
-                ),
-                TInferno(
-                    300f,
-                    Box2D(
-                        Vector2f(100f, 100f),
-                        Rigidbody2D(Vector2f(screenSize.x.toFloat() - 100f, 210f))
-                    )
-                )
-            
-            )
-        towerSpawner.damageType = TowerArea.DamageType.LEAST_HEALTH
-        addTowerSpawner(towerSpawner)*/
-        
         val towerSpawner2 =
             TowerSpawner(
                 context,
-                Vector2f(screenSize.x.toFloat() - 100f, 100f),
-                TCanon(Vector2f(screenSize.x.toFloat() - 100f, 100f))
+                Vector2f(TowerSpawner.SpawnerPosition.TOP_LEFT.vector2f),
+                TCanon(Vector2f(TowerSpawner.SpawnerPosition.TOP_LEFT.vector2f))
             )
         addTowerSpawner(towerSpawner2)
         
         val towerSpawner3 =
             TowerSpawner(
                 context,
-                Vector2f(screenSize.x.toFloat() - 100f, 300f),
-                TLaser(Vector2f(screenSize.x.toFloat() - 100f, 300f))
+                Vector2f(TowerSpawner.SpawnerPosition.TOP_RIGHT.vector2f),
+                TLaser(Vector2f(TowerSpawner.SpawnerPosition.TOP_RIGHT.vector2f))
             )
         addTowerSpawner(towerSpawner3)
         
         val towerSpawner4 =
             TowerSpawner(
                 context,
-                Vector2f(screenSize.x.toFloat() - 100f, 400f),
-                TRocketLauncher((Vector2f(screenSize.x.toFloat() - 100f, 400f)))
+                Vector2f(TowerSpawner.SpawnerPosition.MIDDLE_LEFT.vector2f),
+                TRocketLauncher(Vector2f(TowerSpawner.SpawnerPosition.MIDDLE_LEFT.vector2f))
             )
         addTowerSpawner(towerSpawner4)
-/*
-        val towerSpawner5 =
-            TowerSpawner(
-                context,
-                Box2D(
-                    Vector2f(100f, 100f),
-                    Rigidbody2D(Vector2f(screenSize.x.toFloat() - 210f, 100f))
-                )
-            )
-        towerSpawner5.modelTower.dph = 5
-        addTowerSpawner(towerSpawner5)
-
-        val towerSpawner6 =
-            TowerSpawner(
-                context,
-                Box2D(
-                    Vector2f(100f, 100f),
-                    Rigidbody2D(Vector2f(screenSize.x.toFloat() - 210f, 210f))
-                )
-            )
-        towerSpawner6.modelTower.dph = 6
-        addTowerSpawner(towerSpawner6)
-
-        val towerSpawner7 =
-            TowerSpawner(
-                context,
-                Box2D(
-                    Vector2f(100f, 100f),
-                    Rigidbody2D(Vector2f(screenSize.x.toFloat() - 210f, 320f))
-                )
-            )
-        towerSpawner7.modelTower.dph = 7
-        addTowerSpawner(towerSpawner7)
-
-        val towerSpawner8 =
-            TowerSpawner(
-                context,
-                Box2D(
-                    Vector2f(100f, 100f),
-                    Rigidbody2D(Vector2f(screenSize.x.toFloat() - 210f, 430f))
-                )
-            )
-        towerSpawner8.modelTower.dph = 8
-        addTowerSpawner(towerSpawner8)*/
     }
     
     @SuppressLint("ClickableViewAccessibility")
