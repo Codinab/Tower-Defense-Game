@@ -78,7 +78,7 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
                 LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT
             )
-            setImageBitmap(BitmapFactory.decodeResource(resources, R.drawable.first_damage))
+            setImageBitmap(TowerArea.DamageType.FIRST.getBitmap())
             background = null
             layoutParams.addRule(ALIGN_BOTTOM, upgrade.id)
             layoutParams.addRule(END_OF, upgrade.id)
@@ -111,6 +111,7 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
         sell.visibility = VISIBLE
         upgrade.visibility = VISIBLE
         damageType.visibility = VISIBLE
+        damageType.setImageBitmap(towerClicked?.getToDamageType()!!.getBitmap())
     }
     
     fun hideTowerButtons() {

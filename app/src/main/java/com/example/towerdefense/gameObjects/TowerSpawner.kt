@@ -24,9 +24,15 @@ class TowerSpawner(context: Context, box2D: Box2D, var modelTower: Tower) :
     
     constructor(context: Context, position: Vector2f, modelTower: Tower) : this(
         context,
-        Box2D(Vector2f(120f, 120f), Rigidbody2D(position)),
+        Box2D(Vector2f(DEF_WIDTH, DEF_HEIGHT), Rigidbody2D(position)),
         modelTower
     )
+    
+    companion object {
+        const val DEF_HEIGHT = 120f
+        const val DEF_WIDTH = 120f
+        const val PADDING = 20f
+    }
     
     init {
         val layoutSize = box2D.layoutSize()
@@ -75,12 +81,13 @@ class TowerSpawner(context: Context, box2D: Box2D, var modelTower: Tower) :
     }
     
     enum class SpawnerPosition(val vector2f: Vector2f) {
-        TOP_LEFT(Vector2f(screenSize.x - 400f, 200f)),
-        TOP_RIGHT(Vector2f(screenSize.x - 100f, 200f)),
-        MIDDLE_LEFT(Vector2f(screenSize.x - 400f, 500f)),
-        MIDDLE_RIGHT(Vector2f(screenSize.x - 100f, 500f)),
-        BOTTOM_LEFT(Vector2f(screenSize.x - 400f, 800f)),
-        BOTTOM_RIGHT(Vector2f(screenSize.x - 100f, 800f))
+        TOP_LEFT(Vector2f(screenSize.x - DEF_WIDTH * 2 - PADDING, DEF_HEIGHT)),
+        TOP_RIGHT(Vector2f(screenSize.x - DEF_WIDTH, DEF_HEIGHT)),
+        MIDDLE_LEFT(Vector2f(screenSize.x - DEF_WIDTH * 2 - PADDING, DEF_HEIGHT * 2 + PADDING)),
+        MIDDLE_RIGHT(Vector2f(screenSize.x - DEF_WIDTH, DEF_HEIGHT * 2 + 100f)),
+        BOTTOM_LEFT(Vector2f(screenSize.x - DEF_WIDTH * 2 - PADDING, DEF_HEIGHT * 3 + PADDING * 2)),
+        BOTTOM_RIGHT(Vector2f(screenSize.x - DEF_WIDTH, DEF_HEIGHT * 3 + PADDING * 2))
+        
     }
     
 }

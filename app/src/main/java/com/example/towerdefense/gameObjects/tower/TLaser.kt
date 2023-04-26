@@ -3,6 +3,7 @@ package com.example.towerdefense.gameObjects.tower
 import android.graphics.Canvas
 import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.primitives.Collider2D
+import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.gameObjects.DrawableObject
 import com.example.towerdefense.gameObjects.Enemy
 import com.example.towerdefense.utility.*
@@ -14,7 +15,7 @@ import kotlin.math.max
 open class TLaser(radius: Float, private val box2D: Box2D) : Tower(radius, box2D),
     Drawable {
     
-    constructor(position: Vector2f) : this(300f, Box2D(Vector2f(100f, 100f), position))
+    constructor(position: Vector2f) : this(300f, Box2D(Vector2f(100f, 100f), Rigidbody2D(position)))
     
     
     
