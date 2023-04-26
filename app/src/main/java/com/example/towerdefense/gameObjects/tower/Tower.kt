@@ -1,6 +1,7 @@
 package com.example.towerdefense.gameObjects.tower
 
 import android.graphics.Canvas
+import android.graphics.Color
 import android.view.MotionEvent
 import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.gameObjects.DrawableObject
@@ -21,7 +22,7 @@ abstract class Tower(var radius: Float, private val collider2D: Collider2D) : Ga
     
     protected var timeLastAction: Long = 0L
     protected abstract var timeActionDelay: Float
-    override lateinit var drawableObject: DrawableObject
+    override var drawableObject: DrawableObject? = DrawableObject(collider2D)
     protected var level: Int = 1
     
     var towerArea: TowerArea = TowerArea(radius, collider2D.body)
@@ -88,5 +89,13 @@ abstract class Tower(var radius: Float, private val collider2D: Collider2D) : Ga
     
     fun updateArea(enemies: EnemyList) {
         towerArea.updateArea(enemies)
+    }
+    
+    fun hoverAboveDelete() {
+        drawableObject?.paint?.color = Color.BLUE
+    }
+    
+    fun notHoverAboveDelete() {
+        drawableObject?.paint?.color = Color.BLACK
     }
 }

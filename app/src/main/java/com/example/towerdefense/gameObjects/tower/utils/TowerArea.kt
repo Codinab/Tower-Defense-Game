@@ -13,7 +13,7 @@ import org.joml.Vector2f
 
 class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
     constructor(radius: Float, center: Vector2f) : this(radius, Rigidbody2D(center))
-
+    
     override fun draw(p0: Canvas) {
         //Draw circle with radius radius
         val paint = Paint()
@@ -25,7 +25,7 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
         paint.strokeWidth = 5f // adjust the stroke width as needed
         p0.drawCircle(center.x, center.y, radius, paint)
     }
-
+    
     private var inArea = ArrayDeque<Enemy>()
     fun updateArea(enemies: EnemyList): Boolean {
         inArea.clear()
@@ -34,9 +34,9 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
         }
         return inArea.isNotEmpty()
     }
-
+    
     fun isEmpty(): Boolean = inArea.isEmpty()
-
+    
     fun isNotEmpty(): Boolean = inArea.isNotEmpty()
     
     private var damageType = DamageType.FIRST
@@ -51,6 +51,7 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
             DamageType.SLOWEST -> getSlowest()
         }
     }
+    
     fun setToDamageType(damageType: DamageType) {
         this.damageType = damageType
     }
@@ -82,38 +83,79 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
     
     private fun getRandom(): Enemy? = inArea.randomOrNull()
     
-
+    
     override fun clone(): Collider2D = TowerArea(radius, Vector2f(center))
     
-
+    
     override fun toString(): String = "TowerArea(inArea=$inArea, damageType=$damageType)"
     
-
-
     
     enum class DamageType {
         FIRST, LAST, RANDOM, MOST_HEALTH, LEAST_HEALTH, FASTEST, SLOWEST;
+        
         companion object {
-            private val firstBitmap = BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.first_damage)
-            private val lastBitmap = BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.last_damage)
-            private val randomBitmap = BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.random_damage)
-            private val mostHealthBitmap = BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.more_health)
-            private val leastHealthBitmap = BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.less_health)
-            private val fastestBitmap = BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.fastest_damage)
-            private val slowestBitmap = BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.slowest_damage)
+            private fun firstBitmap(): Bitmap {
+                if (firstBitmap == null) firstBitmap =
+                    BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.first_damage)
+                return firstBitmap!!
+            }
+            
+            private fun lastBitmap(): Bitmap {
+                if (lastBitmap == null) lastBitmap =
+                    BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.last_damage)
+                return lastBitmap!!
+            }
+            
+            private fun randomBitmap(): Bitmap {
+                if (randomBitmap == null) randomBitmap =
+                    BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.random_damage)
+                return randomBitmap!!
+            }
+            
+            private fun mostHealthBitmap(): Bitmap {
+                if (mostHealthBitmap == null) mostHealthBitmap =
+                    BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.most_health_damage)
+                return mostHealthBitmap!!
+            }
+            
+            private fun leastHealthBitmap(): Bitmap {
+                if (leastHealthBitmap == null) leastHealthBitmap =
+                    BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.least_health_damage)
+                return leastHealthBitmap!!
+            }
+            
+            private fun fastestBitmap(): Bitmap {
+                if (fastestBitmap == null) fastestBitmap =
+                    BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.fastest_damage)
+                return fastestBitmap!!
+            }
+            
+            private fun slowestBitmap(): Bitmap {
+                if (slowestBitmap == null) slowestBitmap =
+                    BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.slowest_damage)
+                return slowestBitmap!!
+            }
+            
+            private var firstBitmap: Bitmap? = null
+            private var lastBitmap: Bitmap? = null
+            private var randomBitmap: Bitmap? = null
+            private var mostHealthBitmap: Bitmap? = null
+            private var leastHealthBitmap: Bitmap? = null
+            private var fastestBitmap: Bitmap? = null
+            private var slowestBitmap: Bitmap? = null
         }
         
         fun getBitmap(): Bitmap {
             return when (this) {
-                FIRST -> firstBitmap
-                LAST -> lastBitmap
-                RANDOM -> randomBitmap
-                MOST_HEALTH -> mostHealthBitmap
-                LEAST_HEALTH -> leastHealthBitmap
-                FASTEST -> fastestBitmap
-                SLOWEST -> slowestBitmap
+                FIRST -> firstBitmap()
+                LAST -> lastBitmap()
+                RANDOM -> randomBitmap()
+                MOST_HEALTH -> mostHealthBitmap()
+                LEAST_HEALTH -> leastHealthBitmap()
+                FASTEST -> fastestBitmap()
+                SLOWEST -> slowestBitmap()
             }
         }
     }
-
+    
 }

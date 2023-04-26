@@ -78,15 +78,16 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
                 LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT
             )
-            setImageBitmap(TowerArea.DamageType.FIRST.getBitmap())
             background = null
             layoutParams.addRule(ALIGN_BOTTOM, upgrade.id)
             layoutParams.addRule(END_OF, upgrade.id)
             layoutParams.marginStart = 16
             this.layoutParams = layoutParams
             setOnClickListener {
-                towerClicked?.nextToDamageType()
-                setImageBitmap(towerClicked?.getToDamageType()!!.getBitmap())
+                towerClicked?.let {
+                    towerClicked!!.nextToDamageType()
+                    setImageBitmap(towerClicked!!.getToDamageType().getBitmap())
+                }
             }
             addView(this)
         }

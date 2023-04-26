@@ -22,7 +22,6 @@ open class TLaser(radius: Float, private val box2D: Box2D) : Tower(radius, box2D
     private var enemyHit: Enemy? = null
     private var lastHit = false
     override var timeActionDelay: Float = 100f
-    override lateinit var drawableObject: DrawableObject
     open var dph = 1
     override fun draw(canvas: Canvas) {
         super.draw(canvas)

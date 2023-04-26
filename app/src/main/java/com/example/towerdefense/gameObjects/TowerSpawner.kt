@@ -9,13 +9,11 @@ import android.view.MotionEvent
 import android.view.ViewGroup
 import com.example.towerdefense.GameObjectView
 import com.example.towerdefense.Physics2d.primitives.Box2D
+import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.gameObjects.tower.Tower
 import com.example.towerdefense.gameObjects.tower.utils.TowerArea
-import com.example.towerdefense.utility.gameView
-import com.example.towerdefense.utility.money
-import com.example.towerdefense.utility.screenSize
-import com.example.towerdefense.utility.towerClicked
+import com.example.towerdefense.utility.*
 import org.joml.Vector2f
 
 @SuppressLint("ViewConstructor")
@@ -65,6 +63,21 @@ class TowerSpawner(context: Context, box2D: Box2D, var modelTower: Tower) :
                 towerClicked = tower
                 true
             }
+            MotionEvent.ACTION_MOVE -> {
+                if (lastTower!= null && IntersectionDetector2D.intersection(collider2D.clone().body.position.add(cameraPosition), lastTower!!.collider2D())) {
+                    lastTower!!.hoverAboveDelete()
+                } else if (lastTower!= null) {
+                    lastTower!!.notHoverAboveDelete()
+                }
+                    true
+            }
+            MotionEvent.ACTION_UP -> {
+                if (lastTower!= null && IntersectionDetector2D.intersection(collider2D.clone().body.position.add(cameraPosition), lastTower!!.collider2D())) {
+                    lastTower!!.destroy()
+                    return true
+                }
+                return false
+            }
             else -> false
         }
     }
@@ -87,7 +100,6 @@ class TowerSpawner(context: Context, box2D: Box2D, var modelTower: Tower) :
         MIDDLE_RIGHT(Vector2f(screenSize.x - DEF_WIDTH, DEF_HEIGHT * 2 + 100f)),
         BOTTOM_LEFT(Vector2f(screenSize.x - DEF_WIDTH * 2 - PADDING, DEF_HEIGHT * 3 + PADDING * 2)),
         BOTTOM_RIGHT(Vector2f(screenSize.x - DEF_WIDTH, DEF_HEIGHT * 3 + PADDING * 2))
-        
     }
     
 }
