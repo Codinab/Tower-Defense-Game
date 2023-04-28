@@ -1,7 +1,5 @@
 package com.example.towerdefense.utility.Interfaces
 
-import com.example.towerdefense.utility.Direction2D
-
 interface Movable {
     fun addVelocity(velocity: Float)
     fun velocity(): Float

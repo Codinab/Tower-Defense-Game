@@ -2,9 +2,7 @@ package com.example.towerdefense.gameObjects.tower
 
 import android.graphics.Canvas
 import com.example.towerdefense.Physics2d.primitives.Box2D
-import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
-import com.example.towerdefense.gameObjects.DrawableObject
 import com.example.towerdefense.gameObjects.Enemy
 import com.example.towerdefense.utility.*
 import com.example.towerdefense.utility.Interfaces.Drawable

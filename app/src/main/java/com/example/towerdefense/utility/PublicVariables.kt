@@ -17,17 +17,3 @@ var towerClicked : Tower? = null
 var money = AtomicInteger(100000)
 var gameHealth = AtomicInteger(1000)
 
-fun Vector2i.toVector2f(): Vector2f {
-    return Vector2f(this.x.toFloat(), this.y.toFloat())
-}
-fun Vector2f.toVector2i(): Vector2i {
-    return Vector2i(this.x.toInt(), this.y.toInt())
-}
-
-fun Vector2f.angle(): Float {
-    return atan2(this.y.toDouble(), this.x.toDouble()).toFloat().toDegrees()
-}
-
-fun Float.toDegrees(): Float {
-    return this * 180 / Math.PI.toFloat()
-}

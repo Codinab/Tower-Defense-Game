@@ -4,6 +4,7 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
+import com.example.towerdefense.utility.KMath.Companion.toVector2f
 import com.example.towerdefense.utility.textures.Drawing
 import org.joml.Vector2f
 import org.joml.Vector2i

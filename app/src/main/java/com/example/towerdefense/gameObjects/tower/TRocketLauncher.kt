@@ -5,8 +5,8 @@ import com.example.towerdefense.Physics2d.primitives.Circle
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.gameObjects.tower.utils.ExplosiveRocket
 import com.example.towerdefense.utility.KMath.Companion.aim
+import com.example.towerdefense.utility.KMath.Companion.angle
 import com.example.towerdefense.utility.TimeController
-import com.example.towerdefense.utility.angle
 import com.example.towerdefense.utility.gameView
 import org.joml.Vector2f
 

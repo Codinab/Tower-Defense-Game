@@ -11,10 +11,9 @@ import android.widget.RelativeLayout
 import androidx.core.view.size
 import com.example.towerdefense.gameObjects.tower.utils.TowerArea
 import com.example.towerdefense.utility.*
-import java.io.Serializable
 
 @SuppressLint("ClickableViewAccessibility")
-class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callback, Serializable {
+class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callback {
     
     lateinit var surfaceView: GameSurfaceView
     private lateinit var gameLoop: GameLoop
@@ -70,7 +69,7 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
             }
             addView(this)
         }
-        
+    
         damageType = ImageButton(context).apply {
             id = generateViewId()
             alpha = 1f
@@ -78,6 +77,7 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
                 LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT
             )
+            setImageBitmap(BitmapFactory.decodeResource(resources, R.drawable.first_damage))
             background = null
             layoutParams.addRule(ALIGN_BOTTOM, upgrade.id)
             layoutParams.addRule(END_OF, upgrade.id)
@@ -159,6 +159,7 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
     }
     
     override fun surfaceCreated(p0: SurfaceHolder) {
+    
     }
     
     override fun surfaceChanged(p0: SurfaceHolder, p1: Int, p2: Int, p3: Int) {
