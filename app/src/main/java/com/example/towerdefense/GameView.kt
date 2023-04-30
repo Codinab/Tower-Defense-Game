@@ -43,6 +43,7 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
                 if (towerClicked != null) {
                     money.addAndGet(towerClicked!!.buildCost())
                     towerClicked!!.destroy()
+                    hideTowerButtons()
                 }
             }
             addView(this)
@@ -83,29 +84,9 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
             layoutParams.marginStart = 16
             this.layoutParams = layoutParams
             setOnClickListener {
-                if (towerClicked != null) {
-                    if (towerClicked!!.getToDamageType() == TowerArea.DamageType.FIRST) {
-                        towerClicked!!.setToDamageType(TowerArea.DamageType.LAST)
-                        setImageBitmap(BitmapFactory.decodeResource(resources, R.drawable.last_damage))
-                    } else if (towerClicked!!.getToDamageType() == TowerArea.DamageType.LAST) {
-                        towerClicked!!.setToDamageType(TowerArea.DamageType.MOST_HEALTH)
-                        setImageBitmap(BitmapFactory.decodeResource(resources, R.drawable.more_health))
-                    } else if (towerClicked!!.getToDamageType() == TowerArea.DamageType.MOST_HEALTH) {
-                        towerClicked!!.setToDamageType(TowerArea.DamageType.LEAST_HEALTH)
-                        setImageBitmap(BitmapFactory.decodeResource(resources, R.drawable.less_health))
-                    } else if (towerClicked!!.getToDamageType() == TowerArea.DamageType.LEAST_HEALTH) {
-                        towerClicked!!.setToDamageType(TowerArea.DamageType.RANDOM)
-                        setImageBitmap(BitmapFactory.decodeResource(resources, R.drawable.random_damage))
-                    } else if (towerClicked!!.getToDamageType() == TowerArea.DamageType.RANDOM) {
-                        towerClicked!!.setToDamageType(TowerArea.DamageType.FASTEST)
-                        setImageBitmap(BitmapFactory.decodeResource(resources, R.drawable.fastest_damage))
-                    } else if (towerClicked!!.getToDamageType() == TowerArea.DamageType.FASTEST) {
-                        towerClicked!!.setToDamageType(TowerArea.DamageType.SLOWEST)
-                        setImageBitmap(BitmapFactory.decodeResource(resources, R.drawable.slowest_damage))
-                    } else if (towerClicked!!.getToDamageType() == TowerArea.DamageType.SLOWEST) {
-                        towerClicked!!.setToDamageType(TowerArea.DamageType.FIRST)
-                        setImageBitmap(BitmapFactory.decodeResource(resources, R.drawable.first_damage))
-                    }
+                towerClicked?.let {
+                    towerClicked!!.nextToDamageType()
+                    setImageBitmap(towerClicked!!.getToDamageType().getBitmap())
                 }
             }
             addView(this)
@@ -131,7 +112,9 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
         sell.visibility = VISIBLE
         upgrade.visibility = VISIBLE
         damageType.visibility = VISIBLE
+        damageType.setImageBitmap(towerClicked?.getToDamageType()!!.getBitmap())
     }
+    
     fun hideTowerButtons() {
         sell.visibility = INVISIBLE
         upgrade.visibility = INVISIBLE
@@ -180,6 +163,7 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
     }
     
     override fun surfaceChanged(p0: SurfaceHolder, p1: Int, p2: Int, p3: Int) {
+        //onSaveInstanceState(this)
         if (!isRunning()) {
             start()
             gamePause()

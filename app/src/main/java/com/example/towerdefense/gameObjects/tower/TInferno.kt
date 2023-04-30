@@ -12,8 +12,9 @@ import org.joml.Vector2f
 import java.lang.Float.max
 import java.lang.Float.min
 
+//Work in progress
 class TInferno(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
-    
+    constructor(position: Vector2f) : this(300f, Box2D(Vector2f(120f, 120f), position))
     
     init {
         setToDamageType(TowerArea.DamageType.MOST_HEALTH)
@@ -118,7 +119,7 @@ class TInferno(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
             towerArea.toDamage()?.let {
                 it.damage(dphLog.toInt())
                 dphLog *= 1.03f
-                if (it.getHealth() <= 0) it.destroy()
+                if (it.health() <= 0) it.destroy()
             }
             timeLastAction = TimeController.getGameTime()
         } else if (towerArea.isEmpty()) dphLog = max(dphInferno, dphLog.div(1.001f))

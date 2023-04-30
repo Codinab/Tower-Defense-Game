@@ -2,15 +2,19 @@ package com.example.towerdefense.gameObjects.tower
 
 import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.primitives.Circle
+import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.gameObjects.tower.utils.ExplosiveRocket
 import com.example.towerdefense.utility.KMath.Companion.aim
+import com.example.towerdefense.utility.KMath.Companion.angle
 import com.example.towerdefense.utility.TimeController
-import com.example.towerdefense.utility.angle
 import com.example.towerdefense.utility.gameView
 import org.joml.Vector2f
 
 class TRocketLauncher(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
     override var timeActionDelay: Float = 1000f
+    
+    constructor(position: Vector2f) : this(300f, Box2D(Vector2f(100f, 100f), Rigidbody2D(position)))
+    
     override fun applyDamageInArea() {
         if (readyToDamage()) {
             val enemy = towerArea.toDamage()!!

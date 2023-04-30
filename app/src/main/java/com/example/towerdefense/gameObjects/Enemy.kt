@@ -93,6 +93,7 @@ class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collide
         return "Enemy(position=${position()}, velocity=${velocity()}, rotation=${getRotation()})"
     }
     
+    override var toDelete: Boolean = false
     fun getHealth(): Int {
         return health
     }

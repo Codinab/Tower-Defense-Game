@@ -30,7 +30,7 @@ import org.joml.Vector2i
 import java.util.*
 
 open class GameSurfaceView(context: Context, private val gameView: GameView) : SurfaceView(context),
-    SurfaceHolder.Callback {
+    SurfaceHolder.Callback, java.io.Serializable {
     
     var enemies = EnemyList()
     var movableTower: Tower? = null
@@ -48,7 +48,7 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         road.addLine(Direction2D.RIGHT, 10)
         road.addLine(Direction2D.DOWN, 10)
         road.addLine(Direction2D.RIGHT, 10)
-
+        
         
         backgroundGenerator = BackgroundGenerator(context)
         background = backgroundGenerator.generateBackground(30, 10)
@@ -121,113 +121,29 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
     }
     
     fun initTowerSpawners() {
-        /*val towerSpawner =
-            TowerSpawner(
-                context,
-                Box2D(
-                    Vector2f(100f, 100f),
-                    Rigidbody2D(Vector2f(screenSize.x.toFloat() - 100f, 100f))
-                ),
-                TInferno(
-                    300f,
-                    Box2D(
-                        Vector2f(100f, 100f),
-                        Rigidbody2D(Vector2f(screenSize.x.toFloat() - 100f, 210f))
-                    )
-                )
-            
-            )
-        towerSpawner.damageType = TowerArea.DamageType.LEAST_HEALTH
-        addTowerSpawner(towerSpawner)*/
-        
         val towerSpawner2 =
             TowerSpawner(
                 context,
-                Box2D(
-                    Vector2f(100f, 100f),
-                    Rigidbody2D(Vector2f(screenSize.x.toFloat() - 100f, 210f))
-                ),
-                TCanon(
-                    300f,
-                    Box2D(
-                        Vector2f(150f, 150f),
-                        Rigidbody2D(Vector2f(screenSize.x.toFloat() - 100f, 210f))
-                    )
-                )
+                Vector2f(TowerSpawner.SpawnerPosition.TOP_LEFT.vector2f),
+                TCanon(Vector2f(TowerSpawner.SpawnerPosition.TOP_LEFT.vector2f))
             )
         addTowerSpawner(towerSpawner2)
         
         val towerSpawner3 =
             TowerSpawner(
                 context,
-                Box2D(
-                    Vector2f(100f, 100f),
-                    Rigidbody2D(Vector2f(screenSize.x.toFloat() - 100f, 320f))
-                ),
-                TLaser(
-                    300f,
-                    Box2D(
-                        Vector2f(100f, 100f),
-                        Rigidbody2D(Vector2f(screenSize.x.toFloat() - 100f, 320f))
-                    )
-                ).also { it.dph = 3 }
+                Vector2f(TowerSpawner.SpawnerPosition.TOP_RIGHT.vector2f),
+                TLaser(Vector2f(TowerSpawner.SpawnerPosition.TOP_RIGHT.vector2f))
             )
         addTowerSpawner(towerSpawner3)
-
+        
         val towerSpawner4 =
             TowerSpawner(
                 context,
-                Box2D(
-                    Vector2f(100f, 100f),
-                    Rigidbody2D(Vector2f(screenSize.x.toFloat() - 100f, 430f))
-                ),
-                TRocketLauncher(200f, Box2D(Vector2f(100f, 100f), Rigidbody2D(Vector2f(screenSize.x.toFloat() - 100f, 430f))))
+                Vector2f(TowerSpawner.SpawnerPosition.MIDDLE_LEFT.vector2f),
+                TRocketLauncher(Vector2f(TowerSpawner.SpawnerPosition.MIDDLE_LEFT.vector2f))
             )
         addTowerSpawner(towerSpawner4)
-/*
-        val towerSpawner5 =
-            TowerSpawner(
-                context,
-                Box2D(
-                    Vector2f(100f, 100f),
-                    Rigidbody2D(Vector2f(screenSize.x.toFloat() - 210f, 100f))
-                )
-            )
-        towerSpawner5.modelTower.dph = 5
-        addTowerSpawner(towerSpawner5)
-
-        val towerSpawner6 =
-            TowerSpawner(
-                context,
-                Box2D(
-                    Vector2f(100f, 100f),
-                    Rigidbody2D(Vector2f(screenSize.x.toFloat() - 210f, 210f))
-                )
-            )
-        towerSpawner6.modelTower.dph = 6
-        addTowerSpawner(towerSpawner6)
-
-        val towerSpawner7 =
-            TowerSpawner(
-                context,
-                Box2D(
-                    Vector2f(100f, 100f),
-                    Rigidbody2D(Vector2f(screenSize.x.toFloat() - 210f, 320f))
-                )
-            )
-        towerSpawner7.modelTower.dph = 7
-        addTowerSpawner(towerSpawner7)
-
-        val towerSpawner8 =
-            TowerSpawner(
-                context,
-                Box2D(
-                    Vector2f(100f, 100f),
-                    Rigidbody2D(Vector2f(screenSize.x.toFloat() - 210f, 430f))
-                )
-            )
-        towerSpawner8.modelTower.dph = 8
-        addTowerSpawner(towerSpawner8)*/
     }
     
     @SuppressLint("ClickableViewAccessibility")
@@ -245,9 +161,9 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
     private var timeLastSpawn = 0L
     fun update() {
         if (checkGameEnd()) gameEnd()
-
+        
         updateGameObjects()
-
+        
         deleteObjects()
         
         spawnEnemies()
@@ -297,10 +213,10 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
     
     
     private fun updateGameObjects() {
-
-
+        
+        
         updateMovableTower()
-    
+        
         updateEnemies()
         updateTowerSpawners() //Does nothing
         updateTowers()
@@ -328,7 +244,7 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         movableTower!!.fixable.set(true)
         return
     }
-
+    
     private fun movableTowerUpdateConditions(): Boolean {
         if (movableTower == null) return false
         if (!movableTower!!.movable.get()) {
@@ -338,79 +254,79 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         if (towers.size == 1) return false
         return true
     }
-
-
+    
+    
     private fun updateEnemies() {
-    enemies.update()
-}
-
-private fun updateTowers() {
-    towers.updateAreas(enemies)
-    towers.update()
-}
-
-private fun updateTowerSpawners() { towerSpawners.forEach() { it.update() } }
-
-fun drawUPS(canvas: Canvas?) {
-    gameLoop ?: return
-    val averageUPS = gameLoop!!.averageUPS().toString()
-    val color = ContextCompat.getColor(context, R.color.purple_500)
-    val paint = Paint()
-    paint.color = color
-    paint.textSize = 50f
-    canvas?.drawText(
-        "UPS: $averageUPS", 100f + camera.x(), 300f + camera.y(), paint
-    )
-}
-
-fun drawFPS(canvas: Canvas?) {
-    gameLoop ?: return
-    val averageFPS = gameLoop!!.averageFPS().toString()
-    val color = ContextCompat.getColor(context, R.color.purple_500)
-    val paint = Paint()
-    paint.color = color
-    paint.textSize = 50f
-    canvas?.drawText(
-        "FPS: $averageFPS", 100f + camera.x(), 200f + camera.y(), paint
-    )
-}
-
-fun drawMoney(canvas: Canvas?) {
-    val color = Color.CYAN
-    val paint = Paint()
-    paint.color = color
-    paint.textSize = 50f
-    canvas?.drawText(
-        "Money: $money", 100f + camera.x(), 100f + camera.y(), paint
-    )
-}
-
-private fun drawGameTime(canvas: Canvas) {
-    val paint = Paint()
-    paint.color = Color.CYAN
-    paint.textSize = 50f
-    canvas.drawText(
-        "Time: ${TimeController.getGameTime() / 1000} ${TimeController.getSinceAppStart() / 1000}",
-        camera.x() + 100,
-        camera.y() + 200f,
-        paint
-    )
-}
-
-private fun drawGameHealth(canvas: Canvas) {
-    val paint = Paint()
-    paint.color = Color.CYAN
-    paint.textSize = 50f
-    canvas.drawText("Health: $gameHealth", camera.x() + 100f, camera.y() + 300f, paint)
-}
-
-override fun surfaceCreated(p0: SurfaceHolder) {
-
-}
-
-override fun surfaceChanged(p0: SurfaceHolder, p1: Int, p2: Int, p3: Int) {
-}
-
-override fun surfaceDestroyed(p0: SurfaceHolder) {
-}
+        enemies.update()
+    }
+    
+    private fun updateTowers() {
+        towers.updateAreas(enemies)
+        towers.update()
+    }
+    
+    private fun updateTowerSpawners() { towerSpawners.forEach() { it.update() } }
+    
+    fun drawUPS(canvas: Canvas?) {
+        gameLoop ?: return
+        val averageUPS = gameLoop!!.averageUPS().toString()
+        val color = ContextCompat.getColor(context, R.color.purple_500)
+        val paint = Paint()
+        paint.color = color
+        paint.textSize = 50f
+        canvas?.drawText(
+            "UPS: $averageUPS", 100f + camera.x(), 300f + camera.y(), paint
+        )
+    }
+    
+    fun drawFPS(canvas: Canvas?) {
+        gameLoop ?: return
+        val averageFPS = gameLoop!!.averageFPS().toString()
+        val color = ContextCompat.getColor(context, R.color.purple_500)
+        val paint = Paint()
+        paint.color = color
+        paint.textSize = 50f
+        canvas?.drawText(
+            "FPS: $averageFPS", 100f + camera.x(), 200f + camera.y(), paint
+        )
+    }
+    
+    fun drawMoney(canvas: Canvas?) {
+        val color = Color.CYAN
+        val paint = Paint()
+        paint.color = color
+        paint.textSize = 50f
+        canvas?.drawText(
+            "Money: $money", 100f + camera.x(), 100f + camera.y(), paint
+        )
+    }
+    
+    private fun drawGameTime(canvas: Canvas) {
+        val paint = Paint()
+        paint.color = Color.CYAN
+        paint.textSize = 50f
+        canvas.drawText(
+            "Time: ${TimeController.getGameTime() / 1000} ${TimeController.getSinceAppStart() / 1000}",
+            camera.x() + 100,
+            camera.y() + 200f,
+            paint
+        )
+    }
+    
+    private fun drawGameHealth(canvas: Canvas) {
+        val paint = Paint()
+        paint.color = Color.CYAN
+        paint.textSize = 50f
+        canvas.drawText("Health: $gameHealth", camera.x() + 100f, camera.y() + 300f, paint)
+    }
+    
+    override fun surfaceCreated(p0: SurfaceHolder) {
+    
+    }
+    
+    override fun surfaceChanged(p0: SurfaceHolder, p1: Int, p2: Int, p3: Int) {
+    }
+    
+    override fun surfaceDestroyed(p0: SurfaceHolder) {
+    }
 }

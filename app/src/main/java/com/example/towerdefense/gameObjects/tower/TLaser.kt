@@ -1,28 +1,25 @@
 package com.example.towerdefense.gameObjects.tower
 
 import android.graphics.Canvas
-import com.example.towerdefense.Physics2d.primitives.Collider2D
-import com.example.towerdefense.gameObjects.DrawableObject
-import com.example.towerdefense.gameObjects.Enemy
+import com.example.towerdefense.Physics2d.primitives.Box2D
+import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
+import com.example.towerdefense.gameObjects.enemies.Enemy
 import com.example.towerdefense.utility.*
 import com.example.towerdefense.utility.Interfaces.Drawable
 import com.example.towerdefense.utility.textures.Drawing
+import org.joml.Vector2f
 import kotlin.math.max
 
-open class TLaser(radius: Float, private val collider2D: Collider2D) : Tower(radius, collider2D),
+open class TLaser(radius: Float, private val box2D: Box2D) : Tower(radius, box2D),
     Drawable {
-    constructor(radius: Float, collider2D: Collider2D, dph: Int, hitDelay: Float) : this(
-        radius,
-        collider2D
-    ) {
-        this.dph = dph
-        this.timeActionDelay = hitDelay
-    }
+    
+    constructor(position: Vector2f) : this(300f, Box2D(Vector2f(100f, 100f), Rigidbody2D(position)))
+    
+    
     
     private var enemyHit: Enemy? = null
     private var lastHit = false
     override var timeActionDelay: Float = 100f
-    override lateinit var drawableObject: DrawableObject
     open var dph = 1
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
@@ -32,9 +29,9 @@ open class TLaser(radius: Float, private val collider2D: Collider2D) : Tower(rad
     private fun drawHit(canvas: Canvas) {
         if (enemyHit == null) return
         if (TimeController.getGameTime() - timeLastAction > timeActionDelay * 0.9) return
-        if (enemyHit!!.getHealth() <= 0 && !lastHit) return
+        if (enemyHit!!.health() <= 0 && !lastHit) return
         lastHit = false
-        Drawing.drawLine(canvas, collider2D.body.position, enemyHit!!.position(), 6f)
+        Drawing.drawLine(canvas, position(), enemyHit!!.position(), 6f)
     }
     
     override fun applyDamageInArea() {
@@ -42,7 +39,7 @@ open class TLaser(radius: Float, private val collider2D: Collider2D) : Tower(rad
             towerArea.toDamage()?.let {
                 enemyHit = it
                 it.damage(dph)
-                if (it.getHealth() <= 0) lastHit = true
+                if (it.health() <= 0) lastHit = true
                 timeLastAction = TimeController.getGameTime()
             }
         }
@@ -62,9 +59,9 @@ open class TLaser(radius: Float, private val collider2D: Collider2D) : Tower(rad
         return "Damage per second: $dph"
     }
     
-    override fun clone(): Tower = TLaser(radius, collider2D.clone(), dph, timeActionDelay)
+    override fun clone(): Tower = TLaser(radius, box2D.clone() as Box2D)
     override fun toString(): String {
-        return "Tower(radius=$radius, collider2D=$collider2D, enemyHit=$enemyHit, lastHit=$lastHit, towerArea=$towerArea, dph=$dph, timeLastDamage=$timeLastAction, hitDelay=$timeActionDelay)"
+        return "Tower(radius=$radius, collider2D=$box2D, enemyHit=$enemyHit, lastHit=$lastHit, towerArea=$towerArea, dph=$dph, timeLastDamage=$timeLastAction, hitDelay=$timeActionDelay)"
     }
     
     

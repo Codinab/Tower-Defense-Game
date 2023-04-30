@@ -9,7 +9,7 @@ import org.joml.Vector2f
 import java.util.concurrent.atomic.AtomicBoolean
 
 open class GameObject(private var collider2D: Collider2D) : InputEvent, Movable, Positionable,
-    Stateful, java.io.Serializable {
+    Stateful, java.io.Serializable, Removable {
     constructor(collider2D: Collider2D, movable: Boolean, fixable: Boolean) : this(collider2D) {
         this.movable.set(movable)
         this.fixable.set(fixable)
@@ -125,7 +125,9 @@ open class GameObject(private var collider2D: Collider2D) : InputEvent, Movable,
     override fun toString(): String {
         return "GameObject(position=${position()}, velocity=${velocity()}, rotation=${getRotation()})"
     }
-
+    
+    override var toDelete: Boolean = false
+    
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -149,11 +151,5 @@ open class GameObject(private var collider2D: Collider2D) : InputEvent, Movable,
         result = 31 * result + layerLevel
         return result
     }
-
-    private var toDelete = false
-    fun destroy() {
-        toDelete = true
-    }
-    fun toDelete(): Boolean = toDelete
-
+    
 }
