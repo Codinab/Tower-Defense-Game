@@ -3,7 +3,7 @@ package com.example.towerdefense.gameObjects.tower
 import android.graphics.Canvas
 import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
-import com.example.towerdefense.gameObjects.Enemy
+import com.example.towerdefense.gameObjects.enemies.Enemy
 import com.example.towerdefense.utility.*
 import com.example.towerdefense.utility.Interfaces.Drawable
 import com.example.towerdefense.utility.textures.Drawing
@@ -29,7 +29,7 @@ open class TLaser(radius: Float, private val box2D: Box2D) : Tower(radius, box2D
     private fun drawHit(canvas: Canvas) {
         if (enemyHit == null) return
         if (TimeController.getGameTime() - timeLastAction > timeActionDelay * 0.9) return
-        if (enemyHit!!.getHealth() <= 0 && !lastHit) return
+        if (enemyHit!!.health() <= 0 && !lastHit) return
         lastHit = false
         Drawing.drawLine(canvas, position(), enemyHit!!.position(), 6f)
     }
@@ -39,7 +39,7 @@ open class TLaser(radius: Float, private val box2D: Box2D) : Tower(radius, box2D
             towerArea.toDamage()?.let {
                 enemyHit = it
                 it.damage(dph)
-                if (it.getHealth() <= 0) lastHit = true
+                if (it.health() <= 0) lastHit = true
                 timeLastAction = TimeController.getGameTime()
             }
         }

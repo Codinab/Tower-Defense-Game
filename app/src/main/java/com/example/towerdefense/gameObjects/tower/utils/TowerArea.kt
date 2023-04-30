@@ -6,7 +6,7 @@ import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.R
-import com.example.towerdefense.gameObjects.Enemy
+import com.example.towerdefense.gameObjects.enemies.Enemy
 import com.example.towerdefense.gameObjects.lists.EnemyList
 import com.example.towerdefense.utility.gameView
 import org.joml.Vector2f
