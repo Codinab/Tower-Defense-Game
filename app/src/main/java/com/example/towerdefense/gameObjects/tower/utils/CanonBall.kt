@@ -4,7 +4,7 @@ import android.graphics.Canvas
 import android.view.MotionEvent
 import com.example.towerdefense.Physics2d.primitives.Circle
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
-import com.example.towerdefense.gameObjects.Enemy
+import com.example.towerdefense.gameObjects.enemies.Enemy
 import com.example.towerdefense.gameObjects.GameObject
 import com.example.towerdefense.utility.TimeController
 import com.example.towerdefense.utility.gameView

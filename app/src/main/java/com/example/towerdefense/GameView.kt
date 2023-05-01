@@ -8,7 +8,7 @@ import android.view.*
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.RelativeLayout
-import androidx.core.view.size
+import android.widget.Toast
 import com.example.towerdefense.gameObjects.tower.utils.TowerArea
 import com.example.towerdefense.utility.*
 
@@ -135,6 +135,16 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
         gameLoop.stopLoop()
         gameLoop.join()
         surfaceView.gameLoop = gameLoop
+    }
+    
+    fun end() {
+        if (!::gameLoop.isInitialized) return
+        if (!gameLoop.isRunning) return
+        gameLoop.stopLoop()
+        gameLoop.join()
+        surfaceView.gameLoop = gameLoop
+        /*if (gameHealth.get() <= 0) Toast.makeText(context, "You lost!", Toast.LENGTH_SHORT).show()
+        else Toast.makeText(context, "You won!", Toast.LENGTH_SHORT).show()*/
     }
     
     fun start() {

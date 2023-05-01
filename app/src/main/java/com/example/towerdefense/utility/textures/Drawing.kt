@@ -115,6 +115,16 @@ class Drawing {
             
             drawLine(canvas, start, healthBarEnd, remainingHealth, width)
             drawLine(canvas, healthBarEnd, end, missingHealth, width)
+            
+            // Draw health text at the end of the health bar
+            val healthText = "$health/$maxHealth"
+            val healthTextSize = 40f
+            val healthTextPaint = Paint()
+            healthTextPaint.textSize = healthTextSize
+            healthTextPaint.color = Color.BLACK
+            val healthTextWidth = healthTextPaint.measureText(healthText)
+            val healthTextPos = Vector2f(healthBarEnd).add(-healthTextWidth * 0.5f, -healthTextSize * 0.5f)
+            drawText(canvas, healthText, healthTextPos, healthTextPaint)
         }
     
         

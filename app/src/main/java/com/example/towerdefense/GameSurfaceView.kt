@@ -7,21 +7,21 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.os.Looper
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toBitmap
-import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
-import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.gameObjects.*
+import com.example.towerdefense.gameObjects.enemies.ERound
+import com.example.towerdefense.gameObjects.enemies.EnemyWaves
+import com.example.towerdefense.gameObjects.lists.ERoundList
 import com.example.towerdefense.gameObjects.lists.EnemyList
 import com.example.towerdefense.gameObjects.lists.ProjectileList
 import com.example.towerdefense.gameObjects.tower.*
-import com.example.towerdefense.gameObjects.tower.utils.TowerArea
 import com.example.towerdefense.utility.*
-import com.example.towerdefense.utility.Random.Companion.randomFloat
 import com.example.towerdefense.utility.Random.Companion.randomInt
 import com.example.towerdefense.utility.textures.BackgroundGenerator
 import com.example.towerdefense.utility.textures.Drawing
@@ -37,12 +37,14 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
     var towers = TowerList()
     var towerSpawners = Vector<TowerSpawner>()
     var projectiles = ProjectileList()
+    var rounds = ERoundList()
     
     var gameLoop: GameLoop? = null
     var isRunning = false
-    private var road: Road = Road(Vector2i(0, 0))
+    internal var road: Road = Road(Vector2i(0, 0))
     private val backgroundGenerator : BackgroundGenerator
     private val background : Bitmap
+
     init {
         
         road.addLine(Direction2D.RIGHT, 10)
@@ -52,6 +54,12 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         
         backgroundGenerator = BackgroundGenerator(context)
         background = backgroundGenerator.generateBackground(30, 10)
+        
+        val round = ERound()
+        round.addWave(EnemyWaves.Tier1Wave8.wave, 0)
+        round.addWave(EnemyWaves.Tier1Wave8.wave, 1)
+        
+        rounds.add(round)
         
     }
     
@@ -162,11 +170,19 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
     fun update() {
         if (checkGameEnd()) gameEnd()
         
+        rounds.update()
+        
         updateGameObjects()
         
         deleteObjects()
         
         spawnEnemies()
+    }
+    
+    fun roundStart() {
+/*
+        Toast.makeText(context, "Round ${rounds.getRound()}", Toast.LENGTH_SHORT).show()
+*/
     }
     
     private fun checkGameEnd() = gameHealth.get() <= 0
@@ -192,12 +208,12 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
                 TimeController.getGameTime().toInt()
             )
         ) {
-            enemies.add(
+            /*enemies.add(
                 Enemy(Box2D(Vector2f(0f, 0f), Vector2f(100f, 100f)), road).apply {
                     this.setHealth(randomInt(1, 5, TimeController.getGameTime().toInt()))
                     velocity(randomFloat(8f, 15f, TimeController.getGameTime().toInt()))
                 }
-            )
+            )*/
             timeLastSpawn = TimeController.getGameTime()
             //health = (health * 1.1).toInt()
         }
