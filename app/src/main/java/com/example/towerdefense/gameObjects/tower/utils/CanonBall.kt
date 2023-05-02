@@ -37,8 +37,4 @@ class CanonBall(var circle: Circle, private var damage : Int) : GameObject(circl
         //Draw cohete.png in drawable
         
     }
-
-    override fun onTouchEvent(event: MotionEvent, position: Vector2f): Boolean {
-        return false
-    }
 }

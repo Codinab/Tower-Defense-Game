@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.primitives.Circle
+import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.gameObjects.tower.utils.CanonBall
 import com.example.towerdefense.utility.*
@@ -15,8 +16,12 @@ import org.joml.Vector2f
 class TCanon(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
     constructor(position: Vector2f) : this(300f, Box2D(Vector2f(150f, 150f), Rigidbody2D(position)))
     
+    init {
+        (box2D as Collider2D).also { this.collider = it }
+    }
     override var timeActionDelay = 1000f
     private var dph: Int = 1
+    
     private var sizeCanonBall: Float = 30f
     
     override fun applyDamageInArea() {
@@ -43,6 +48,7 @@ class TCanon(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
         gameView!!.surfaceView.projectiles.addAll(canonBalls)
     }
     
+    
     private fun shootSmallCanonBalls() {
         val enemy = towerArea.toDamage()!!
         val rotation = calculateRotation(enemy.position())
@@ -54,7 +60,6 @@ class TCanon(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
         )
         addCanonBallsToProjectiles(canonBalls)
     }
-    
     
     private fun shootBigCanonBall() {
         val canonBall = CanonBall(Circle(sizeCanonBall, Vector2f(box2D.body.position)), dph)

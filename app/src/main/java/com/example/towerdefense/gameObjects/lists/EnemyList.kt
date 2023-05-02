@@ -30,10 +30,6 @@ class EnemyList(private val enemies: CopyOnWriteArrayList<Enemy> = CopyOnWriteAr
     fun draw(canvas: Canvas) {
         enemies.forEach { it.draw(canvas) }
     }
-    
-    fun onTouchEvent(event: MotionEvent, position: Vector2f): Boolean {
-        return enemies.any { it.onTouchEvent(event, position) }
-    }
 
     fun getAll(): List<Enemy> {
         return enemies

@@ -92,10 +92,6 @@ class ExplosiveRocket(var circle: Circle, var enemy: Enemy) : GameObject(circle,
         circle.draw(canvas)
     }
     
-    override fun onTouchEvent(event: MotionEvent, position: Vector2f): Boolean {
-        return false
-    }
-    
     companion object {
         private val explosiveRocketFrames =
             arrayOf(

@@ -73,14 +73,6 @@ class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collide
         animation.draw(canvas, position())
     }
     
-    override fun onTouchEvent(event: MotionEvent, position: Vector2f): Boolean {
-        return false
-    }
-    
-    override fun isClicked(position: Vector2f?): Boolean {
-        return false
-    }
-    
     override fun toString(): String {
         return "Enemy(position=${position()}, velocity=${velocity()}, rotation=${getRotation()})"
     }

@@ -14,11 +14,12 @@ import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.gameObjects.tower.Tower
 import com.example.towerdefense.gameObjects.tower.utils.TowerArea
 import com.example.towerdefense.utility.*
+import com.example.towerdefense.utility.Interfaces.Updatable
 import org.joml.Vector2f
 
 @SuppressLint("ViewConstructor")
 class TowerSpawner(context: Context, box2D: Box2D, var modelTower: Tower) :
-    GameObjectView(context, box2D) {
+    GameObjectView(context, box2D), Updatable {
     
     constructor(context: Context, position: Vector2f, modelTower: Tower) : this(
         context,
@@ -64,11 +65,11 @@ class TowerSpawner(context: Context, box2D: Box2D, var modelTower: Tower) :
                 true
             }
             MotionEvent.ACTION_MOVE -> {
-                if (lastTower!= null && IntersectionDetector2D.intersection(collider2D.clone().body.position.add(cameraPosition), lastTower!!.collider2D())) {
+                /*if (lastTower!= null && IntersectionDetector2D.intersection(collider2D.clone().body.position.add(cameraPosition), lastTower!!.collider2D())) {
                     lastTower!!.hoverAboveDelete()
                 } else if (lastTower!= null) {
                     lastTower!!.notHoverAboveDelete()
-                }
+                }*/
                     true
             }
             MotionEvent.ACTION_UP -> {
@@ -100,6 +101,10 @@ class TowerSpawner(context: Context, box2D: Box2D, var modelTower: Tower) :
         MIDDLE_RIGHT(Vector2f(screenSize.x - DEF_WIDTH, DEF_HEIGHT * 2 + 100f)),
         BOTTOM_LEFT(Vector2f(screenSize.x - DEF_WIDTH * 2 - PADDING, DEF_HEIGHT * 3 + PADDING * 2)),
         BOTTOM_RIGHT(Vector2f(screenSize.x - DEF_WIDTH, DEF_HEIGHT * 3 + PADDING * 2))
+    }
+    
+    override fun update() {
+    
     }
     
 }

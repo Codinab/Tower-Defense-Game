@@ -93,8 +93,4 @@ open class GameObjectView(context: Context, var collider2D: Collider2D) : View(c
     fun isClicked(vector2f: Vector2f): Boolean {
         return IntersectionDetector2D.intersection(vector2f, collider2D)
     }
-
-    fun update() {
-
-    }
 }

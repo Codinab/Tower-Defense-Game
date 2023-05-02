@@ -10,25 +10,31 @@ import com.example.towerdefense.gameObjects.lists.EnemyList
 import com.example.towerdefense.gameObjects.tower.utils.TowerArea
 import com.example.towerdefense.utility.*
 import com.example.towerdefense.utility.Interfaces.Drawable
+import com.example.towerdefense.utility.Interfaces.InputEvent
 import org.joml.Vector2f
 
-abstract class Tower(var radius: Float, private val collider2D: Collider2D) : GameObject(collider2D),
-    Drawable, java.io.Serializable {
+abstract class Tower(var radius: Float, collider2D: Collider2D) : GameObject(collider2D),
+    Drawable, java.io.Serializable, InputEvent {
     constructor(radius: Float, collider2D: Collider2D, dph: Int, hitDelay: Float) : this(
         radius,
         collider2D
     ) {
     }
     
+    override lateinit var collider: Collider2D
+    init {
+        this.collider = collider2D
+    }
+    override var lastClickTime: Long = 0L
+    
     protected var timeLastAction: Long = 0L
     protected abstract var timeActionDelay: Float
-    override var drawableObject: DrawableObject? = DrawableObject(collider2D)
     protected var level: Int = 1
     
     var towerArea: TowerArea = TowerArea(radius, collider2D.body)
     override fun draw(canvas: Canvas) {
         if (towerClicked == this) towerArea.draw(canvas)
-        collider2D.draw(canvas)
+        collider.draw(canvas)
     }
     
     override fun update() {
@@ -84,18 +90,10 @@ abstract class Tower(var radius: Float, private val collider2D: Collider2D) : Ga
     abstract fun upgradeInfo(): String
     abstract fun clone(): Tower
     override fun toString(): String {
-        return "Tower( radius=$radius, collider2D=$collider2D towerArea=$towerArea )"
+        return "Tower( radius=$radius, collider2D=$collider towerArea=$towerArea )"
     }
     
     fun updateArea(enemies: EnemyList) {
         towerArea.updateArea(enemies)
-    }
-    
-    fun hoverAboveDelete() {
-        drawableObject?.paint?.color = Color.BLUE
-    }
-    
-    fun notHoverAboveDelete() {
-        drawableObject?.paint?.color = Color.BLACK
     }
 }

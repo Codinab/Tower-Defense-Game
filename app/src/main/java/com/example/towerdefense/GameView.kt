@@ -18,9 +18,9 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
     lateinit var surfaceView: GameSurfaceView
     private lateinit var gameLoop: GameLoop
     
-    private lateinit var sell: Button
-    private lateinit var upgrade: Button
-    private lateinit var damageType: ImageButton
+    private var sell: Button
+    private var upgrade: Button
+    private var damageType: ImageButton
     
     init {
         //change to horizontal view
