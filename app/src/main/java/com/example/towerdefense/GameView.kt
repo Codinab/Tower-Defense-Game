@@ -13,7 +13,7 @@ import com.example.towerdefense.gameObjects.tower.utils.TowerArea
 import com.example.towerdefense.utility.*
 
 @SuppressLint("ClickableViewAccessibility")
-class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callback {
+class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callback, java.io.Serializable {
     
     lateinit var surfaceView: GameSurfaceView
     private lateinit var gameLoop: GameLoop
@@ -166,6 +166,15 @@ class GameView(context: Context) : RelativeLayout(context), SurfaceHolder.Callba
         if (gameHealth.get() <= 0) return
         
         TimeController.resume()
+    }
+    
+    fun roundEnd() {
+        gamePause()
+        surfaceView.roundEnd()
+    }
+    fun roundStart() {
+        gameResume()
+        surfaceView.roundStart()
     }
     
     override fun surfaceCreated(p0: SurfaceHolder) {

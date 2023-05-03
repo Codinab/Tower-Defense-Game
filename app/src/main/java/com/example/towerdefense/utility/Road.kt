@@ -75,8 +75,20 @@ class Road(private val startVector: Vector2i) : Serializable {
     
     fun draw(canvas: Canvas) {
         debugDraw(canvas)
-        
     }
+    
+    fun distanceToRoad(vector2f: Vector2f): Float {
+        var minDistance = Float.MAX_VALUE
+        for ((start, _) in roadDirections) {
+            val canvasStart = roadToCanvasPosition(start)
+            val distance = vector2f.distanceSquared(canvasStart)
+            if (distance < minDistance) {
+                minDistance = distance
+            }
+        }
+        return minDistance
+    }
+    
     
     private fun debugDraw(canvas: Canvas) {
         for ((start, direction) in roadDirections) {

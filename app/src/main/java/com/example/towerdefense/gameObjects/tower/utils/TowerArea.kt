@@ -30,7 +30,7 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
     fun updateArea(enemies: EnemyList): Boolean {
         inArea.clear()
         for (enemy in enemies) {
-            if (IntersectionDetector2D.intersection(this, enemy.collider2D())) inArea.add(enemy)
+            if (IntersectionDetector2D.intersection(this, enemy.collider())) inArea.add(enemy)
         }
         return inArea.isNotEmpty()
     }
@@ -65,9 +65,15 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
     fun getToDamageType(): DamageType = damageType
     
     
-    fun getFirst(): Enemy? = inArea.minByOrNull { it.distanceToNextCornerSquared() }
+    fun getFirst(): Enemy? {
+        val corner = inArea.maxByOrNull { it.corner() }?.corner() ?: return null
+        return inArea.filter { it.corner() == corner }.minByOrNull { it.distanceToNextCornerSquared() }
+    }
     
-    private fun getLast(): Enemy? = inArea.maxByOrNull { it.distanceToNextCornerSquared() }
+    private fun getLast(): Enemy? {
+        val corner = inArea.minByOrNull { it.corner() }?.corner() ?: return null
+        return inArea.filter { it.corner() == corner }.maxByOrNull { it.distanceToNextCornerSquared() }
+    }
     
     private fun getLeastHealthy(): Enemy? = inArea.minByOrNull { it.getMaxHealth() }
     

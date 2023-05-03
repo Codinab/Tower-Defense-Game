@@ -73,7 +73,7 @@ class TowerSpawner(context: Context, box2D: Box2D, var modelTower: Tower) :
                     true
             }
             MotionEvent.ACTION_UP -> {
-                if (lastTower!= null && IntersectionDetector2D.intersection(collider2D.clone().body.position.add(cameraPosition), lastTower!!.collider2D())) {
+                if (lastTower!= null && IntersectionDetector2D.intersection(collider2D.clone().body.position.add(cameraPosition), lastTower!!.collider())) {
                     lastTower!!.destroy()
                     return true
                 }

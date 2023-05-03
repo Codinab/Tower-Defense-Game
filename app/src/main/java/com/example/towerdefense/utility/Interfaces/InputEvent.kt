@@ -26,7 +26,7 @@ interface InputEvent : Removable, Stateful, Positionable, Collisionable {
         return false
     }
     
-    private fun handleMoveEvent(event: MotionEvent, position: Vector2f): Boolean {
+    open fun handleMoveEvent(event: MotionEvent, position: Vector2f): Boolean {
         if (movable.get()) {
             position(position)
             return true
@@ -48,6 +48,6 @@ interface InputEvent : Removable, Stateful, Positionable, Collisionable {
     
     fun isClicked(position: Vector2f?): Boolean {
         if (position == null) return false
-        return IntersectionDetector2D.intersection(position, collider)
+        return IntersectionDetector2D.intersection(position, collider())
     }
 }

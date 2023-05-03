@@ -5,7 +5,6 @@ import com.example.towerdefense.gameObjects.enemies.EnemyWave.Companion.enemyWav
 enum class EnemyWaves(private val wave: EnemyWave, private val difficulty: Int) {
     
     
-    
     Tier1Wave1(enemyWaveGenerator(10, 500L) { EnemyGenerator(1, 9f) }, 1),
     Tier1Wave2(enemyWaveGenerator(20, 200L) { EnemyGenerator(1, 9f) }, 2),
     Tier1Wave3(enemyWaveGenerator(20, 100L) { EnemyGenerator(1, 9f) }, 3),
@@ -62,12 +61,6 @@ enum class EnemyWaves(private val wave: EnemyWave, private val difficulty: Int) 
     Tier6Wave7(enemyWaveGenerator(80, 50L) { EnemyGenerator(6, 15f) }, 25),
     Tier6Wave8(enemyWaveGenerator(80, 10L) { EnemyGenerator(6, 15f) }, 26),
     Tier6Wave9(enemyWaveGenerator(100, 5L) { EnemyGenerator(6, 15f) }, 27);
-    
-    
-    
-    
-    
-    
     
     
     fun getValue(): EnemyWave {

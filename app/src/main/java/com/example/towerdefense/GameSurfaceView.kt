@@ -55,16 +55,7 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         backgroundGenerator = BackgroundGenerator(context)
         background = backgroundGenerator.generateBackground(30, 10)
         
-        val round = ERound()
-        round.addWave(EnemyWaves.Tier1Wave8.getValue(), 0)
-        round.addWave(EnemyWaves.Tier1Wave1.getValue(), 1)
-        round.addWave(EnemyWaves.Tier1Wave1.getValue(), 2)
-        round.addWave(EnemyWaves.Tier1Wave1.getValue(), 4)
-        round.addWave(EnemyWaves.Tier1Wave1.getValue(), 6)
-    
-        round.addWave(EnemyWaves.Tier1Wave1.getValue(), 10)
         
-        rounds.add(round)
         
     }
     
@@ -185,9 +176,10 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
     }
     
     fun roundStart() {
-/*
-        Toast.makeText(context, "Round ${rounds.getRound()}", Toast.LENGTH_SHORT).show()
-*/
+
+    }
+    fun roundEnd() {
+        projectiles.clear()
     }
     
     private fun checkGameEnd() = gameHealth.get() <= 0
@@ -256,7 +248,7 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         if (!movableTowerUpdateConditions()) return
         towers.forEach {
             if (movableTower != it) {
-                if(IntersectionDetector2D.intersection(movableTower!!.collider2D(), it.collider2D())) {
+                if(IntersectionDetector2D.intersection(movableTower!!.collider(), it.collider())) {
                     movableTower!!.fixable.set(false)
                     return@forEach
                 }
@@ -350,4 +342,5 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
     
     override fun surfaceDestroyed(p0: SurfaceHolder) {
     }
+    
 }

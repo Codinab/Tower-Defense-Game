@@ -9,21 +9,23 @@ import com.example.towerdefense.R
 import com.example.towerdefense.gameObjects.GameObject
 import com.example.towerdefense.utility.*
 import com.example.towerdefense.utility.Interfaces.Drawable
+import com.example.towerdefense.utility.Interfaces.Movable
+import com.example.towerdefense.utility.Interfaces.Positionable
+import com.example.towerdefense.utility.Interfaces.Stateful
 import com.example.towerdefense.utility.textures.Animation
 import com.example.towerdefense.utility.textures.Drawing
 import org.joml.Vector2f
 import java.io.Serializable
+import java.util.concurrent.atomic.AtomicBoolean
 
-class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collider2D), Serializable, Drawable {
+class Enemy(private var collider2D: Collider2D, private val road: Road) : Positionable, Serializable, Drawable,
+    Movable {
     private var health: Int = 1
     private var maxHealth: Int = health
     private var animation: Animation
     
     constructor(road: Road) : this(Box2D(Vector2f(0f, 0f), Vector2f(100f, 100f)), road)
-    
     init {
-        movable.set(false)
-        fixable.set(false)
         
         setRotation(road.getFirstDirection().toAngle())
         position(road.getStart())
@@ -50,7 +52,20 @@ class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collide
         
         val direction2D = updateDirection()
         
-        if (direction2D == Direction2D.UNDEFINED) destroy()
+        if (direction2D == Direction2D.UNDEFINED) gameDamage()
+    }
+    
+    fun corner(): Int {
+        return corner
+    }
+    
+    private fun gameDamage() {
+        gameHealth.getAndAdd(-1)
+        destroy()
+    }
+    
+    override fun collider(): Collider2D {
+        return collider2D
     }
     
     private fun updateDirection(): Direction2D {
@@ -67,8 +82,8 @@ class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collide
         val paint = Paint()
         paint.color = Color.BLUE
         paint.textSize = 50f
-        val topLeft = position().sub(collider2D().layoutSize().mul(0.5f))
-        val topRight = Vector2f(topLeft).add(collider2D().layoutSize().x, 0f)
+        val topLeft = position().sub(collider().layoutSize().mul(0.5f))
+        val topRight = Vector2f(topLeft).add(collider().layoutSize().x, 0f)
         
         Drawing.drawHealthBar(canvas, topLeft, topRight, health, maxHealth)
         animation.draw(canvas, position())
@@ -82,7 +97,6 @@ class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collide
     override fun destroy() {
         super.destroy()
         velocity(0f)
-        gameHealth.getAndAdd(-1)
     }
     
     fun health(): Int {

@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.databinding.ActivityMainBinding
+import com.example.towerdefense.utility.TimeController
 import com.example.towerdefense.utility.gameView
 import com.example.towerdefense.utility.screenSize
 import org.joml.Vector2f
@@ -105,17 +106,15 @@ class MainActivity : AppCompatActivity() {
 
         val gameObjectView = GameObjectView(this, Box2D(Vector2f(200f, 100f), Rigidbody2D(Vector2f(
             screenSize.x - 200f, 0f))))
-        var bool = false
         gameObjectView.text = "Start"
         gameObjectView.textSize = 50f
 
         gameObjectView.setOnClickListener {
-            if (bool) {
-                view.gamePause()
-            } else {
+            if (TimeController.isPaused()) {
                 view.gameResume()
+            } else {
+                view.gamePause()
             }
-            bool = !bool
         }
         view.addView(gameObjectView)
 

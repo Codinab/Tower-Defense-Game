@@ -14,11 +14,6 @@ open class GameObject(private var collider2D: Collider2D) : Positionable,
         this.movable.set(movable)
         this.fixable.set(fixable)
     }
-    
-    override lateinit var collider: Collider2D
-    init {
-        this.collider = collider2D
-    }
 
     fun collider2D(): Collider2D {
         return collider2D
@@ -27,7 +22,10 @@ open class GameObject(private var collider2D: Collider2D) : Positionable,
     override var movable: AtomicBoolean = AtomicBoolean(true)
     override var fixable: AtomicBoolean = AtomicBoolean(true)
     override var layerLevel: Int = 0
-
+    override fun collider(): Collider2D {
+        return collider2D()
+    }
+    
     override fun toString(): String {
         return "GameObject(position=${position()}, velocity=${velocity()}, rotation=${getRotation()})"
     }

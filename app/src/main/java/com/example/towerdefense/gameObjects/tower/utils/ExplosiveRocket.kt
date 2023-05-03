@@ -47,7 +47,7 @@ class ExplosiveRocket(var circle: Circle, var enemy: Enemy) : GameObject(circle,
     private fun explosionDamage() {
         println("Explosion damage")
         gameView!!.surfaceView.enemies.forEach {
-            if (IntersectionDetector2D.intersection(circle, it.collider2D())) {
+            if (IntersectionDetector2D.intersection(circle, it.collider())) {
                 it.damage(100)
             }
         }
@@ -58,7 +58,7 @@ class ExplosiveRocket(var circle: Circle, var enemy: Enemy) : GameObject(circle,
     //Detects collisions with enemies, if the object has exploded damages the enemy, if it collided with it generates an explosion
     private fun detectCollisions() {
         gameView!!.surfaceView.enemies.forEach {
-            if (IntersectionDetector2D.intersection(circle, it.collider2D())) {
+            if (IntersectionDetector2D.intersection(circle, it.collider())) {
                 generateExplosion()
                 return
             }
