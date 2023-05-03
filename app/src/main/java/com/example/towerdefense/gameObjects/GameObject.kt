@@ -23,11 +23,6 @@ open class GameObject(private var collider2D: Collider2D) : Positionable,
     fun collider2D(): Collider2D {
         return collider2D
     }
-    
-    open fun draw(canvas: Canvas) {
-        if (toDelete()) return
-        collider2D.draw(canvas)
-    }
 
     override var movable: AtomicBoolean = AtomicBoolean(true)
     override var fixable: AtomicBoolean = AtomicBoolean(true)

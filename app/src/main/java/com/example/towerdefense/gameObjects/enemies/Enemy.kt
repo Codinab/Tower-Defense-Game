@@ -8,12 +8,13 @@ import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.R
 import com.example.towerdefense.gameObjects.GameObject
 import com.example.towerdefense.utility.*
+import com.example.towerdefense.utility.Interfaces.Drawable
 import com.example.towerdefense.utility.textures.Animation
 import com.example.towerdefense.utility.textures.Drawing
 import org.joml.Vector2f
 import java.io.Serializable
 
-class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collider2D), Serializable {
+class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collider2D), Serializable, Drawable {
     private var health: Int = 1
     private var maxHealth: Int = health
     private var animation: Animation
@@ -83,6 +84,7 @@ class Enemy(collider2D: Collider2D, private val road: Road) : GameObject(collide
         velocity(0f)
         gameHealth.getAndAdd(-1)
     }
+    
     fun health(): Int {
         return health
     }

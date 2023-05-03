@@ -19,9 +19,6 @@ open class GameObjectList(private val gameObjects: CopyOnWriteArrayList<GameObje
     override fun remove(gameObject: GameObject): Boolean {
         return gameObjects.remove(gameObject)
     }
-    fun draw(canvas: Canvas) {
-        gameObjects.forEach { it.draw(canvas) }
-    }
 
     fun getClicked(position: Vector2f?): GameObjectList {
         val clickedGameObjects = GameObjectList()

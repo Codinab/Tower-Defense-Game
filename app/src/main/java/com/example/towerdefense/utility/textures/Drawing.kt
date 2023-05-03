@@ -91,6 +91,15 @@ class Drawing {
             val y = position.y - bitmap.height * 0.5f
             canvas.drawBitmap(bitmap, x, y, paint)
         }
+        fun drawBitmap(canvas: Canvas, bitmap: Bitmap, position: Vector2f, rotation: Float) {
+            val paint = Paint().apply {
+                isAntiAlias = true
+                isFilterBitmap = true
+                isDither = true
+            }
+            drawBitmap(canvas, bitmap, position, paint, rotation)
+        }
+        
         fun drawBitmap(canvas: Canvas, bitmap: Bitmap, position: Vector2f) {
             val paint = Paint().apply {
                 isAntiAlias = true

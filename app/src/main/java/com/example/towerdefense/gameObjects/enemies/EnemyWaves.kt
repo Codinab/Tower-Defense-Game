@@ -2,7 +2,7 @@ package com.example.towerdefense.gameObjects.enemies
 
 import com.example.towerdefense.gameObjects.enemies.EnemyWave.Companion.enemyWaveGenerator
 
-enum class EnemyWaves(val wave: EnemyWave, val difficulty: Int) {
+enum class EnemyWaves(private val wave: EnemyWave, private val difficulty: Int) {
     
     
     
@@ -61,7 +61,7 @@ enum class EnemyWaves(val wave: EnemyWave, val difficulty: Int) {
     Tier6Wave6(enemyWaveGenerator(40, 25L) { EnemyGenerator(6, 15f) }, 24),
     Tier6Wave7(enemyWaveGenerator(80, 50L) { EnemyGenerator(6, 15f) }, 25),
     Tier6Wave8(enemyWaveGenerator(80, 10L) { EnemyGenerator(6, 15f) }, 26),
-    Tier6Wave9(enemyWaveGenerator(100, 5L) { EnemyGenerator(6, 15f) }, 27),
+    Tier6Wave9(enemyWaveGenerator(100, 5L) { EnemyGenerator(6, 15f) }, 27);
     
     
     
@@ -70,21 +70,8 @@ enum class EnemyWaves(val wave: EnemyWave, val difficulty: Int) {
     
     
     
-    /*Tier1Wave2(EnemyWave(Array(20) { EnemyGenerator(1, 9f) }.toCollection(ArrayList()),50), 2),
-    Tier1Wave3(EnemyWave(Array(20) { EnemyGenerator(1, 9f) }.toCollection(ArrayList()),50)),
-    Tier1Wave4(EnemyWave(Array(20) { EnemyGenerator(1, 9f) }.toCollection(ArrayList()),25)),
-    Tier1Wave5(EnemyWave(Array(40) { EnemyGenerator(1, 9f) }.toCollection(ArrayList()),50)),
-    Tier1Wave6(EnemyWave(Array(40) { EnemyGenerator(1, 9f) }.toCollection(ArrayList()),25)),
-    Tier1Wave7(EnemyWave(Array(80) { EnemyGenerator(1, 9f) }.toCollection(ArrayList()),50)),
-    Tier1Wave8(EnemyWave(Array(80) { EnemyGenerator(1, 9f) }.toCollection(ArrayList()),10)),
-    
-    Tier2Wave1(EnemyWave(Array(10) { EnemyGenerator(2, 9f) }.toCollection(ArrayList()),100)),
-    Tier2Wave2(EnemyWave(Array(20) { EnemyGenerator(2, 9f) }.toCollection(ArrayList()),50)),
-    Tier2Wave3(EnemyWave(Array(20) { EnemyGenerator(2, 9f) }.toCollection(ArrayList()),50)),
-    Tier2Wave4(EnemyWave(Array(20) { EnemyGenerator(2, 9f) }.toCollection(ArrayList()),25)),
-    Tier2Wave5(EnemyWave(Array(40) { EnemyGenerator(2, 9f) }.toCollection(ArrayList()),50)),
-    Tier2Wave6(EnemyWave(Array(40) { EnemyGenerator(2, 9f) }.toCollection(ArrayList()),25)),
-    Tier2Wave7(EnemyWave(Array(80) { EnemyGenerator(2, 9f) }.toCollection(ArrayList()),50)),
-    Tier2Wave8(EnemyWave(Array(80) { EnemyGenerator(2, 9f) }.toCollection(ArrayList()),10))*/
+    fun getValue(): EnemyWave {
+        return this.wave.clone()
+    }
     
 }

@@ -36,4 +36,7 @@ class EnemyWave(private val enemyGenerators: ArrayList<EnemyGenerator>, private 
             return EnemyWave(Array(size) { generator() }.toCollection(ArrayList()), timeBetweenEnemies)
         }
     }
+    fun clone(): EnemyWave {
+        return EnemyWave(ArrayList(enemyGenerators), timeBetweenEnemies)
+    }
 }

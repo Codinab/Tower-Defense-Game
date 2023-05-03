@@ -56,8 +56,13 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         background = backgroundGenerator.generateBackground(30, 10)
         
         val round = ERound()
-        round.addWave(EnemyWaves.Tier1Wave8.wave, 0)
-        round.addWave(EnemyWaves.Tier1Wave8.wave, 1)
+        round.addWave(EnemyWaves.Tier1Wave8.getValue(), 0)
+        round.addWave(EnemyWaves.Tier1Wave1.getValue(), 1)
+        round.addWave(EnemyWaves.Tier1Wave1.getValue(), 2)
+        round.addWave(EnemyWaves.Tier1Wave1.getValue(), 4)
+        round.addWave(EnemyWaves.Tier1Wave1.getValue(), 6)
+    
+        round.addWave(EnemyWaves.Tier1Wave1.getValue(), 10)
         
         rounds.add(round)
         
