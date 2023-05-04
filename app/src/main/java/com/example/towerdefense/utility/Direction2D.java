@@ -11,8 +11,8 @@ public enum Direction2D {
     DOWN((byte)1, 90.0F),
     LEFT((byte)2, 180.0F),
     RIGHT((byte)4, 360.0F),
-    UNDEFINED((byte)8, 0.0F),
-    UP((byte)16, 270F);
+    UP((byte)8, 270F),
+    UNDEFINED((byte)16, 0.0F);
 
     private final byte flagValue;
     private final float angle;
@@ -140,6 +140,11 @@ public enum Direction2D {
 
         return UNDEFINED;
     }
+
+    public static Direction2D random() {
+        return fromFlagValue((byte)(1 << (int)(Math.random() * 4)));
+    }
+
 
     @Override
     public String toString() {

@@ -93,10 +93,13 @@ abstract class Tower(var radius: Float, private val collider2D: Collider2D) : Mo
                     println("Collision with ${it.javaClass.simpleName}")
                 }
             }
-            println(gameView!!.surfaceView.road.distanceToRoad(position()))
-            if (gameView!!.surfaceView.road.distanceToRoad(position()) < 20000f) {
-                fixable.set(false)
+            for (positionBox2D in gameView!!.surfaceView.road.getPositionBox2Ds()) {
+                if(IntersectionDetector2D.intersection(collider(), positionBox2D)) {
+                    fixable.set(false)
+                }
             }
+            if(gameView!!.surfaceView.road.distanceToRoad(position()) > 200000f)
+                fixable.set(false)
             return true
         }
         return false

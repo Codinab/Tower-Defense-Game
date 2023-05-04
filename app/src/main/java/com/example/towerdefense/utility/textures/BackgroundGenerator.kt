@@ -7,7 +7,11 @@ import android.graphics.Rect
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.example.towerdefense.R
+import com.example.towerdefense.utility.Road
 import com.example.towerdefense.utility.gameView
+import com.example.towerdefense.utility.screenSize
+import org.joml.Vector2f
+import org.joml.Vector2i
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -51,26 +55,45 @@ class BackgroundGenerator(val context: Context) {
         grass.add(ContextCompat.getDrawable(context, R.drawable.grass4_8)!!.toBitmap())
     }
     
-    fun generateBackground(bitmapsPerRow: Int, bitmapsPerColumn: Int): Bitmap {
-        val resultWidth = bitmapsPerRow * grassSize
-        val resultHeight = bitmapsPerColumn * grassSize
+    fun generateBackground(bitmaps: Vector2i): Bitmap {
+        val resultWidth = bitmaps.x * grassSize
+        val resultHeight = bitmaps.y * grassSize
         val resultBitmap = Bitmap.createBitmap(resultWidth, resultHeight, Bitmap.Config.ARGB_8888)
         
         val canvas = Canvas(resultBitmap)
         val random = Random()
         
-        for (row in 0 until bitmapsPerRow) {
-            for (column in 0 until bitmapsPerColumn) {
+        for (row in 0 until bitmaps.x) {
+            for (column in 0 until bitmaps.y) {
                 val randomIndex = random.nextInt(grass.size)
                 val sourceBitmap = grass[randomIndex]
                 val sourceRect = Rect(0, 0, sourceBitmap.width, sourceBitmap.height)
-                val destinationRect = Rect(row * grassSize, column * grassSize, (row + 1) * grassSize, (column + 1) * grassSize)
+                val destinationRect =
+                    Rect(row * grassSize, column * grassSize, (row + 1) * grassSize, (column + 1) * grassSize)
                 canvas.drawBitmap(sourceBitmap, sourceRect, destinationRect, null)
             }
         }
-        
         return resultBitmap
     }
     
-    
+    fun generateBackground(position: Vector2f, bitmaps: Int): Bitmap {
+        val resultWidth = bitmaps * grassSize
+        val resultHeight = bitmaps * grassSize
+        val resultBitmap = Bitmap.createBitmap(resultWidth, resultHeight, Bitmap.Config.ARGB_8888)
+        
+        val canvas = Canvas(resultBitmap)
+        val random = Random()
+        
+        for (row in 0 until bitmaps) {
+            for (column in 0 until bitmaps) {
+                val randomIndex = random.nextInt(grass.size)
+                val sourceBitmap = grass[randomIndex]
+                val sourceRect = Rect(0, 0, sourceBitmap.width, sourceBitmap.height)
+                val destinationRect =
+                    Rect(row * grassSize, column * grassSize, (row + 1) * grassSize, (column + 1) * grassSize)
+                canvas.drawBitmap(sourceBitmap, sourceRect, destinationRect, null)
+            }
+        }
+        return resultBitmap
+    }
 }

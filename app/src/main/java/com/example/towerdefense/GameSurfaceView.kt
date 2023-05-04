@@ -7,16 +7,12 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.os.Looper
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.gameObjects.*
-import com.example.towerdefense.gameObjects.enemies.ERound
-import com.example.towerdefense.gameObjects.enemies.EnemyWaves
 import com.example.towerdefense.gameObjects.lists.ERoundList
 import com.example.towerdefense.gameObjects.lists.EnemyList
 import com.example.towerdefense.gameObjects.lists.ProjectileList
@@ -28,6 +24,7 @@ import com.example.towerdefense.utility.textures.Drawing
 import org.joml.Vector2f
 import org.joml.Vector2i
 import java.util.*
+import kotlin.collections.HashMap
 
 open class GameSurfaceView(context: Context, private val gameView: GameView) : SurfaceView(context),
     SurfaceHolder.Callback, java.io.Serializable {
@@ -43,7 +40,7 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
     var isRunning = false
     internal var road: Road = Road(Vector2i(0, 0))
     private val backgroundGenerator : BackgroundGenerator
-    private val background : Bitmap
+    private val backgroundBitmaps : HashMap<Vector2f, Bitmap> = HashMap()
 
     init {
         
@@ -53,10 +50,9 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         
         
         backgroundGenerator = BackgroundGenerator(context)
-        background = backgroundGenerator.generateBackground(30, 10)
-        
-        
-        
+        road.getPositions().forEach {
+            backgroundBitmaps[it] = backgroundGenerator.generateBackground(it, 6)
+        }
     }
     
     override fun draw(canvas: Canvas?) {
@@ -78,6 +74,8 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         towers.draw(canvas)
         projectiles.draw(canvas)
         
+        Drawing.drawBox2D(canvas,road.getPositionableAreaBox2Ds(6))
+        
         if (fps) drawUPS(canvas)
         if (fps) drawFPS(canvas)
         
@@ -87,12 +85,12 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
     }
     
     private fun drawBackGround(canvas: Canvas) {
-        Drawing.drawBitmap(canvas, background, Vector2f((screenSize.x.toFloat() / 2), (screenSize.y.toFloat() / 2)))
+        backgroundBitmaps.forEach {
+            Drawing.drawBitmap(canvas, it.value, it.key)
+        }
     }
     
-    val camera = Camera()
-    
-    
+    private val camera = Camera()
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val adjustedPosition = camera.adjustedPosition(event)
         

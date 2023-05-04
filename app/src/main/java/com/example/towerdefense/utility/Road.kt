@@ -13,8 +13,8 @@ import kotlin.math.pow
 
 class Road(private val startVector: Vector2i) : Serializable {
     
-    private val roadHeight: Int = 100
-    private val roadWidth: Int = 100
+    private val roadHeight: Int = 128
+    private val roadWidth: Int = 128
     private val roadPaint: Paint = Paint()
     private var roadDirections: ArrayList<Pair<Vector2i, Direction2D>> = ArrayList()
     private var roadCorners: ArrayList<Pair<Vector2i, Direction2D>> = ArrayList()
@@ -91,9 +91,7 @@ class Road(private val startVector: Vector2i) : Serializable {
     
     
     private fun debugDraw(canvas: Canvas) {
-        for ((start, direction) in roadDirections) {
-            
-            
+        for ((start, _) in roadDirections) {
             Drawing.drawBox2D(canvas, Box2D(Vector2f(roadWidth.toFloat(), roadHeight.toFloat()),
                 Rigidbody2D(roadToCanvasPosition(start))),roadPaint)
         }
@@ -123,6 +121,44 @@ class Road(private val startVector: Vector2i) : Serializable {
     fun distanceToNextCornerSquared(position: Vector2f, corner: Int): Float {
         val cornerPosition = roadToCanvasPosition(roadCorners[corner + 1].first)
         return cornerPosition.distanceSquared(position)
+    }
+    
+    fun getEnd(): Vector2f {
+        return roadToCanvasPosition(roadDirections.last().first)
+    }
+    
+    fun getPositions(): ArrayList<Vector2f> {
+        val points = ArrayList<Vector2f>()
+        for ((start, _) in roadDirections) {
+            points.add(roadToCanvasPosition(start))
+        }
+        return points
+    }
+    
+    private var savedBox2Ds = ArrayList<Box2D>()
+    fun getPositionBox2Ds() : ArrayList<Box2D>{
+        if (savedBox2Ds.isEmpty() || savedBox2Ds.size != roadDirections.size) {
+            val points = getPositions()
+            val box2Ds = ArrayList<Box2D>()
+            val size = Vector2f(roadWidth.toFloat(), roadHeight.toFloat())
+            for (point in points) {
+                box2Ds.add(Box2D(Vector2f(size), Rigidbody2D(point)))
+            }
+            savedBox2Ds.clear()
+            savedBox2Ds.addAll(box2Ds)
+        }
+        return savedBox2Ds
+    }
+    
+    fun getPositionableAreaBox2Ds(size: Int) : Box2D{
+        val box2Ds = getPositionBox2Ds()
+        val vSize = Vector2f(roadWidth.toFloat(), roadHeight.toFloat())
+        
+        val positionableAreaBox2Ds = HashMap<Vector2f, Box2D>()
+        
+        val topLeft = Vector2f(getPositionBox2Ds()[0].body.position).sub(Vector2f(vSize).mul(size.toFloat()))
+        
+        return Box2D(Vector2f(vSize), Rigidbody2D(topLeft))
     }
 }
 
