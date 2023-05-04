@@ -74,6 +74,7 @@ class TCanon(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
     override fun draw(canvas: Canvas) {
         if (towerClicked == this) towerArea.draw(canvas)
         val paint = Paint()
+        drawPositionable(canvas)
         //Color for each level more green
         paint.color = Color.rgb(0, 255 / 6 * level, 0)
         Drawing.drawBox2D(canvas, box2D, paint)

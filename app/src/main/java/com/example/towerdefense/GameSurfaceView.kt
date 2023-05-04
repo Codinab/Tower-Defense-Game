@@ -51,7 +51,7 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         
         backgroundGenerator = BackgroundGenerator(context)
         road.getPositions().forEach {
-            backgroundBitmaps[it] = backgroundGenerator.generateBackground(it, 6)
+            backgroundBitmaps[it] = backgroundGenerator.generateBackground(it, 7)
         }
     }
     
@@ -73,8 +73,6 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         enemies.draw(canvas)
         towers.draw(canvas)
         projectiles.draw(canvas)
-        
-        Drawing.drawBox2D(canvas,road.getPositionableAreaBox2Ds(6))
         
         if (fps) drawUPS(canvas)
         if (fps) drawFPS(canvas)
@@ -244,15 +242,7 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
     
     private fun updateMovableTower() {
         if (!movableTowerUpdateConditions()) return
-        towers.forEach {
-            if (movableTower != it) {
-                if(IntersectionDetector2D.intersection(movableTower!!.collider(), it.collider())) {
-                    movableTower!!.fixable.set(false)
-                    return@forEach
-                }
-            }
-        }
-        movableTower!!.fixable.set(true)
+        
         return
     }
     

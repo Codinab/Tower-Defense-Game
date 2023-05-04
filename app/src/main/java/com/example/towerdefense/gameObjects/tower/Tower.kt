@@ -7,8 +7,6 @@ import android.view.MotionEvent
 import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
-import com.example.towerdefense.gameObjects.DrawableObject
-import com.example.towerdefense.gameObjects.GameObject
 import com.example.towerdefense.gameObjects.lists.EnemyList
 import com.example.towerdefense.gameObjects.tower.utils.TowerArea
 import com.example.towerdefense.utility.*
@@ -19,7 +17,7 @@ import com.example.towerdefense.utility.textures.Drawing
 import org.joml.Vector2f
 import java.util.concurrent.atomic.AtomicBoolean
 
-abstract class Tower(var radius: Float, private val collider2D: Collider2D) : Movable,
+abstract class Tower(var radius: Float, private val box2D: Box2D) : Movable,
     Drawable, java.io.Serializable, InputEvent {
     
     override var lastClickTime: Long = 0L
@@ -28,15 +26,20 @@ abstract class Tower(var radius: Float, private val collider2D: Collider2D) : Mo
     protected abstract var timeActionDelay: Float
     protected var level: Int = 1
     
-    var towerArea: TowerArea = TowerArea(radius, collider2D.body)
+    var towerArea: TowerArea = TowerArea(radius, box2D.body)
     override fun draw(canvas: Canvas) {
         if (towerClicked == this) towerArea.draw(canvas)
+        drawPositionable(canvas)
+        Drawing.drawBox2D(canvas, collider(), Paint())
+    }
+    
+    fun drawPositionable(canvas: Canvas) {
+        val box2D = box2D.clone() as Box2D
+        box2D.size.mul(1.1f)
         if(!fixable.get() && movable.get()) {
-            Drawing.drawBox2D(canvas, collider() as Box2D, Paint().apply { color = Color.RED })
+            Drawing.drawBox2D(canvas, box2D, Paint().apply { color = Color.RED })
         } else if (movable.get()) {
-            Drawing.drawBox2D(canvas, collider() as Box2D, Paint().apply { color = Color.GREEN })
-        } else {
-            Drawing.drawBox2D(canvas, collider() as Box2D, Paint())
+            Drawing.drawBox2D(canvas, box2D, Paint().apply { color = Color.GREEN })
         }
     }
     
@@ -86,7 +89,14 @@ abstract class Tower(var radius: Float, private val collider2D: Collider2D) : Mo
     override fun handleMoveEvent(event: MotionEvent, position: Vector2f): Boolean {
         if (movable.get()) {
             position(position)
-            fixable.set(true)
+            if(gameView!!.surfaceView.road.getPositionableAreaBox2Ds(3)
+                .any { IntersectionDetector2D.intersection(collider(), it)}) {
+                fixable.set(true)
+                println("Placeable in Area")
+            } else
+                fixable.set(false)
+                
+            
             gameView!!.surfaceView.towers.filterNot { it == this }.forEach {
                 if(IntersectionDetector2D.intersection(collider(), it.collider())) {
                     fixable.set(false)
@@ -96,10 +106,10 @@ abstract class Tower(var radius: Float, private val collider2D: Collider2D) : Mo
             for (positionBox2D in gameView!!.surfaceView.road.getPositionBox2Ds()) {
                 if(IntersectionDetector2D.intersection(collider(), positionBox2D)) {
                     fixable.set(false)
+                    println("Collision with ${positionBox2D.javaClass.simpleName}")
                 }
             }
-            if(gameView!!.surfaceView.road.distanceToRoad(position()) > 200000f)
-                fixable.set(false)
+            
             return true
         }
         return false
@@ -117,8 +127,8 @@ abstract class Tower(var radius: Float, private val collider2D: Collider2D) : Mo
     
     override var fixable: AtomicBoolean = AtomicBoolean(true)
     override var movable: AtomicBoolean = AtomicBoolean(true)
-    override fun collider(): Collider2D {
-        return collider2D
+    override fun collider(): Box2D {
+        return box2D
     }
     
     override var toDelete: Boolean = false
