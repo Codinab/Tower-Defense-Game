@@ -2,9 +2,10 @@ package com.example.towerdefense.gameObjects.lists
 
 import android.graphics.Canvas
 import com.example.towerdefense.gameObjects.tower.utils.Projectile
+import java.util.Vector
 import java.util.concurrent.CopyOnWriteArrayList
 
-class ProjectileList(private val projectiles: CopyOnWriteArrayList<Projectile> = CopyOnWriteArrayList()) :
+class ProjectileList(private val projectiles: Vector<Projectile> = Vector()) :
     MutableList<Projectile> by projectiles {
     
     

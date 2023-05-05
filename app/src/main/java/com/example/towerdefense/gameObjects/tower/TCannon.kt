@@ -1,25 +1,24 @@
 package com.example.towerdefense.gameObjects.tower
 
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
+import android.graphics.*
 import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.primitives.Circle
-import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.gameObjects.tower.utils.CanonBall
 import com.example.towerdefense.utility.*
 import com.example.towerdefense.utility.KMath.Companion.angle
+import com.example.towerdefense.utility.KMath.Companion.anglePositionToTarget
 import com.example.towerdefense.utility.textures.Drawing
 import org.joml.Vector2f
 
-class TCanon(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
+class TCannon(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
     constructor(position: Vector2f) : this(300f, Box2D(Vector2f(150f, 150f), Rigidbody2D(position)))
     
     override var timeActionDelay = 1000f
     private var dph: Int = 1
     
     private var sizeCanonBall: Float = 30f
+    private var textureResized = Bitmap.createScaledBitmap(texture, texture.width * 2, texture.height * 2, false)
     
     override fun applyDamageInArea() {
         if (readyToDamage()) {
@@ -77,7 +76,16 @@ class TCanon(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
         drawPositionable(canvas)
         //Color for each level more green
         paint.color = Color.rgb(0, 255 / 6 * level, 0)
-        Drawing.drawBox2D(canvas, box2D, paint)
+        //Drawing.drawBox2D(canvas, box2D, paint)
+        angleAnimation(canvas)
+    }
+    
+    private var angle = 0f
+    private fun angleAnimation(canvas: Canvas) {
+        if (TimeController.getGameTime() > timeLastAction + timeActionDelay / 2) angle = towerArea.angle()
+        else if (gameView!!.surfaceView.enemies.isEmpty())
+            angle = anglePositionToTarget(position(), gameView!!.surfaceView.road.getStart())
+        Drawing.drawBitmap(canvas, textureResized, position(), angle)
     }
     
     override fun upgrade() {
@@ -123,6 +131,13 @@ class TCanon(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
     }
     
     override fun clone(): Tower {
-        return TCanon(radius, box2D.clone() as Box2D)
+        return TCannon(radius, box2D.clone() as Box2D)
+    }
+    
+    companion object {
+        private val texture = BitmapFactory.decodeResource(
+            gameView!!.context.resources,
+            com.example.towerdefense.R.drawable.cannon
+        )
     }
 }

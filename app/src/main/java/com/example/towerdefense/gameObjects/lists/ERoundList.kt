@@ -7,9 +7,11 @@ import com.example.towerdefense.gameObjects.enemies.ERounds
 import com.example.towerdefense.utility.TimeController
 import com.example.towerdefense.utility.gameView
 import com.example.towerdefense.utility.money
+import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
+import kotlin.collections.ArrayList
 
-class ERoundList(private val rounds: CopyOnWriteArrayList<ERound> = CopyOnWriteArrayList()) :
+class ERoundList(private val rounds: Vector<ERound> = Vector()) :
     MutableList<ERound> by rounds {
     
     private var round = 1

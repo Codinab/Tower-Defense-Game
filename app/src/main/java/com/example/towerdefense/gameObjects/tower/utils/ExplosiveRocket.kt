@@ -10,6 +10,7 @@ import com.example.towerdefense.gameObjects.enemies.Enemy
 import com.example.towerdefense.gameObjects.GameObject
 import com.example.towerdefense.utility.*
 import com.example.towerdefense.utility.KMath.Companion.angle
+import com.example.towerdefense.utility.KMath.Companion.anglePositionToTarget
 import com.example.towerdefense.utility.textures.Animation
 import org.joml.Vector2f
 
@@ -38,7 +39,7 @@ class ExplosiveRocket(var circle: Circle, var enemy: Enemy) : GameObject(circle,
         if (explosionCreated) return explosionDamage()
     
         // Rotate the projectile to face the enemy.
-        setRotation(Vector2f(enemy.position()).sub(circle.body.position).normalize().angle())
+        setRotation(anglePositionToTarget(enemy.position(),circle.body.position))
     
         // Detect collisions with enemies.
         if (!explosionCreated) detectCollisions()

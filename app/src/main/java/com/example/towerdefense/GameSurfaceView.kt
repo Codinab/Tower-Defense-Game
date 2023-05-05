@@ -11,7 +11,6 @@ import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import androidx.core.content.ContextCompat
-import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.gameObjects.*
 import com.example.towerdefense.gameObjects.lists.ERoundList
 import com.example.towerdefense.gameObjects.lists.EnemyList
@@ -125,7 +124,7 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
             TowerSpawner(
                 context,
                 Vector2f(TowerSpawner.SpawnerPosition.TOP_LEFT.vector2f),
-                TCanon(Vector2f(TowerSpawner.SpawnerPosition.TOP_LEFT.vector2f))
+                TCannon(Vector2f(TowerSpawner.SpawnerPosition.TOP_LEFT.vector2f))
             )
         addTowerSpawner(towerSpawner2)
         

@@ -1,9 +1,9 @@
 package com.example.towerdefense.utility.textures
 
 import android.graphics.*
+import androidx.core.graphics.toRect
 import com.example.towerdefense.Physics2d.JMath
 import com.example.towerdefense.Physics2d.primitives.Box2D
-import com.example.towerdefense.utility.TimeController
 import org.joml.Vector2f
 
 //static class Drawing
@@ -108,7 +108,30 @@ class Drawing {
             }
             drawBitmap(canvas, bitmap, position, paint)
         }
-        
+        fun drawBitmap(
+            canvas: Canvas,
+            bitmap: Bitmap,
+            positionTop: Vector2f,
+            positionBottom: Vector2f,
+            width: Float,
+        ) {
+            val textureWidth = bitmap.width.toFloat()
+            val textureHeight = bitmap.height.toFloat()
+            val scale = width / textureWidth
+            val scaledWidth = textureWidth * scale
+            val scaledHeight = textureHeight * scale
+            val left = positionTop.x - scaledWidth / 2
+            val top = positionTop.y
+            val right = positionTop.x + scaledWidth / 2
+            val bottom = positionBottom.y
+            val dstRect = RectF(left, top, right, bottom)
+            val srcRect = RectF(0f, 0f, textureWidth, textureHeight).toRect()
+            val paint = Paint()
+            paint.isAntiAlias = true
+            canvas.drawBitmap(bitmap, srcRect, dstRect, paint)
+        }
+    
+    
         fun drawHealthBar(canvas: Canvas, leftBottomHealthBarPos: Vector2f, rightBottomHealthBarPos: Vector2f, health: Int, maxHealth: Int) {
             val width = 10f
             val start = Vector2f(leftBottomHealthBarPos).add(0f, -width)

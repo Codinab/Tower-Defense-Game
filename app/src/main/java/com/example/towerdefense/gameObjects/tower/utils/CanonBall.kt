@@ -49,7 +49,7 @@ class CanonBall(private var circle: Circle, private var damage : Int) : GameObje
     private var texture_direction_rotation = true
     override fun draw(canvas: Canvas) {
         if (toDelete()) return
-        Drawing.drawBitmap(canvas, textureResized, position(), texture_rotation)
+        if(TimeController.getGameTime() > spawnTime + 150L) Drawing.drawBitmap(canvas, textureResized, position(), texture_rotation)
         //rotate the texture back and forth to simulate a spinning effect
         if (texture_direction_rotation) {
             texture_rotation += 2f

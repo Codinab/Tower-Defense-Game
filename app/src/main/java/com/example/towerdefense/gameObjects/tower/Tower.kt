@@ -37,9 +37,9 @@ abstract class Tower(var radius: Float, private val box2D: Box2D) : Movable,
         val box2D = box2D.clone() as Box2D
         box2D.size.mul(1.1f)
         if(!fixable.get() && movable.get()) {
-            Drawing.drawBox2D(canvas, box2D, Paint().apply { color = Color.RED })
+            Drawing.drawBox2D(canvas, box2D, Paint().apply { color = Color.RED; alpha = 100  })
         } else if (movable.get()) {
-            Drawing.drawBox2D(canvas, box2D, Paint().apply { color = Color.GREEN })
+            Drawing.drawBox2D(canvas, box2D, Paint().apply { color = Color.GREEN; alpha = 100 })
         }
     }
     

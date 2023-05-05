@@ -5,9 +5,11 @@ import android.view.MotionEvent
 import com.example.towerdefense.gameObjects.enemies.Enemy
 import com.example.towerdefense.utility.money
 import org.joml.Vector2f
+import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
+import kotlin.collections.ArrayList
 
-class EnemyList(private val enemies: CopyOnWriteArrayList<Enemy> = CopyOnWriteArrayList()) :
+class EnemyList(private val enemies: Vector<Enemy> = Vector()) :
     MutableList<Enemy> by enemies {
 
     fun update() {

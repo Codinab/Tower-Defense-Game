@@ -4,9 +4,11 @@ import android.graphics.Canvas
 import android.view.MotionEvent
 import com.example.towerdefense.gameObjects.GameObject
 import org.joml.Vector2f
+import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
+import kotlin.collections.ArrayList
 
-open class GameObjectList(private val gameObjects: CopyOnWriteArrayList<GameObject> = CopyOnWriteArrayList()) :
+open class GameObjectList(private val gameObjects: Vector<GameObject> = Vector()) :
     MutableList<GameObject> by gameObjects {
     fun update() {
         gameObjects.forEach { it.update() }

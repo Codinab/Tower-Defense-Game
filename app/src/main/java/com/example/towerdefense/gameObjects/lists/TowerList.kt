@@ -4,9 +4,11 @@ import android.graphics.Canvas
 import android.view.MotionEvent
 import com.example.towerdefense.gameObjects.tower.Tower
 import org.joml.Vector2f
+import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
+import kotlin.collections.ArrayList
 
-class TowerList(private val towers: CopyOnWriteArrayList<Tower> = CopyOnWriteArrayList()) :
+class TowerList(private val towers: Vector<Tower> = Vector()) :
     MutableList<Tower> by towers {
     
     fun update() = towers.forEach { it.update() }
