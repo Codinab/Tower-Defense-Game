@@ -29,13 +29,13 @@ class ERoundList(private val rounds: Vector<ERound> = Vector()) :
             gameView!!.surfaceView.roundStart()
             roundStart = false
         }
-        
-        rounds.first().update()
     
         if (rounds.isEmpty() && gameView!!.surfaceView.enemies.isEmpty()) {
             gameView!!.end()
         }
         if (rounds.isEmpty()) return
+        
+        rounds.first().update()
         
         if (rounds.first().toDelete() && gameView!!.surfaceView.enemies.isEmpty()) {
             rounds.removeAt(0)

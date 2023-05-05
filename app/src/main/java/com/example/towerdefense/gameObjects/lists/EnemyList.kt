@@ -13,12 +13,12 @@ class EnemyList(private val enemies: Vector<Enemy> = Vector()) :
     MutableList<Enemy> by enemies {
 
     fun update() {
-        this.enemies.forEach {
-            it.update()
-            if (it.toDelete()) {
-                money.addAndGet(10)
+        synchronized(enemies) {
+            enemies.forEach {
+                it.update()
             }
         }
+        println(enemies.size)
     }
 
 
@@ -30,7 +30,9 @@ class EnemyList(private val enemies: Vector<Enemy> = Vector()) :
         return enemies.remove(element)
     }
     fun draw(canvas: Canvas) {
-        enemies.forEach { it.draw(canvas) }
+        synchronized(enemies) {
+            enemies.forEach { it.draw(canvas) }
+        }
     }
 
     fun getAll(): List<Enemy> {

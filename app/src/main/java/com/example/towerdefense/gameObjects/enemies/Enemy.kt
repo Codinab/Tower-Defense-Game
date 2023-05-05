@@ -25,6 +25,7 @@ class Enemy(private var collider2D: Collider2D, private val road: Road) : Positi
     private var animation: Animation
     
     constructor(road: Road) : this(Box2D(Vector2f(0f, 0f), Vector2f(100f, 100f)), road)
+    
     init {
         
         setRotation(road.getFirstDirection().toAngle())
@@ -36,7 +37,11 @@ class Enemy(private var collider2D: Collider2D, private val road: Road) : Positi
     
     fun damage(damage: Int) {
         health -= damage
-        if (health <= 0) destroy()
+        if (health <= 0) {
+            destroy()
+            money.addAndGet(10)
+            
+        }
     }
     
     override fun velocity(v: Float) {

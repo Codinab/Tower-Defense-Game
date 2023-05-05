@@ -60,7 +60,6 @@ abstract class Tower(var radius: Float, private val box2D: Box2D) : Movable,
     
     override fun handleDownEvent(event: MotionEvent, position: Vector2f): Boolean {
         if (movable.get()) {
-            gameView!!.showTowerButtons()
             position(position)
             return true
         } else if (isClicked(position)) {
@@ -81,6 +80,7 @@ abstract class Tower(var radius: Float, private val box2D: Box2D) : Movable,
         if (fixable.get()) {
             fixable.set(false)
             movable.set(false)
+            gameView!!.showTowerButtons()
             return true
         }
         return false

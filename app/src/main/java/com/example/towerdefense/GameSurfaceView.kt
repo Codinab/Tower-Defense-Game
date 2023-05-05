@@ -123,24 +123,24 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         val towerSpawner2 =
             TowerSpawner(
                 context,
-                Vector2f(TowerSpawner.SpawnerPosition.TOP_LEFT.vector2f),
-                TCannon(Vector2f(TowerSpawner.SpawnerPosition.TOP_LEFT.vector2f))
+                Vector2f(TowerSpawner.SpawnerPosition.TOP_RIGHT.vector2f),
+                TCannon(Vector2f(TowerSpawner.SpawnerPosition.TOP_RIGHT.vector2f))
             )
         addTowerSpawner(towerSpawner2)
         
         val towerSpawner3 =
             TowerSpawner(
                 context,
-                Vector2f(TowerSpawner.SpawnerPosition.TOP_RIGHT.vector2f),
-                TLaser(Vector2f(TowerSpawner.SpawnerPosition.TOP_RIGHT.vector2f))
+                Vector2f(TowerSpawner.SpawnerPosition.MIDDLE_RIGHT.vector2f),
+                TLaser(Vector2f(TowerSpawner.SpawnerPosition.MIDDLE_RIGHT.vector2f))
             )
         addTowerSpawner(towerSpawner3)
         
         val towerSpawner4 =
             TowerSpawner(
                 context,
-                Vector2f(TowerSpawner.SpawnerPosition.MIDDLE_LEFT.vector2f),
-                TRocketLauncher(Vector2f(TowerSpawner.SpawnerPosition.MIDDLE_LEFT.vector2f))
+                Vector2f(TowerSpawner.SpawnerPosition.BOTTOM_RIGHT.vector2f),
+                TRocketSilo(Vector2f(TowerSpawner.SpawnerPosition.BOTTOM_RIGHT.vector2f))
             )
         addTowerSpawner(towerSpawner4)
     }
@@ -157,7 +157,6 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         }
     }
     
-    private var timeLastSpawn = 0L
     fun update() {
         if (checkGameEnd()) gameEnd()
         
@@ -167,7 +166,6 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         
         deleteObjects()
         
-        spawnEnemies()
     }
     
     fun roundStart() {
@@ -191,24 +189,6 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
     
     private fun deleteTowers() {
         towers.filter { it.toDelete() }.forEach { towers.remove(it) }
-    }
-    
-    private fun spawnEnemies() {
-        if (TimeController.getGameTime() - timeLastSpawn > randomInt(
-                100,
-                2000,
-                TimeController.getGameTime().toInt()
-            )
-        ) {
-            /*enemies.add(
-                Enemy(Box2D(Vector2f(0f, 0f), Vector2f(100f, 100f)), road).apply {
-                    this.setHealth(randomInt(1, 5, TimeController.getGameTime().toInt()))
-                    velocity(randomFloat(8f, 15f, TimeController.getGameTime().toInt()))
-                }
-            )*/
-            timeLastSpawn = TimeController.getGameTime()
-            //health = (health * 1.1).toInt()
-        }
     }
     
     private fun deleteProjectiles() {

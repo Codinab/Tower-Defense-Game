@@ -14,34 +14,16 @@ class TowerList(private val towers: Vector<Tower> = Vector()) :
     fun update() = towers.forEach { it.update() }
     
     override fun add(element: Tower): Boolean {
-        return towers.add(element)
+        return towers.add(element).also { towers.sortWith(TowerPriority) }
     }
     
     override fun remove(element: Tower): Boolean {
-        return towers.remove(element)
+        return towers.remove(element).also { towers.sortWith(TowerPriority) }
     }
     
-    fun draw(canvas: Canvas) = towers.forEach { it.draw(canvas) }
-    
-    fun getClicked(position: Vector2f?): TowerList {
-        val clickedTowers = TowerList()
-        towers.forEach {
-            if (it.isClicked(position)) {
-                clickedTowers.add(it)
-                return clickedTowers
-            }
-        }
-        return clickedTowers
-    }
-    
-    fun onTouchEvent(event: MotionEvent, position: Vector2f): Boolean {
-        return towers.any { it.onTouchEvent(event, position) }
-    }
-    
-    fun getMovable(): TowerList {
-        val movableTowers = TowerList()
-        towers.forEach { if (it.movable.get()) movableTowers.add(it) }
-        return movableTowers
+    fun draw(canvas: Canvas) {
+        var sortedTowers = towers.sortedWith(TowerPriority)
+        sortedTowers.forEach { it.draw(canvas) }
     }
     
     fun getTowers(): List<Tower> = towers
@@ -55,5 +37,11 @@ class TowerList(private val towers: Vector<Tower> = Vector()) :
         towers.forEach { string += "$it " }
         string += "}"
         return string
+    }
+    
+    object TowerPriority : Comparator<Tower> {
+        override fun compare(t1: Tower, t2: Tower): Int {
+            return t1.layerLevel - t2.layerLevel
+        }
     }
 }

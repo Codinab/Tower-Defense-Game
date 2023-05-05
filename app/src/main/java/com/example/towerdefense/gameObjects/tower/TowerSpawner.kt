@@ -1,4 +1,4 @@
-package com.example.towerdefense.gameObjects
+package com.example.towerdefense.gameObjects.tower
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -11,7 +11,6 @@ import com.example.towerdefense.GameObjectView
 import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
-import com.example.towerdefense.gameObjects.tower.Tower
 import com.example.towerdefense.gameObjects.tower.utils.TowerArea
 import com.example.towerdefense.utility.*
 import com.example.towerdefense.utility.Interfaces.Updatable
@@ -59,7 +58,8 @@ class TowerSpawner(context: Context, box2D: Box2D, var modelTower: Tower) :
                 
                 gameView!!.surfaceView.towers.add(tower)
                 gameView!!.surfaceView.movableTower = tower
-                
+                gameView!!.hideTowerButtons()
+    
                 lastTower = tower
                 towerClicked = tower
                 true
@@ -98,7 +98,7 @@ class TowerSpawner(context: Context, box2D: Box2D, var modelTower: Tower) :
         TOP_LEFT(Vector2f(screenSize.x - DEF_WIDTH * 2 - PADDING, DEF_HEIGHT)),
         TOP_RIGHT(Vector2f(screenSize.x - DEF_WIDTH, DEF_HEIGHT)),
         MIDDLE_LEFT(Vector2f(screenSize.x - DEF_WIDTH * 2 - PADDING, DEF_HEIGHT * 2 + PADDING)),
-        MIDDLE_RIGHT(Vector2f(screenSize.x - DEF_WIDTH, DEF_HEIGHT * 2 + 100f)),
+        MIDDLE_RIGHT(Vector2f(screenSize.x - DEF_WIDTH, DEF_HEIGHT * 2 + PADDING)),
         BOTTOM_LEFT(Vector2f(screenSize.x - DEF_WIDTH * 2 - PADDING, DEF_HEIGHT * 3 + PADDING * 2)),
         BOTTOM_RIGHT(Vector2f(screenSize.x - DEF_WIDTH, DEF_HEIGHT * 3 + PADDING * 2))
     }

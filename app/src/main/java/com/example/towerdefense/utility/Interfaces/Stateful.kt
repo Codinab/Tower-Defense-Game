@@ -5,5 +5,5 @@ import java.util.concurrent.atomic.AtomicBoolean
 interface Stateful {
     var movable: AtomicBoolean
     var fixable: AtomicBoolean
-    var layerLevel: Int
+    companion object val layerLevel: Int
 }

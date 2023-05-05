@@ -3,7 +3,6 @@ package com.example.towerdefense.gameObjects.tower.utils
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
-import android.view.MotionEvent
 import com.example.towerdefense.Physics2d.primitives.Circle
 import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
@@ -13,9 +12,8 @@ import com.example.towerdefense.gameObjects.GameObject
 import com.example.towerdefense.utility.TimeController
 import com.example.towerdefense.utility.gameView
 import com.example.towerdefense.utility.textures.Drawing
-import org.joml.Vector2f
 
-class CanonBall(private var circle: Circle, private var damage : Int) : GameObject(circle, false, false), Projectile {
+class CannonBall(private var circle: Circle, private var damage : Int) : GameObject(circle, false, false), Projectile {
     
     private var timeToLive = 4000L
     private val spawnTime = TimeController.getGameTime()

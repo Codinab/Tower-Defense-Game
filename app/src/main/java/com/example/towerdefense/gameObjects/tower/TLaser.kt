@@ -85,6 +85,7 @@ open class TLaser(radius: Float, private val box2D: Box2D) : Tower(radius, box2D
         return "Tower(radius=$radius, collider2D=$box2D, enemyHit=$enemyHit, lastHit=$lastHit, towerArea=$towerArea, dph=$dph, timeLastDamage=$timeLastAction, hitDelay=$timeActionDelay)"
     }
     
+    override var layerLevel: Int = 10
     
     companion object {
         private val texture = BitmapFactory.decodeResource(

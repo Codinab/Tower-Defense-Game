@@ -4,7 +4,7 @@ import android.graphics.*
 import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.primitives.Circle
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
-import com.example.towerdefense.gameObjects.tower.utils.CanonBall
+import com.example.towerdefense.gameObjects.tower.utils.CannonBall
 import com.example.towerdefense.utility.*
 import com.example.towerdefense.utility.KMath.Companion.angle
 import com.example.towerdefense.utility.KMath.Companion.anglePositionToTarget
@@ -32,16 +32,16 @@ class TCannon(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
         return Vector2f(enemyPosition).sub(box2D.body.position).angle()
     }
     
-    private fun createCanonBall(position: Vector2f, rotation: Float): CanonBall {
+    private fun createCanonBall(position: Vector2f, rotation: Float): CannonBall {
         val circle = Circle(sizeCanonBall / 4, position)
-        val canonBall = CanonBall(circle, 1)
-        canonBall.velocity(20f)
-        canonBall.setRotation(rotation)
-        return canonBall
+        val cannonBall = CannonBall(circle, 1)
+        cannonBall.velocity(20f)
+        cannonBall.setRotation(rotation)
+        return cannonBall
     }
     
-    private fun addCanonBallsToProjectiles(canonBalls: List<CanonBall>) {
-        gameView!!.surfaceView.projectiles.addAll(canonBalls)
+    private fun addCanonBallsToProjectiles(cannonBalls: List<CannonBall>) {
+        gameView!!.surfaceView.projectiles.addAll(cannonBalls)
     }
     
     
@@ -58,12 +58,12 @@ class TCannon(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
     }
     
     private fun shootBigCanonBall() {
-        val canonBall = CanonBall(Circle(sizeCanonBall, Vector2f(box2D.body.position)), dph)
-        canonBall.velocity(10f)
+        val cannonBall = CannonBall(Circle(sizeCanonBall, Vector2f(box2D.body.position)), dph)
+        cannonBall.velocity(10f)
         val enemy = towerArea.toDamage()!!
         val rotation = Vector2f(enemy.position()).sub(box2D.body.position).normalize().angle()
-        canonBall.setRotation(rotation)
-        gameView!!.surfaceView.projectiles.add(canonBall)
+        cannonBall.setRotation(rotation)
+        gameView!!.surfaceView.projectiles.add(cannonBall)
     }
     
     override fun buildCost(): Int {
@@ -130,6 +130,7 @@ class TCannon(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
         }
     }
     
+    override var layerLevel: Int = 5
     override fun clone(): Tower {
         return TCannon(radius, box2D.clone() as Box2D)
     }
