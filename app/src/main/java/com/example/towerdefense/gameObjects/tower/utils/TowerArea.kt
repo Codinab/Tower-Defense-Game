@@ -55,6 +55,17 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
         }
     }
     
+    fun toDamageList(): ArrayList<Enemy>? {
+        val tmpList = inArea
+        val toDamageList = ArrayList<Enemy>()
+        while(inArea.isNotEmpty()) {
+            toDamageList.add(toDamage() ?: return null)
+            inArea.remove(toDamageList.last())
+        }
+        inArea = tmpList
+        return if (toDamageList.isEmpty()) null else toDamageList
+    }
+    
     fun setToDamageType(damageType: DamageType) {
         this.damageType = damageType
     }

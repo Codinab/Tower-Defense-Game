@@ -27,8 +27,9 @@ class TRocketSilo(radius: Float, private val box2D: Box2D) : Tower(radius, box2D
     
     override fun applyDamageInArea() {
         if (readyToDamage()) {
-            val enemy = towerArea.toDamage()!!
-            val explosiveRocket = ExplosiveRocket(Circle(30f, Vector2f(box2D.body.position)), enemy)
+            val enemies = towerArea.toDamageList()
+            val enemy = enemies?.first() ?: return
+            val explosiveRocket = ExplosiveRocket(Circle(30f, Vector2f(box2D.body.position)), enemies)
             explosiveRocket.velocity(10f)
             val rotation = Vector2f(enemy.position()).sub(box2D.body.position).angle()
             explosiveRocket.setRotation(rotation)

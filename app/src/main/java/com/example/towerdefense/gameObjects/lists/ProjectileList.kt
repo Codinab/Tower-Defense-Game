@@ -9,8 +9,15 @@ class ProjectileList(private val projectiles: Vector<Projectile> = Vector()) :
     MutableList<Projectile> by projectiles {
     
     
-    fun draw(canvas: Canvas) = projectiles.forEach { it.draw(canvas) }
-    fun update() = forEach { it.update() }
-    
+    fun draw(canvas: Canvas) {
+        synchronized(projectiles) {
+            projectiles.forEach { it.draw(canvas) }
+        }
+    }
+    fun update() {
+        synchronized(projectiles) {
+            projectiles.forEach { it.update() }
+        }
+    }
     
 }

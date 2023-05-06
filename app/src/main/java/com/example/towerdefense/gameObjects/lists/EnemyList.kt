@@ -23,11 +23,15 @@ class EnemyList(private val enemies: Vector<Enemy> = Vector()) :
 
 
     override fun add(element: Enemy): Boolean {
-        return enemies.add(element)
+        synchronized(enemies) {
+            return enemies.add(element)
+        }
     }
 
     override fun remove(element: Enemy): Boolean {
-        return enemies.remove(element)
+        synchronized(enemies) {
+            return enemies.remove(element)
+        }
     }
     fun draw(canvas: Canvas) {
         synchronized(enemies) {

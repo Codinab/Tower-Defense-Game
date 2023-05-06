@@ -11,19 +11,32 @@ import kotlin.collections.ArrayList
 class TowerList(private val towers: Vector<Tower> = Vector()) :
     MutableList<Tower> by towers {
     
-    fun update() = towers.forEach { it.update() }
+    fun update() {
+        synchronized(towers) {
+            towers.forEach { it.update() }
+        }
+    }
     
     override fun add(element: Tower): Boolean {
-        return towers.add(element).also { towers.sortWith(TowerPriority) }
+        synchronized(towers) {
+            return towers.add(element).also { towers.sortWith(TowerPriority) }
+        }
     }
     
     override fun remove(element: Tower): Boolean {
-        return towers.remove(element).also { towers.sortWith(TowerPriority) }
+        synchronized(towers) {
+            
+            return towers.remove(element).also { towers.sortWith(TowerPriority) }
+        }
     }
     
     fun draw(canvas: Canvas) {
-        var sortedTowers = towers.sortedWith(TowerPriority)
-        sortedTowers.forEach { it.draw(canvas) }
+        synchronized(towers) {
+            val sortedTowers = towers.sortedWith(TowerPriority)
+            sortedTowers.forEach {
+                it.draw(canvas)
+            }
+        }
     }
     
     fun getTowers(): List<Tower> = towers

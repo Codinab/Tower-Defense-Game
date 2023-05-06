@@ -2,30 +2,34 @@ package com.example.towerdefense.gameObjects.tower.utils
 
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
-import android.view.MotionEvent
 import com.example.towerdefense.Physics2d.primitives.Circle
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.R
 import com.example.towerdefense.gameObjects.enemies.Enemy
 import com.example.towerdefense.gameObjects.GameObject
 import com.example.towerdefense.utility.*
-import com.example.towerdefense.utility.KMath.Companion.angle
 import com.example.towerdefense.utility.KMath.Companion.anglePositionToTarget
 import com.example.towerdefense.utility.textures.Animation
-import org.joml.Vector2f
 
-class ExplosiveRocket(var circle: Circle, var enemy: Enemy) : GameObject(circle, false, false), Projectile {
+class ExplosiveRocket(var circle: Circle, var enemies: ArrayList<Enemy>) : GameObject(circle, false, false), Projectile {
     
     private var timeToLive = 1500L
     private val spawnTime = TimeController.getGameTime()
-    private var animation: Animation = Animation(explosiveRocketFrames, 100f)
+    private var rocketAnimation: Animation = Animation(explosiveRocketFrames, 100f)
+    private var explosionAnimation: Animation = Animation(explosionFrames, 100f, false, circle.radius.toInt() * 5)
     
     override fun update() {
         //If the explosion has ended
         if (TimeController.getGameTime() > explosionEndTime) destroy()
+        
+        //Update enemy list
+        enemies.removeIf { it.toDelete() }
+        
+        
+        if (enemies.isEmpty()) destroy()
     
         // If the targeted enemy has already been destroyed
-        if (enemy.toDelete() && !explosionCreated) destroy()
+        if (!toDelete() && enemies.isEmpty() && !explosionCreated) generateExplosion()
     
         // If the projectile has lived past its time to live
         if (TimeController.getGameTime() > spawnTime + timeToLive && !explosionCreated) destroy()
@@ -39,7 +43,7 @@ class ExplosiveRocket(var circle: Circle, var enemy: Enemy) : GameObject(circle,
         if (explosionCreated) return explosionDamage()
     
         // Rotate the projectile to face the enemy.
-        setRotation(anglePositionToTarget(enemy.position(),circle.body.position))
+        setRotation(anglePositionToTarget(enemies.first().position(),circle.body.position))
     
         // Detect collisions with enemies.
         if (!explosionCreated) detectCollisions()
@@ -86,11 +90,11 @@ class ExplosiveRocket(var circle: Circle, var enemy: Enemy) : GameObject(circle,
         if (toDelete()) return
         //super.draw(canvas)
         if (explosionCreated) drawExplosion(canvas)
-        else animation.draw(canvas, circle.body.position, getRotation())
+        else rocketAnimation.draw(canvas, circle.body.position, getRotation())
     }
     
     private fun drawExplosion(canvas: Canvas) {
-        circle.draw(canvas)
+        explosionAnimation.draw(canvas, circle.body.position, (0..360).random().toFloat())
     }
     
     companion object {
@@ -99,6 +103,13 @@ class ExplosiveRocket(var circle: Circle, var enemy: Enemy) : GameObject(circle,
                 BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.cohete),
                 BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.cohete2),
                 BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.cohete3)
+            )
+        private val explosionFrames =
+            arrayOf(
+                BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.boom1),
+                BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.boom2),
+                BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.boom3),
+                BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.boom4),
             )
     }
     
