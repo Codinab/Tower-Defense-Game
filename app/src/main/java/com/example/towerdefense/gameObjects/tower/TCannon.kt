@@ -82,9 +82,9 @@ class TCannon(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
     
     private var angle = 0f
     private fun angleAnimation(canvas: Canvas) {
-        if (TimeController.getGameTime() > timeLastAction + timeActionDelay / 2) angle = towerArea.angle()
-        else if (gameView!!.surfaceView.enemies.isEmpty())
-            angle = anglePositionToTarget(position(), gameView!!.surfaceView.road.getStart())
+        angle = if (gameView!!.surfaceView.enemies.isEmpty())
+            anglePositionToTarget(position(), gameView!!.surfaceView.road.getStart())
+        else towerArea.angle()
         Drawing.drawBitmap(canvas, textureResized, position(), angle)
     }
     

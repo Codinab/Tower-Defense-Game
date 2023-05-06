@@ -52,6 +52,9 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         road.getPositions().forEach {
             backgroundBitmaps[it] = backgroundGenerator.generateBackground(it, 7)
         }
+        setZOrderOnTop(false)
+        setZOrderMediaOverlay(false)
+    
     }
     
     override fun draw(canvas: Canvas?) {
@@ -149,8 +152,7 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
     private fun addTowerSpawner(towerSpawner: TowerSpawner) {
         towerSpawners.add(towerSpawner)
         gameView.addView(towerSpawner)
-        towerSpawner.requestLayout()
-        gameView.invalidate()
+        
         towerSpawner.setOnTouchListener() { _, it ->
             towerSpawner.onTouchEvent(it, camera.adjustedPosition(it))
             performClick()

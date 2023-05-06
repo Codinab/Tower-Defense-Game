@@ -62,8 +62,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun saveWindowSizes() {
         val displayMetrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
-
         screenSize = Vector2i(displayMetrics.widthPixels, displayMetrics.heightPixels)
     }
 
@@ -117,7 +115,12 @@ class MainActivity : AppCompatActivity() {
             }
         }
         view.addView(gameObjectView)
-
+        gameObjectView.requestLayout()
+        gameObjectView.invalidate()
+        view.requestLayout()
+        view.invalidate()
+    
+    
     }
 
     fun continueGame() {
