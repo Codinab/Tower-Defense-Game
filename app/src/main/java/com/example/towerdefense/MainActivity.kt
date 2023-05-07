@@ -122,6 +122,12 @@ class MainActivity : AppCompatActivity() {
         createButton.setOnClickListener {
             finish()
         }
+    
+        val helpButton = binding.help
+        helpButton.setOnClickListener {
+            val intent = Intent(this, HelpActivity::class.java)
+            startForResult.launch(intent)
+        }
         
     }
     
