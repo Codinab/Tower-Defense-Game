@@ -3,15 +3,19 @@ package com.example.towerdefense.gameObjects.tower.utils
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import com.example.towerdefense.Physics2d.primitives.Circle
+import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.R
 import com.example.towerdefense.gameObjects.enemies.Enemy
 import com.example.towerdefense.gameObjects.GameObject
 import com.example.towerdefense.utility.*
+import com.example.towerdefense.utility.Interfaces.Drawable
+import com.example.towerdefense.utility.Interfaces.Movable
+import com.example.towerdefense.utility.Interfaces.Positionable
 import com.example.towerdefense.utility.KMath.Companion.anglePositionToTarget
 import com.example.towerdefense.utility.textures.Animation
 
-class ExplosiveRocket(var circle: Circle, var enemies: ArrayList<Enemy>, private var damage: Int) : GameObject(circle, false, false), Projectile {
+class ExplosiveRocket(private var circle: Circle, var enemies: ArrayList<Enemy>, private var damage: Int) : Projectile, Drawable, Movable, Positionable {
     
     private var timeToLive = 1500L
     private val spawnTime = TimeController.getGameTime()
@@ -84,7 +88,7 @@ class ExplosiveRocket(var circle: Circle, var enemies: ArrayList<Enemy>, private
         velocity(100f)
         explosionCreated = true
         circle.radius = circle.radius * 3
-        collider2D().update()
+        collider().update()
         velocity(0f)
         destroyInMiliseconds(500L)
     }
@@ -116,4 +120,9 @@ class ExplosiveRocket(var circle: Circle, var enemies: ArrayList<Enemy>, private
             )
     }
     
+    override fun collider(): Collider2D {
+        return circle
+    }
+    
+    override var toDelete: Boolean = false
 }

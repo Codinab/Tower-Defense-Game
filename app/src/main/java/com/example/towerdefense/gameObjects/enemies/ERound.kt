@@ -3,7 +3,7 @@ package com.example.towerdefense.gameObjects.enemies
 import com.example.towerdefense.utility.Interfaces.Removable
 import com.example.towerdefense.utility.TimeController
 
-class ERound() : Removable {
+class ERound() : Removable, java.io.Serializable {
     
     private var waves: ArrayList<Pair<EnemyWave, Int>> = ArrayList()
     var roundStartTime: Long = Long.MAX_VALUE

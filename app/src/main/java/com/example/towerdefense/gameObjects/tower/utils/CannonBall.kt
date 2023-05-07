@@ -9,12 +9,15 @@ import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.R
 import com.example.towerdefense.gameObjects.enemies.Enemy
 import com.example.towerdefense.gameObjects.GameObject
+import com.example.towerdefense.utility.Interfaces.Drawable
+import com.example.towerdefense.utility.Interfaces.Movable
+import com.example.towerdefense.utility.Interfaces.Positionable
 import com.example.towerdefense.utility.TimeController
 import com.example.towerdefense.utility.gameView
 import com.example.towerdefense.utility.textures.Drawing
 import java.lang.Integer.max
 
-class CannonBall(private var circle: Circle, private var damage : Int, health: Int) : GameObject(circle, false, false), Projectile {
+class CannonBall(private var circle: Circle, private var damage : Int, health: Int) : Projectile, Drawable, Movable, Positionable {
     
     private var timeToLive = 2500L
     private val spawnTime = TimeController.getGameTime()
@@ -25,6 +28,9 @@ class CannonBall(private var circle: Circle, private var damage : Int, health: I
     override fun collider(): Collider2D {
         return circle
     }
+    
+    override var toDelete: Boolean = false
+    
     
     override fun update() {
         if (toDelete() || TimeController.isPaused()) return
