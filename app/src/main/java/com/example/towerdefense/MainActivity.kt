@@ -13,11 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.towerdefense.databinding.ActivityMainBinding
-import com.example.towerdefense.utility.OptionActivity
-import com.example.towerdefense.utility.gameLog
-import com.example.towerdefense.utility.gameView
-import com.example.towerdefense.utility.screenRotation
-import com.example.towerdefense.utility.screenSize
+import com.example.towerdefense.utility.*
 import org.joml.Vector2i
 
 
@@ -59,6 +55,8 @@ class MainActivity : AppCompatActivity() {
             }
         
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        
+        mainActivity = this
     }
     
     fun getRotation() {
@@ -116,13 +114,10 @@ class MainActivity : AppCompatActivity() {
     private fun initializeButtons(binding: ActivityMainBinding) {
         val continueButton = binding.createButton
         continueButton.setOnClickListener {
-            createGame()
-        }
-        val optionButton = binding.optionGame
-        optionButton.setOnClickListener {
             val intent = Intent(this, OptionActivity::class.java)
             startForResult.launch(intent)
         }
+
         val createButton = binding.exitGame
         createButton.setOnClickListener {
             finish()
@@ -143,35 +138,4 @@ class MainActivity : AppCompatActivity() {
             lastClickTime = currentTime
         }
     }
-    
-    
-    @SuppressLint("ClickableViewAccessibility")
-    @RequiresApi(Build.VERSION_CODES.R)
-    fun createGame() {
-        
-        val view = GameView(this)
-        setContentView(view)
-        gameView = view
-        
-    }
-    
-    fun continueGame() {
-        Toast.makeText(baseContext, getString(R.string.textoToast), Toast.LENGTH_SHORT).show()
-        
-        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
-        /*
-        val filePath = "example.txt"
-
-        try {
-            game = Game.fromBinaryFile(filePath, this)
-        } catch (e: Exception) {
-            println(e.message)
-        }
-
-        //If game is null initialize a new game
-        if (game == null) game = Game(this)
-        setContentView(game) */
-    }
-    
-    
 }

@@ -32,7 +32,8 @@ class Enemy(private var collider2D: Collider2D, private val road: Road) : Positi
         position(road.getStart())
         
         animation = Animation(enemyFrames, 100f)
-        velocity(9f)
+        velocity(velocity() + enemiesSpeed)
+        health *= difficulty
     }
     
     fun damage(damage: Int) {

@@ -147,5 +147,12 @@ enum class Roads(val road: Road) {
         addLine(Direction2D.RIGHT, 3)
         addLine(Direction2D.UP, 3)
         addLine(Direction2D.RIGHT, 8)
-    }),
+    });
+    
+    
+    companion object {
+        fun fromString(string: String): Road {
+            return values().first { it.name == string }.road
+        }
+    }
 }

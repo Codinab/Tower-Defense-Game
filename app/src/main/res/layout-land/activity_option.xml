@@ -16,8 +16,9 @@
         android:inputType="text"
         android:maxLines="1"
         android:padding="5dp"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="166dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/time_controller"
@@ -27,9 +28,10 @@
         android:textColor="@color/black"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nombreEditText"
-        app:layout_constraintVertical_bias="0.047"
-        tools:layout_editor_absoluteX="319dp" />
+        app:layout_constraintVertical_bias="0.047" />
 
     <RadioGroup
         android:id="@+id/time_group"
@@ -63,9 +65,10 @@
         android:textColor="@color/black"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/time_group"
-        app:layout_constraintVertical_bias="0.037"
-        tools:layout_editor_absoluteX="337dp" />
+        app:layout_constraintVertical_bias="0.037" />
 
     <RadioGroup
         android:id="@+id/difficulty_group"
@@ -103,27 +106,33 @@
         android:text="@string/selecciona_mapa"
         android:textColor="@color/black"
         android:textSize="15sp"
-        app:layout_constraintTop_toBottomOf="@+id/difficulty_group"
-        tools:layout_editor_absoluteX="329dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/difficulty_group" />
 
     <Spinner
         android:id="@+id/spinner"
         android:layout_width="409dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/map_select"
-        tools:layout_editor_absoluteX="161dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/map_select" />
 
     <ImageButton
         android:id="@+id/exitOptions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="8dp"
+
         android:background="@null"
         android:src="@drawable/exit"
-
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.357"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/velocity_group" />
 
     <TextView
         android:id="@+id/velocity"
@@ -159,11 +168,24 @@
             android:text="Fast" />
 
         <RadioButton
-            android:id="@+id/x4"
+            android:id="@+id/x3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Very Fast" />
     </RadioGroup>
+
+    <ImageButton
+        android:id="@+id/newGame"
+        android:layout_width="148dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="4dp"
+        android:foreground="@drawable/new_game"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.629"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/velocity_group"
+        app:layout_constraintVertical_bias="0.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -284,6 +284,7 @@ class GameSurfaceView(context: Context, road: Road) : SurfaceView(context),
     }
     
     private fun drawGameTime(canvas: Canvas) {
+        if (TimeController.timeLeft() == -100L) return
         val paint = Paint()
         paint.color = Color.BLACK
         paint.textSize = 50f
@@ -300,7 +301,13 @@ class GameSurfaceView(context: Context, road: Road) : SurfaceView(context),
         val paint = Paint()
         paint.color = Color.CYAN
         paint.textSize = 50f
-        canvas.drawText("Health: $gameHealth", camera.x() + 100f, camera.y() + 300f, paint)
+        Drawing.drawBitmap(canvas, heartTexture, Vector2f(100f + camera.x(), 280f + camera.y()))
+        canvas.drawText(
+            gameHealth.get().toString(),
+            camera.x() + 160,
+            camera.y() + 300f,
+            paint
+        )
     }
     
     override fun surfaceCreated(p0: SurfaceHolder) {
@@ -341,6 +348,11 @@ class GameSurfaceView(context: Context, road: Road) : SurfaceView(context),
         gameView!!.context.resources,
         R.drawable.new_round
     )
+    private val heartTexture = BitmapFactory.decodeResource(
+        gameView!!.context.resources,
+        R.drawable.heart
+    )
+    
     
     
 }

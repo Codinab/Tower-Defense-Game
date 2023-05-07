@@ -30,6 +30,8 @@
             android:screenOrientation="fullSensor"
             android:exported="true" >
         </activity>
+        <activity android:name=".utility.LogActivity" />
+
 
 
     </application>

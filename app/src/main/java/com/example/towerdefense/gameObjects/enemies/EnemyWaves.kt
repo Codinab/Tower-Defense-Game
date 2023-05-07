@@ -1,6 +1,8 @@
 package com.example.towerdefense.gameObjects.enemies
 
 import com.example.towerdefense.gameObjects.enemies.EnemyWave.Companion.enemyWaveGenerator
+import com.example.towerdefense.utility.difficulty
+import com.example.towerdefense.utility.enemiesSpeed
 
 enum class EnemyWaves(private val wave: EnemyWave, private val difficulty: Int) {
     

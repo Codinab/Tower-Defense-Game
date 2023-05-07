@@ -23,6 +23,7 @@ class TimeController {
         }
         
         fun timeLeft(): Long {
+            if (maxTime == -100) return -100L
             return (maxTime * 1000L - (getSinceGameStart() - getGameTime())) / 1000
         }
         

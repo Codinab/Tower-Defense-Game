@@ -3,6 +3,7 @@ package com.example.towerdefense
 import Roads
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.view.*
@@ -44,8 +45,7 @@ class GameView(private val context: Context, val name: String = "DefaultGame") :
         hideTowerButtons()
         
         money = AtomicInteger(1000)
-        gameHealth = AtomicInteger(2)
-        maxTime = 240
+        gameHealth = AtomicInteger(20)
         round = 1
         
     }
@@ -115,7 +115,8 @@ class GameView(private val context: Context, val name: String = "DefaultGame") :
     }
     
     private fun initSurfaceView(context: Context) {
-        surfaceView = GameSurfaceView(context, Roads.values().random().road)
+        if (selectedMap == null) selectedMap = Roads.values().random().road
+        surfaceView = GameSurfaceView(context, selectedMap!!)
         surfaceView.holder.addCallback(this)
         surfaceView.visibility = VISIBLE
         surfaceView.isFocusableInTouchMode = true
@@ -143,13 +144,13 @@ class GameView(private val context: Context, val name: String = "DefaultGame") :
         surfaceView.update()
         updateRoundCounter()
         towerMenuView.updateCostTexts()
-        if ((TimeController.timeLeft() <= 0 || gameHealth.get() <= 0)&& !end) {
+        if ((gameHealth.get() <= 0)&& !end) {
             gameHealth.set(0)
             end()
         }
-        if (end && TimeController.getSinceGameStart() - endTime > 10000) {
-            //TODO add end screen instead of the following line
-            //post { recreate(context as MainActivity) }
+        if (TimeController.timeLeft() <= 0 && !end && TimeController.timeLeft() != -100L) {
+            gameHealth.set(0)
+            end()
         }
     }
     
@@ -158,16 +159,20 @@ class GameView(private val context: Context, val name: String = "DefaultGame") :
     }
     
     var end = false
-    private var endTime = TimeController.getSinceGameStart()
     fun end() {
         if (!::gameLoop.isInitialized) return
         if (!gameLoop.isRunning) return
         
         gamePause()
         end = true
+    
+        val result = if (gameHealth.get() > 0) "won" else "lost"
+        
   
-        /*if (gameHealth.get() <= 0) Toast.makeText(context, "You lost!", Toast.LENGTH_SHORT).show()
-        else Toast.makeText(context, "You won!", Toast.LENGTH_SHORT).show()*/
+        val intent = Intent(context, LogActivity::class.java)
+        intent.putExtra("log_message", "$name has ended with $money money and has survived $round rounds, You $result")
+        context.startActivity(intent)
+    
     }
     
     fun start() {
@@ -224,7 +229,7 @@ class GameView(private val context: Context, val name: String = "DefaultGame") :
             start()
             gamePause()
         }
-        (context as MainActivity).getRotation()
+        mainActivity?.getRotation()
         updatePosStartPauseButton()
         updateRoundCounter()
         restoreGame = onSaveInstanceState()
