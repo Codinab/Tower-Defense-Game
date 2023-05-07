@@ -12,13 +12,14 @@ import com.example.towerdefense.gameObjects.GameObject
 import com.example.towerdefense.utility.TimeController
 import com.example.towerdefense.utility.gameView
 import com.example.towerdefense.utility.textures.Drawing
+import java.lang.Integer.max
 
-class CannonBall(private var circle: Circle, private var damage : Int) : GameObject(circle, false, false), Projectile {
+class CannonBall(private var circle: Circle, private var damage : Int, health: Int) : GameObject(circle, false, false), Projectile {
     
-    private var timeToLive = 4000L
+    private var timeToLive = 2500L
     private val spawnTime = TimeController.getGameTime()
     private var damagedEnemies = ArrayList<Enemy>()
-    private var health = circle.radius.toInt() / 8
+    private var health = health
 
     private val textureResized: Bitmap = Bitmap.createScaledBitmap(texture, circle.radius.toInt() * 2, circle.radius.toInt() * 2, false)
     override fun collider(): Collider2D {
@@ -34,12 +35,13 @@ class CannonBall(private var circle: Circle, private var damage : Int) : GameObj
         gameView!!.surfaceView.enemies.forEach { enemy ->
             if (IntersectionDetector2D.intersection(circle, enemy.collider())) {
                 if (!damagedEnemies.contains(enemy)) {
+                    health -= max((enemy.getMaxHealth().toFloat() / 2f).toInt(), 1)
                     enemy.damage(damage)
-                    health--
                     damagedEnemies.add(enemy)
                 }
             }
         }
+        println(health)
         if (health <= 0) destroy()
     }
 

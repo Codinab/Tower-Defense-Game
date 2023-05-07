@@ -59,17 +59,14 @@ class TowerSpawner(private val box2D: Box2D, var modelTower: Tower) :
     private var lastTower: Tower? = null
     var damageType = TowerArea.DamageType.FIRST
     override fun onTouchEvent(event: MotionEvent, position: Vector2f): Boolean {
-        println(1)
     
         if (lastTower != null && lastTower!!.movable.get()) {
             return false
         }
         
-        println(2)
         
         return when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                println(3)
                 if (money.getAndAdd(-modelTower.buildCost()) < modelTower.buildCost() ||
                     gameView!!.surfaceView.movableTower != null
                 ) return false.also {
@@ -85,7 +82,6 @@ class TowerSpawner(private val box2D: Box2D, var modelTower: Tower) :
                 
                 lastTower = tower
                 towerClicked = tower
-                println(4)
     
                 true
             }

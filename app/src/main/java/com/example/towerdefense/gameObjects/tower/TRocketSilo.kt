@@ -29,7 +29,7 @@ class TRocketSilo(radius: Float, private val box2D: Box2D) : Tower(radius, box2D
         if (readyToDamage()) {
             val enemies = towerArea.toDamageList()
             val enemy = enemies?.first() ?: return
-            val explosiveRocket = ExplosiveRocket(Circle(30f, Vector2f(box2D.body.position)), enemies)
+            val explosiveRocket = ExplosiveRocket(Circle(30f, Vector2f(box2D.body.position)), enemies, level * 2)
             explosiveRocket.velocity(10f)
             val rotation = Vector2f(enemy.position()).sub(box2D.body.position).angle()
             explosiveRocket.setRotation(rotation)
@@ -53,15 +53,18 @@ class TRocketSilo(radius: Float, private val box2D: Box2D) : Tower(radius, box2D
         return 1000
     }
     
+    
     override fun upgrade() {
+        super.upgrade()
+        level++
     }
     
     override fun upgradeCost(): Int {
-        return 200
+        return 2000
     }
     
     override fun upgradeInfo(): String {
-        return "Upgrade not available"
+        return "Upgrade info not available"
     }
     
     override fun clone(): Tower {

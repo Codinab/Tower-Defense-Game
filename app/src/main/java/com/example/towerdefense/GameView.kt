@@ -5,19 +5,20 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.os.Bundle
-import android.os.Parcelable
-import android.util.DisplayMetrics
 import android.view.*
 import android.widget.RelativeLayout
+import android.widget.TextView
+import androidx.core.app.ActivityCompat.getMainExecutor
+import androidx.core.app.ActivityCompat.recreate
 import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.utility.*
 import org.joml.Vector2f
-import org.joml.Vector2i
+import java.sql.Time
+import java.util.concurrent.atomic.AtomicInteger
 
 @SuppressLint("ClickableViewAccessibility")
-class GameView(private val context: Context) : RelativeLayout(context), SurfaceHolder.Callback, java.io.Serializable {
+class GameView(private val context: Context, val name: String = "DefaultGame") : RelativeLayout(context), SurfaceHolder.Callback, java.io.Serializable {
     
     private lateinit var pauseStartButton: GameObjectView
     lateinit var surfaceView: GameSurfaceView
@@ -28,6 +29,8 @@ class GameView(private val context: Context) : RelativeLayout(context), SurfaceH
     
     init {
         gameView = this
+        gameLog = Log()
+        gameLog?.addGameViewLog(this)
         
         //change to horizontal view
         setBackgroundColor(Color.TRANSPARENT)
@@ -36,17 +39,42 @@ class GameView(private val context: Context) : RelativeLayout(context), SurfaceH
         
         initTowerMenu(context)
         initStartPauseButton()
+        initRoundCounter()
         
         hideTowerButtons()
         
+        money = AtomicInteger(1000)
+        gameHealth = AtomicInteger(200)
+        maxTime = 10
+        round = 1
         
     }
     
-    private val continueTexture =
+    var roundCounter: TextView? = null
+    private fun initRoundCounter() {
+        roundCounter = TextView(context).apply {
+            text = "$round"
+            textSize = 30f
+            setTextColor(Color.BLACK)
+            x = pauseStartButton.x - 100
+            y = pauseStartButton.y
+        }
+        addView(roundCounter)
+    }
+    
+    private fun updateRoundCounter() {
+        post {
+            roundCounter?.x = pauseStartButton.x - 100
+            roundCounter?.y = pauseStartButton.y
+            roundCounter?.text = "$round"
+        }
+    }
+    
+    
+    val continueTexture =
         BitmapFactory.decodeResource(resources, R.drawable.continue_button)
     private val pauseTexture = BitmapFactory.decodeResource(resources, R.drawable.pause_button)
     private fun initStartPauseButton() {
-        
         
         pauseStartButton = GameObjectView(
             context, Box2D(
@@ -87,7 +115,7 @@ class GameView(private val context: Context) : RelativeLayout(context), SurfaceH
     }
     
     private fun initSurfaceView(context: Context) {
-        surfaceView = GameSurfaceView(context, Roads.ROAD_5.road)
+        surfaceView = GameSurfaceView(context, Roads.values().random().road)
         surfaceView.holder.addCallback(this)
         surfaceView.visibility = VISIBLE
         surfaceView.isFocusableInTouchMode = true
@@ -113,26 +141,31 @@ class GameView(private val context: Context) : RelativeLayout(context), SurfaceH
     
     fun update() {
         surfaceView.update()
+        updateRoundCounter()
+        towerMenuView.updateCostTexts()
+        if (TimeController.timeLeft() <= 0 && !end) {
+            gameHealth.set(0)
+            end()
+        }
+        if (end && TimeController.getSinceGameStart() - endTime > 10000) {
+            //TODO add end screen instead of the following line
+            post { recreate(context as MainActivity) }
+        }
     }
     
     fun isRunning(): Boolean {
         return ::gameLoop.isInitialized && gameLoop.isRunning
     }
     
-    fun stop() {
-        if (!::gameLoop.isInitialized) return
-        if (!gameLoop.isRunning) return
-        gameLoop.stopLoop()
-        gameLoop.join()
-        surfaceView.gameLoop = gameLoop
-    }
-    
+    var end = false
+    private var endTime = TimeController.getSinceGameStart()
     fun end() {
         if (!::gameLoop.isInitialized) return
         if (!gameLoop.isRunning) return
-        gameLoop.stopLoop()
-        gameLoop.join()
-        surfaceView.gameLoop = gameLoop
+        
+        gamePause()
+        end = true
+  
         /*if (gameHealth.get() <= 0) Toast.makeText(context, "You lost!", Toast.LENGTH_SHORT).show()
         else Toast.makeText(context, "You won!", Toast.LENGTH_SHORT).show()*/
     }
@@ -148,8 +181,11 @@ class GameView(private val context: Context) : RelativeLayout(context), SurfaceH
         if (!::gameLoop.isInitialized) return
         if (!gameLoop.isRunning) return
         
-        pauseStartButton.setImageBitmap(continueTexture)
-        pauseStartButton.invalidate()
+        post {
+            pauseStartButton.setImageBitmap(continueTexture)
+            pauseStartButton.invalidate()
+        }
+        
         
         TimeController.pause()
     }
@@ -158,6 +194,7 @@ class GameView(private val context: Context) : RelativeLayout(context), SurfaceH
         if (!::gameLoop.isInitialized) return
         if (!gameLoop.isRunning) return
         if (gameHealth.get() <= 0) return
+        if (end) return
         
         pauseStartButton.setImageBitmap(pauseTexture)
         pauseStartButton.invalidate()
@@ -189,6 +226,7 @@ class GameView(private val context: Context) : RelativeLayout(context), SurfaceH
         }
         (context as MainActivity).getRotation()
         updatePosStartPauseButton()
+        updateRoundCounter()
         restoreGame = onSaveInstanceState()
     }
     

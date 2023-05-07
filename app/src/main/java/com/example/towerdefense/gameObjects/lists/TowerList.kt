@@ -3,6 +3,7 @@ package com.example.towerdefense.gameObjects.lists
 import android.graphics.Canvas
 import android.view.MotionEvent
 import com.example.towerdefense.gameObjects.tower.Tower
+import com.example.towerdefense.utility.gameLog
 import org.joml.Vector2f
 import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
@@ -18,6 +19,7 @@ class TowerList(private val towers: Vector<Tower> = Vector()) :
     }
     
     override fun add(element: Tower): Boolean {
+        gameLog?.addPositionableLog(element)
         synchronized(towers) {
             return towers.add(element).also { towers.sortWith(TowerPriority) }
         }

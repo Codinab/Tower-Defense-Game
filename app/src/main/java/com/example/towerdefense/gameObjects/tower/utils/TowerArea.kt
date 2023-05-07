@@ -29,14 +29,31 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
     }
     
     private var inArea = ArrayDeque<Enemy>()
-    fun updateArea(enemies: EnemyList): Boolean {
+    /*fun updateArea(enemies: EnemyList): Boolean {
         val tmpArea = ArrayDeque<Enemy>()
         for (enemy in enemies) {
             if (IntersectionDetector2D.intersection(this, enemy.collider())) tmpArea.add(enemy)
         }
         if (!tmpArea.containsAll(inArea) || !inArea.containsAll(tmpArea)) inArea = tmpArea
         return inArea.isNotEmpty()
+    }*/
+    
+    fun updateArea(enemies: EnemyList): Boolean {
+        val tmpArea = ArrayDeque<Enemy>()
+        synchronized(enemies) {
+            for (enemy in enemies) {
+                if (IntersectionDetector2D.intersection(this, enemy.collider())) tmpArea.add(enemy)
+            }
+        }
+        synchronized(inArea) {
+            if (!tmpArea.containsAll(inArea) || !inArea.containsAll(tmpArea)) {
+                inArea.clear()
+                inArea.addAll(tmpArea)
+            }
+        }
+        return inArea.isNotEmpty()
     }
+    
     
     fun isEmpty(): Boolean = inArea.isEmpty()
     

@@ -22,7 +22,7 @@ open class TLaser(radius: Float, private val box2D: Box2D) : Tower(radius, box2D
     
     private var enemyHit: Enemy? = null
     private var lastHit = false
-    override var timeActionDelay: Float = 100f
+    override var timeActionDelay: Float = 300f
     open var dph = 1
     private var textureResized = Bitmap.createScaledBitmap(texture, box2D.size.x.toInt() * 2, (box2D.size.y * 2.5).toInt(), false)
     
@@ -67,15 +67,17 @@ open class TLaser(radius: Float, private val box2D: Box2D) : Tower(radius, box2D
     }
     
     override fun buildCost(): Int {
-        return 100
+        return 1000
     }
     
     override fun upgrade() {
+        super.upgrade()
         val dpsTmp = dph.toFloat()
         dph = max((dpsTmp * 1.1f).toInt(), dph + 2)
+        if (timeActionDelay > 100f) timeActionDelay -= 50f
     }
     
-    override fun upgradeCost(): Int = 100
+    override fun upgradeCost(): Int = 3000
     override fun upgradeInfo(): String {
         return "Damage per second: $dph"
     }

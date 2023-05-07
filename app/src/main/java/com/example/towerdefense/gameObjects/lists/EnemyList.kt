@@ -3,6 +3,7 @@ package com.example.towerdefense.gameObjects.lists
 import android.graphics.Canvas
 import android.view.MotionEvent
 import com.example.towerdefense.gameObjects.enemies.Enemy
+import com.example.towerdefense.utility.gameLog
 import com.example.towerdefense.utility.money
 import org.joml.Vector2f
 import java.util.*
@@ -22,6 +23,7 @@ class EnemyList(private val enemies: Vector<Enemy> = Vector()) :
 
 
     override fun add(element: Enemy): Boolean {
+        gameLog?.addPositionableLog(element)
         synchronized(enemies) {
             return enemies.add(element)
         }

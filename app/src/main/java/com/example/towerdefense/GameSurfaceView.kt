@@ -8,6 +8,8 @@ import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import androidx.core.content.ContextCompat
+import com.example.towerdefense.Physics2d.primitives.Box2D
+import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.gameObjects.*
 import com.example.towerdefense.gameObjects.Camera
 import com.example.towerdefense.gameObjects.lists.ERoundList
@@ -44,6 +46,7 @@ class GameSurfaceView(context: Context, road: Road) : SurfaceView(context),
     init {
         
         this.road = road
+        gameLog?.addSurfaceViewLog(this)
         
         backgroundGenerator = BackgroundGenerator(context)
         road.getPositions().forEach {
@@ -74,7 +77,11 @@ class GameSurfaceView(context: Context, road: Road) : SurfaceView(context),
         
         towerSpawners.forEach { it.draw(canvas) }
         
+        if (rounds.getRoundStart()) Drawing.drawBitmap(canvas, newRound, Vector2f(cameraPosition).add(screenSize.x.toFloat() / 2f, newRound.height.toFloat() / 2f))
+        
         if (movableTower != null) movableTower!!.draw(canvas)
+        
+        if (gameView!!.end) printEnd(canvas)
         
         if (fps) drawUPS(canvas)
         if (fps) drawFPS(canvas)
@@ -82,7 +89,17 @@ class GameSurfaceView(context: Context, road: Road) : SurfaceView(context),
         drawMoney(canvas)
         drawGameHealth(canvas)
         drawGameTime(canvas)
+        
     }
+    
+    private fun printEnd(canvas: Canvas) {
+        val paint = Paint()
+        paint.color = Color.RED
+        paint.textSize = 100f
+        if (gameHealth.get() > 0) Drawing.drawText(canvas, "You Won!", Vector2f(cameraPosition).add(screenSize.x.toFloat() / 2f, screenSize.y.toFloat() / 2f), paint)
+        else Drawing.drawText(canvas, "You Lost!", Vector2f(cameraPosition).add(screenSize.x.toFloat() / 2f, screenSize.y.toFloat() / 2f), paint)
+    }
+    
     
     private fun drawBackGround(canvas: Canvas) {
         backgroundBitmaps.forEach {
@@ -111,18 +128,6 @@ class GameSurfaceView(context: Context, road: Road) : SurfaceView(context),
         }
         
         towerSpawners.forEach {if (it.isClicked(pos)) if (it.onTouchEvent(event, pos)) return true}
-        
-        println("Pos: $pos")
-        if (towerSpawners.isNotEmpty()) {
-            towerSpawners.forEach {
-                println(it.position())
-                if (it.isClicked(pos)) {
-                    println("Clicked")
-                    if (it.onTouchEvent(event, pos)) return true
-                }
-            }
-        }
-        
         
         //Check if the child view is clicked
         when (event.action) {
@@ -336,6 +341,10 @@ class GameSurfaceView(context: Context, road: Road) : SurfaceView(context),
     private val clockTexture = BitmapFactory.decodeResource(
         gameView!!.context.resources,
         R.drawable.clock
+    )
+    private val newRound = BitmapFactory.decodeResource(
+        gameView!!.context.resources,
+        R.drawable.new_round
     )
     
     

@@ -13,6 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.towerdefense.databinding.ActivityMainBinding
+import com.example.towerdefense.utility.gameLog
 import com.example.towerdefense.utility.gameView
 import com.example.towerdefense.utility.screenRotation
 import com.example.towerdefense.utility.screenSize
@@ -72,26 +73,35 @@ class MainActivity : AppCompatActivity() {
         // Update screenSize depending on rotation
         when (rotation) {
             Surface.ROTATION_0 -> {
-                screenRotation = 0f
+                if (screenRotation != 0f) {
+                    screenRotation = 0f
+                    gameLog?.addScreenRotatedLog(0f)
+                }
             }
             Surface.ROTATION_180 -> {
-                // Reversed portrait
-                screenRotation = 180f
+                if (screenRotation != 180f) {
+                    screenRotation = 180f
+                    gameLog?.addScreenRotatedLog(180f)
+                }
             }
             Surface.ROTATION_90 -> {
                 // Landscape
-                screenRotation = 90f
+                if (screenRotation != 90f) {
+                    screenRotation = 90f
+                    gameLog?.addScreenRotatedLog(90f)
+                }
             }
             Surface.ROTATION_270 -> {
                 // Reversed landscape
-                screenRotation = 270f
+                if (screenRotation != 270f) {
+                    screenRotation = 270f
+                    gameLog?.addScreenRotatedLog(270f)
+                }
             }
             else -> {
                 screenRotation = 0f
             }
         }
-        
-        println(screenRotation)
     }
     
     fun saveWindowSizes() {
@@ -119,7 +129,6 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         //Do double back press to exit
         val currentTime = System.currentTimeMillis()
-        createGame()
         if (currentTime - lastClickTime < 400) {
             super.onBackPressed()
         } else {

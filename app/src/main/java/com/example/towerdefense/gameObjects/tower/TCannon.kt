@@ -39,7 +39,7 @@ class TCannon(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
     
     private fun createCanonBall(position: Vector2f, rotation: Float): CannonBall {
         val circle = Circle(sizeCanonBall / 4, position)
-        val cannonBall = CannonBall(circle, 1)
+        val cannonBall = CannonBall(circle, 1, level * 2)
         cannonBall.velocity(20f)
         cannonBall.setRotation(rotation)
         return cannonBall
@@ -63,7 +63,7 @@ class TCannon(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
     }
     
     private fun shootBigCanonBall() {
-        val cannonBall = CannonBall(Circle(sizeCanonBall, Vector2f(box2D.body.position)), dph)
+        val cannonBall = CannonBall(Circle(sizeCanonBall, Vector2f(box2D.body.position)), dph, level * 5)
         cannonBall.velocity(10f)
         val enemy = towerArea.toDamage()!!
         val rotation = Vector2f(enemy.position()).sub(box2D.body.position).normalize().angle()
@@ -94,6 +94,7 @@ class TCannon(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
     }
     
     override fun upgrade() {
+        super.upgrade()
         when (level) {
             1 -> {
                 towerArea.radius *= 2
@@ -115,11 +116,11 @@ class TCannon(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
     
     override fun upgradeCost(): Int {
         return when (level) {
-            1 -> 400
-            2 -> 700
-            3 -> 1400
-            4 -> 2000
-            5 -> 3000
+            1 -> 3000
+            2 -> 4500
+            3 -> 5400
+            4 -> 7000
+            5 -> 9000
             else -> 0
         }
     }

@@ -16,9 +16,13 @@ var cameraPosition = Vector2f(0f, 0f)
 var gameView : GameView? = null
 var towerClicked : Tower? = null
 
-var money = AtomicInteger(100000)
-var gameHealth = AtomicInteger(1000)
-var maxTime = 120
+var gameLog: Log? = null
+
+var money = AtomicInteger(1000)
+var gameHealth = AtomicInteger(20)
+var maxTime = 300
+var round = 1
 
 var restoreGame: Parcelable? = null
 var restoreSurfaceView: Parcelable? = null
+

@@ -40,7 +40,6 @@ class Enemy(private var collider2D: Collider2D, private val road: Road) : Positi
         if (health <= 0) {
             destroy()
             money.addAndGet(10)
-            
         }
     }
     

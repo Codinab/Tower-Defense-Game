@@ -11,7 +11,7 @@ import com.example.towerdefense.utility.*
 import com.example.towerdefense.utility.KMath.Companion.anglePositionToTarget
 import com.example.towerdefense.utility.textures.Animation
 
-class ExplosiveRocket(var circle: Circle, var enemies: ArrayList<Enemy>) : GameObject(circle, false, false), Projectile {
+class ExplosiveRocket(var circle: Circle, var enemies: ArrayList<Enemy>, private var damage: Int) : GameObject(circle, false, false), Projectile {
     
     private var timeToLive = 1500L
     private val spawnTime = TimeController.getGameTime()
@@ -49,11 +49,14 @@ class ExplosiveRocket(var circle: Circle, var enemies: ArrayList<Enemy>) : GameO
         if (!explosionCreated) detectCollisions()
     }
     
+    private var damagedEnemies = ArrayList<Enemy>()
     private fun explosionDamage() {
-        println("Explosion damage")
         gameView!!.surfaceView.enemies.forEach {
             if (IntersectionDetector2D.intersection(circle, it.collider())) {
-                it.damage(100)
+                if (!damagedEnemies.contains(it)) {
+                    it.damage(damage)
+                    damagedEnemies.add(it)
+                }
             }
         }
     }

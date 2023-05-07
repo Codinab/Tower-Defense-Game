@@ -4,9 +4,7 @@ import android.os.Looper
 import android.widget.Toast
 import com.example.towerdefense.gameObjects.enemies.ERound
 import com.example.towerdefense.gameObjects.enemies.ERounds
-import com.example.towerdefense.utility.TimeController
-import com.example.towerdefense.utility.gameView
-import com.example.towerdefense.utility.money
+import com.example.towerdefense.utility.*
 import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.collections.ArrayList
@@ -14,13 +12,14 @@ import kotlin.collections.ArrayList
 class ERoundList(private val rounds: Vector<ERound> = Vector()) :
     MutableList<ERound> by rounds {
     
-    private var round = 1
+    
     private var roundStart = true
     
     init {
         ERounds.values().forEach {
             add(it.eRound)
         }
+        gameLog?.addRoundLog(1)
     }
     
     fun update() {
@@ -41,7 +40,7 @@ class ERoundList(private val rounds: Vector<ERound> = Vector()) :
             rounds.removeAt(0)
             round++
             money.addAndGet(round * 100)
-            println("Round $round")
+            gameLog?.addRoundLog(round)
             gameView!!.roundEnd()
             if (rounds.isNotEmpty()) first().roundStartTime(TimeController.getGameTime() + 1000)
         }
@@ -55,5 +54,9 @@ class ERoundList(private val rounds: Vector<ERound> = Vector()) :
     
     fun getRound(): Int {
         return round
+    }
+    
+    fun getRoundStart(): Boolean {
+        return roundStart
     }
 }

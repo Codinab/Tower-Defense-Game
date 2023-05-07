@@ -50,7 +50,6 @@ class Road(private val startVector: Vector2i) : Serializable {
         }
         roadCorners.add(Pair(roadDirections.last().first, Direction2D.UNDEFINED))
         
-        println(roadCorners)
     }
     
     fun addDirection(direction: Direction2D) {

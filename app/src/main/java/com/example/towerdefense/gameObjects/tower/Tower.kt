@@ -92,7 +92,6 @@ abstract class Tower(var radius: Float, private val box2D: Box2D) : Movable,
             if(gameView!!.surfaceView.road.getPositionableAreaBox2Ds(3)
                 .any { IntersectionDetector2D.intersection(collider(), it)}) {
                 fixable.set(true)
-                println("Placeable in Area")
             } else
                 fixable.set(false)
                 
@@ -100,13 +99,11 @@ abstract class Tower(var radius: Float, private val box2D: Box2D) : Movable,
             gameView!!.surfaceView.towers.filterNot { it == this }.forEach {
                 if(IntersectionDetector2D.intersection(collider(), it.collider())) {
                     fixable.set(false)
-                    println("Collision with ${it.javaClass.simpleName}")
                 }
             }
             for (positionBox2D in gameView!!.surfaceView.road.getPositionBox2Ds()) {
                 if(IntersectionDetector2D.intersection(collider(), positionBox2D)) {
                     fixable.set(false)
-                    println("Collision with ${positionBox2D.javaClass.simpleName}")
                 }
             }
             
@@ -120,8 +117,10 @@ abstract class Tower(var radius: Float, private val box2D: Box2D) : Movable,
     }
     
     abstract fun buildCost(): Int
-    abstract fun upgrade()
     abstract fun upgradeCost(): Int
+    open fun upgrade() {
+        gameLog?.addLog("$this upgraded to level ${level + 1}")
+    }
     abstract fun upgradeInfo(): String
     abstract fun clone(): Tower
     

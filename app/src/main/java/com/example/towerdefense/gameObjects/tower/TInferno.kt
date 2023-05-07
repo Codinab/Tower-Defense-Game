@@ -131,6 +131,7 @@ class TInferno(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
     }
     
     override fun upgrade() {
+        super.upgrade()
         dphInferno *= 1.5f
     }
     
