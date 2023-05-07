@@ -3,43 +3,42 @@ package com.example.towerdefense.gameObjects.lists
 import android.graphics.Canvas
 import android.view.MotionEvent
 import com.example.towerdefense.gameObjects.tower.Tower
+import com.example.towerdefense.utility.gameLog
 import org.joml.Vector2f
+import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
+import kotlin.collections.ArrayList
 
-class TowerList(private val towers: CopyOnWriteArrayList<Tower> = CopyOnWriteArrayList()) :
+class TowerList(private val towers: Vector<Tower> = Vector()) :
     MutableList<Tower> by towers {
     
-    fun update() = towers.forEach { it.update() }
+    fun update() {
+        synchronized(towers) {
+            towers.forEach { it.update() }
+        }
+    }
     
     override fun add(element: Tower): Boolean {
-        return towers.add(element)
+        gameLog?.addPositionableLog(element)
+        synchronized(towers) {
+            return towers.add(element).also { towers.sortWith(TowerPriority) }
+        }
     }
     
     override fun remove(element: Tower): Boolean {
-        return towers.remove(element)
+        synchronized(towers) {
+            
+            return towers.remove(element).also { towers.sortWith(TowerPriority) }
+        }
     }
     
-    fun draw(canvas: Canvas) = towers.forEach { it.draw(canvas) }
-    
-    fun getClicked(position: Vector2f?): TowerList {
-        val clickedTowers = TowerList()
-        towers.forEach {
-            if (it.isClicked(position)) {
-                clickedTowers.add(it)
-                return clickedTowers
+    fun draw(canvas: Canvas) {
+        synchronized(towers) {
+            val sortedTowers = towers.sortedWith(TowerPriority)
+            sortedTowers.forEach {
+                it.draw(canvas)
             }
         }
-        return clickedTowers
-    }
-    
-    fun onTouchEvent(event: MotionEvent, position: Vector2f): Boolean {
-        return towers.any { it.onTouchEvent(event, position) }
-    }
-    
-    fun getMovable(): TowerList {
-        val movableTowers = TowerList()
-        towers.forEach { if (it.movable.get()) movableTowers.add(it) }
-        return movableTowers
     }
     
     fun getTowers(): List<Tower> = towers
@@ -53,5 +52,11 @@ class TowerList(private val towers: CopyOnWriteArrayList<Tower> = CopyOnWriteArr
         towers.forEach { string += "$it " }
         string += "}"
         return string
+    }
+    
+    object TowerPriority : Comparator<Tower> {
+        override fun compare(t1: Tower, t2: Tower): Int {
+            return t1.layerLevel - t2.layerLevel
+        }
     }
 }

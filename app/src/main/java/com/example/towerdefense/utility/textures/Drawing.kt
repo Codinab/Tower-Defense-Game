@@ -1,9 +1,9 @@
 package com.example.towerdefense.utility.textures
 
 import android.graphics.*
+import androidx.core.graphics.toRect
 import com.example.towerdefense.Physics2d.JMath
 import com.example.towerdefense.Physics2d.primitives.Box2D
-import com.example.towerdefense.utility.TimeController
 import org.joml.Vector2f
 
 //static class Drawing
@@ -91,6 +91,15 @@ class Drawing {
             val y = position.y - bitmap.height * 0.5f
             canvas.drawBitmap(bitmap, x, y, paint)
         }
+        fun drawBitmap(canvas: Canvas, bitmap: Bitmap, position: Vector2f, rotation: Float) {
+            val paint = Paint().apply {
+                isAntiAlias = true
+                isFilterBitmap = true
+                isDither = true
+            }
+            drawBitmap(canvas, bitmap, position, paint, rotation)
+        }
+        
         fun drawBitmap(canvas: Canvas, bitmap: Bitmap, position: Vector2f) {
             val paint = Paint().apply {
                 isAntiAlias = true
@@ -99,7 +108,30 @@ class Drawing {
             }
             drawBitmap(canvas, bitmap, position, paint)
         }
-        
+        fun drawBitmap(
+            canvas: Canvas,
+            bitmap: Bitmap,
+            positionTop: Vector2f,
+            positionBottom: Vector2f,
+            width: Float,
+        ) {
+            val textureWidth = bitmap.width.toFloat()
+            val textureHeight = bitmap.height.toFloat()
+            val scale = width / textureWidth
+            val scaledWidth = textureWidth * scale
+            val scaledHeight = textureHeight * scale
+            val left = positionTop.x - scaledWidth / 2
+            val top = positionTop.y
+            val right = positionTop.x + scaledWidth / 2
+            val bottom = positionBottom.y
+            val dstRect = RectF(left, top, right, bottom)
+            val srcRect = RectF(0f, 0f, textureWidth, textureHeight).toRect()
+            val paint = Paint()
+            paint.isAntiAlias = true
+            canvas.drawBitmap(bitmap, srcRect, dstRect, paint)
+        }
+    
+    
         fun drawHealthBar(canvas: Canvas, leftBottomHealthBarPos: Vector2f, rightBottomHealthBarPos: Vector2f, health: Int, maxHealth: Int) {
             val width = 10f
             val start = Vector2f(leftBottomHealthBarPos).add(0f, -width)
@@ -117,14 +149,14 @@ class Drawing {
             drawLine(canvas, healthBarEnd, end, missingHealth, width)
             
             // Draw health text at the end of the health bar
-            val healthText = "$health/$maxHealth"
-            val healthTextSize = 40f
-            val healthTextPaint = Paint()
-            healthTextPaint.textSize = healthTextSize
-            healthTextPaint.color = Color.BLACK
-            val healthTextWidth = healthTextPaint.measureText(healthText)
-            val healthTextPos = Vector2f(healthBarEnd).add(-healthTextWidth * 0.5f, -healthTextSize * 0.5f)
-            drawText(canvas, healthText, healthTextPos, healthTextPaint)
+            //val healthText = "$health/$maxHealth"
+            //val healthTextSize = 40f
+            //val healthTextPaint = Paint()
+            //healthTextPaint.textSize = healthTextSize
+            //healthTextPaint.color = Color.BLACK
+            //val healthTextWidth = healthTextPaint.measureText(healthText)
+            //val healthTextPos = Vector2f(healthBarEnd).add(-healthTextWidth * 0.5f, -healthTextSize * 0.5f)
+            //drawText(canvas, healthText, healthTextPos, healthTextPaint)
         }
     
         

@@ -6,20 +6,38 @@ import android.graphics.Paint
 import com.example.towerdefense.utility.TimeController
 import org.joml.Vector2f
 
-class Animation(private val frames: Array<Bitmap>, var frameTime: Float) {
+class Animation(private val frames: Array<Bitmap>, var frameTime: Float, var loop: Boolean = true, size: Int? = null) {
     private var currentFrame = 0
     private var lastFrameTime = 0L
+    private var isFirstDraw = true
     
     init {
-        //Set frame time to milliseconds
+        if (size != null) {
+            for (i in frames.indices) {
+                frames[i] = Bitmap.createScaledBitmap(frames[i], size, size, false)
+            }
+        }
     }
     
     fun draw(canvas: Canvas, position: Vector2f, paint: Paint, rotation: Float) {
-        val elapsedFrameTime = TimeController.getSinceAppStart() - lastFrameTime
+        val timeFunction =
+            if (loop) TimeController.getSinceGameStart() else TimeController.getGameTime()
+        
+        if (isFirstDraw) {
+            lastFrameTime = timeFunction
+            isFirstDraw = false
+        }
+        
+        val elapsedFrameTime = timeFunction - lastFrameTime
         if (elapsedFrameTime >= frameTime) {
-            currentFrame = (currentFrame + 1) % frames.size
-            
-            lastFrameTime = TimeController.getSinceAppStart()
+            if (loop) {
+                currentFrame = (currentFrame + 1) % frames.size
+            } else {
+                if (currentFrame < frames.size - 1) {
+                    currentFrame += 1
+                }
+            }
+            lastFrameTime = timeFunction
         }
         val frame = frames[currentFrame]
         Drawing.drawBitmap(canvas, frame, position, paint, rotation)
@@ -33,6 +51,7 @@ class Animation(private val frames: Array<Bitmap>, var frameTime: Float) {
         }
         draw(canvas, position, paint, rotation)
     }
+    
     fun draw(canvas: Canvas, position: Vector2f, paint: Paint) {
         draw(canvas, position, paint, 0f)
     }

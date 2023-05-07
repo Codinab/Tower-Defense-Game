@@ -6,7 +6,7 @@ import android.view.SurfaceView
 /**
  *
  * */
-class GameLoop(private val game: GameView) : Thread() , java.io.Serializable {
+class GameLoop(private val game: GameView) : Thread() {
 
     private val view: GameSurfaceView = game.surfaceView
     internal var isRunning = false

@@ -3,33 +3,31 @@ package com.example.towerdefense
 import com.example.towerdefense.gameObjects.lists.TowerList
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.os.Looper
+import android.graphics.*
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
-import android.widget.Toast
 import androidx.core.content.ContextCompat
-import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
+import com.example.towerdefense.Physics2d.primitives.Box2D
+import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.gameObjects.*
-import com.example.towerdefense.gameObjects.enemies.ERound
-import com.example.towerdefense.gameObjects.enemies.EnemyWaves
+import com.example.towerdefense.gameObjects.Camera
 import com.example.towerdefense.gameObjects.lists.ERoundList
 import com.example.towerdefense.gameObjects.lists.EnemyList
 import com.example.towerdefense.gameObjects.lists.ProjectileList
 import com.example.towerdefense.gameObjects.tower.*
 import com.example.towerdefense.utility.*
-import com.example.towerdefense.utility.Random.Companion.randomInt
+import com.example.towerdefense.utility.TimeController.*
+import com.example.towerdefense.utility.TimeController.Companion.timeLeft
 import com.example.towerdefense.utility.textures.BackgroundGenerator
 import com.example.towerdefense.utility.textures.Drawing
 import org.joml.Vector2f
 import org.joml.Vector2i
+import java.io.Serializable
 import java.util.*
+import kotlin.collections.HashMap
 
-open class GameSurfaceView(context: Context, private val gameView: GameView) : SurfaceView(context),
+class GameSurfaceView(context: Context, road: Road) : SurfaceView(context),
     SurfaceHolder.Callback, java.io.Serializable {
     
     var enemies = EnemyList()
@@ -41,39 +39,34 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
     
     var gameLoop: GameLoop? = null
     var isRunning = false
-    internal var road: Road = Road(Vector2i(0, 0))
-    private val backgroundGenerator : BackgroundGenerator
-    private val background : Bitmap
-
+    internal var road: Road
+    private val backgroundGenerator: BackgroundGenerator
+    private val backgroundBitmaps: HashMap<Vector2f, Bitmap> = HashMap()
+    
     init {
         
-        road.addLine(Direction2D.RIGHT, 10)
-        road.addLine(Direction2D.DOWN, 10)
-        road.addLine(Direction2D.RIGHT, 10)
-        
+        this.road = road
+        gameLog?.addSurfaceViewLog(this)
         
         backgroundGenerator = BackgroundGenerator(context)
-        background = backgroundGenerator.generateBackground(30, 10)
+        road.getPositions().forEach {
+            backgroundBitmaps[it] = backgroundGenerator.generateBackground(it, 7)
+        }
+        setZOrderOnTop(false)
+        setZOrderMediaOverlay(false)
         
-        val round = ERound()
-        round.addWave(EnemyWaves.Tier1Wave8.wave, 0)
-        round.addWave(EnemyWaves.Tier1Wave8.wave, 1)
-        
-        rounds.add(round)
-        
+        TimeController.initCount()
     }
     
     override fun draw(canvas: Canvas?) {
         super.draw(canvas)
         if (canvas == null) return
         
-        //towerSpawners.forEach { it.draw(canvas) }
-        
         camera.updateCanvas(canvas)
         
-        //For every R.draw.grass draw it 1_1 to 4_8
         
         drawBackGround(canvas)
+        
         
         //Draw the road
         road.draw(canvas)
@@ -82,23 +75,43 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         towers.draw(canvas)
         projectiles.draw(canvas)
         
+        towerSpawners.forEach { it.draw(canvas) }
+        
+        if (rounds.getRoundStart()) Drawing.drawBitmap(canvas, newRound, Vector2f(cameraPosition).add(screenSize.x.toFloat() / 2f, newRound.height.toFloat() / 2f))
+        
+        if (movableTower != null) movableTower!!.draw(canvas)
+        
+        if (gameView!!.end) printEnd(canvas)
+        
         if (fps) drawUPS(canvas)
         if (fps) drawFPS(canvas)
         
         drawMoney(canvas)
         drawGameHealth(canvas)
         drawGameTime(canvas)
+        
     }
+    
+    private fun printEnd(canvas: Canvas) {
+        val paint = Paint()
+        paint.color = Color.RED
+        paint.textSize = 100f
+        if (gameHealth.get() > 0) Drawing.drawText(canvas, "You Won!", Vector2f(cameraPosition).add(screenSize.x.toFloat() / 2f, screenSize.y.toFloat() / 2f), paint)
+        else Drawing.drawText(canvas, "You Lost!", Vector2f(cameraPosition).add(screenSize.x.toFloat() / 2f, screenSize.y.toFloat() / 2f), paint)
+    }
+    
     
     private fun drawBackGround(canvas: Canvas) {
-        Drawing.drawBitmap(canvas, background, Vector2f((screenSize.x.toFloat() / 2), (screenSize.y.toFloat() / 2)))
+        backgroundBitmaps.forEach {
+            Drawing.drawBitmap(canvas, it.value, it.key)
+        }
     }
     
-    val camera = Camera()
-    
-    
+    private val camera = Camera()
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val adjustedPosition = camera.adjustedPosition(event)
+        val pos = Vector2f(event.x, event.y).add(cameraPosition)
+        
         
         if (!isRunning) return false
         
@@ -106,12 +119,15 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
             if (movableTower!!.onTouchEvent(event, adjustedPosition)) return true
         }
         
+        
         towers.forEach() {
             if (it.isClicked(adjustedPosition) || it.movable.get()) if (it.onTouchEvent(
                     event, adjustedPosition
                 )
             ) return true
         }
+        
+        towerSpawners.forEach {if (it.isClicked(pos)) if (it.onTouchEvent(event, pos)) return true}
         
         //Check if the child view is clicked
         when (event.action) {
@@ -131,58 +147,52 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
     fun initTowerSpawners() {
         val towerSpawner2 =
             TowerSpawner(
-                context,
-                Vector2f(TowerSpawner.SpawnerPosition.TOP_LEFT.vector2f),
-                TCanon(Vector2f(TowerSpawner.SpawnerPosition.TOP_LEFT.vector2f))
+                TowerSpawner.SpawnerPosition.TOP_RIGHT,
+                TCannon(Vector2f(TowerSpawner.SpawnerPosition.TOP_RIGHT.vector2f()))
             )
+        towerSpawner2.setTexture(R.drawable.cannon)
         addTowerSpawner(towerSpawner2)
         
         val towerSpawner3 =
             TowerSpawner(
-                context,
-                Vector2f(TowerSpawner.SpawnerPosition.TOP_RIGHT.vector2f),
-                TLaser(Vector2f(TowerSpawner.SpawnerPosition.TOP_RIGHT.vector2f))
+                TowerSpawner.SpawnerPosition.MIDDLE_RIGHT,
+                TLaser(Vector2f(TowerSpawner.SpawnerPosition.MIDDLE_RIGHT.vector2f()))
             )
+        towerSpawner3.setTexture(R.drawable.tlaser)
         addTowerSpawner(towerSpawner3)
         
         val towerSpawner4 =
             TowerSpawner(
-                context,
-                Vector2f(TowerSpawner.SpawnerPosition.MIDDLE_LEFT.vector2f),
-                TRocketLauncher(Vector2f(TowerSpawner.SpawnerPosition.MIDDLE_LEFT.vector2f))
+                TowerSpawner.SpawnerPosition.BOTTOM_RIGHT,
+                TRocketSilo(Vector2f(TowerSpawner.SpawnerPosition.BOTTOM_RIGHT.vector2f()))
             )
+        towerSpawner4.setTexture(R.drawable.silo_closed)
         addTowerSpawner(towerSpawner4)
     }
     
     @SuppressLint("ClickableViewAccessibility")
     private fun addTowerSpawner(towerSpawner: TowerSpawner) {
         towerSpawners.add(towerSpawner)
-        gameView.addView(towerSpawner)
-        towerSpawner.requestLayout()
-        gameView.invalidate()
-        towerSpawner.setOnTouchListener() { _, it ->
-            towerSpawner.onTouchEvent(it, camera.adjustedPosition(it))
-            performClick()
-        }
     }
     
-    private var timeLastSpawn = 0L
+    private var updates = 0
     fun update() {
-        if (checkGameEnd()) gameEnd()
+        if (updates == 0) initTowerSpawners()
         
         rounds.update()
         
         updateGameObjects()
         
         deleteObjects()
-        
-        spawnEnemies()
+        updates++
     }
     
     fun roundStart() {
-/*
-        Toast.makeText(context, "Round ${rounds.getRound()}", Toast.LENGTH_SHORT).show()
-*/
+    
+    }
+    
+    fun roundEnd() {
+        projectiles.clear()
     }
     
     private fun checkGameEnd() = gameHealth.get() <= 0
@@ -201,37 +211,14 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         towers.filter { it.toDelete() }.forEach { towers.remove(it) }
     }
     
-    private fun spawnEnemies() {
-        if (TimeController.getGameTime() - timeLastSpawn > randomInt(
-                100,
-                2000,
-                TimeController.getGameTime().toInt()
-            )
-        ) {
-            /*enemies.add(
-                Enemy(Box2D(Vector2f(0f, 0f), Vector2f(100f, 100f)), road).apply {
-                    this.setHealth(randomInt(1, 5, TimeController.getGameTime().toInt()))
-                    velocity(randomFloat(8f, 15f, TimeController.getGameTime().toInt()))
-                }
-            )*/
-            timeLastSpawn = TimeController.getGameTime()
-            //health = (health * 1.1).toInt()
-        }
-    }
-    
     private fun deleteProjectiles() {
         projectiles.filter { it.toDelete() }.forEach { projectiles.remove(it) }
-    }
-    
-    private fun gameEnd() {
-        gameView.gamePause()
     }
     
     
     private fun updateGameObjects() {
         
         
-        updateMovableTower()
         
         updateEnemies()
         updateTowerSpawners() //Does nothing
@@ -247,41 +234,19 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         projectiles.update()
     }
     
-    private fun updateMovableTower() {
-        if (!movableTowerUpdateConditions()) return
-        towers.forEach {
-            if (movableTower != it) {
-                if(IntersectionDetector2D.intersection(movableTower!!.collider2D(), it.collider2D())) {
-                    movableTower!!.fixable.set(false)
-                    return@forEach
-                }
-            }
-        }
-        movableTower!!.fixable.set(true)
-        return
-    }
-    
-    private fun movableTowerUpdateConditions(): Boolean {
-        if (movableTower == null) return false
-        if (!movableTower!!.movable.get()) {
-            movableTower = null
-            return false
-        }
-        if (towers.size == 1) return false
-        return true
-    }
-    
-    
     private fun updateEnemies() {
         enemies.update()
     }
     
     private fun updateTowers() {
+        if (movableTower != null && !movableTower!!.movable.get()) movableTower = null
         towers.updateAreas(enemies)
         towers.update()
     }
     
-    private fun updateTowerSpawners() { towerSpawners.forEach() { it.update() } }
+    private fun updateTowerSpawners() {
+        towerSpawners.forEach() { it.update() }
+    }
     
     fun drawUPS(canvas: Canvas?) {
         gameLoop ?: return
@@ -307,23 +272,26 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         )
     }
     
-    fun drawMoney(canvas: Canvas?) {
-        val color = Color.CYAN
+    fun drawMoney(canvas: Canvas) {
+        val color = Color.BLACK
         val paint = Paint()
         paint.color = color
         paint.textSize = 50f
-        canvas?.drawText(
-            "Money: $money", 100f + camera.x(), 100f + camera.y(), paint
+        Drawing.drawBitmap(canvas, coinTexture, Vector2f(100f + camera.x(), 80f + camera.y()))
+        canvas.drawText(
+            "$money", 160f + camera.x(), 100f + camera.y(), paint
         )
     }
     
     private fun drawGameTime(canvas: Canvas) {
+        if (TimeController.timeLeft() == -100L) return
         val paint = Paint()
-        paint.color = Color.CYAN
+        paint.color = Color.BLACK
         paint.textSize = 50f
+        Drawing.drawBitmap(canvas, clockTexture, Vector2f(100f + camera.x(), 180f + camera.y()))
         canvas.drawText(
-            "Time: ${TimeController.getGameTime() / 1000} ${TimeController.getSinceAppStart() / 1000}",
-            camera.x() + 100,
+            timeLeft().toString(),
+            camera.x() + 160,
             camera.y() + 200f,
             paint
         )
@@ -333,16 +301,58 @@ open class GameSurfaceView(context: Context, private val gameView: GameView) : S
         val paint = Paint()
         paint.color = Color.CYAN
         paint.textSize = 50f
-        canvas.drawText("Health: $gameHealth", camera.x() + 100f, camera.y() + 300f, paint)
+        Drawing.drawBitmap(canvas, heartTexture, Vector2f(100f + camera.x(), 280f + camera.y()))
+        canvas.drawText(
+            gameHealth.get().toString(),
+            camera.x() + 160,
+            camera.y() + 300f,
+            paint
+        )
     }
     
     override fun surfaceCreated(p0: SurfaceHolder) {
-    
+        if (restoreSurfaceView != null) {
+            restoreSurfaceView = null
+            onRestoreInstanceState(restoreSurfaceView)
+        }
     }
     
     override fun surfaceChanged(p0: SurfaceHolder, p1: Int, p2: Int, p3: Int) {
+        restoreSurfaceView = onSaveInstanceState()
     }
     
     override fun surfaceDestroyed(p0: SurfaceHolder) {
+        restoreSurfaceView = onSaveInstanceState()
     }
+    
+    fun getGameState(): Serializable {
+        return this
+    }
+    
+    companion object {
+        fun setGameState(gameState: Serializable): GameSurfaceView {
+            return gameState as GameSurfaceView
+        }
+    }
+    
+    
+    private val coinTexture = BitmapFactory.decodeResource(
+        gameView!!.context.resources,
+        R.drawable.coin
+    )
+    private val clockTexture = BitmapFactory.decodeResource(
+        gameView!!.context.resources,
+        R.drawable.clock
+    )
+    private val newRound = BitmapFactory.decodeResource(
+        gameView!!.context.resources,
+        R.drawable.new_round
+    )
+    private val heartTexture = BitmapFactory.decodeResource(
+        gameView!!.context.resources,
+        R.drawable.heart
+    )
+    
+    
+    
 }

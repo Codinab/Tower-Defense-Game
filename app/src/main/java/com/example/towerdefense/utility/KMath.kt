@@ -31,6 +31,9 @@ class KMath {
             return this * 180 / Math.PI.toFloat()
         }
     
+        fun anglePositionToTarget(position: Vector2f, target: Vector2f): Float {
+            return Vector2f(position).sub(target).normalize().angle()
+        }
     
     }
 }

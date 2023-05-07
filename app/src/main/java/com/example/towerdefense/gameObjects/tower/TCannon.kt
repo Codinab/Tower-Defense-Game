@@ -1,28 +1,34 @@
 package com.example.towerdefense.gameObjects.tower
 
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
+import android.graphics.*
 import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.primitives.Circle
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
-import com.example.towerdefense.gameObjects.tower.utils.CanonBall
+import com.example.towerdefense.gameObjects.tower.utils.CannonBall
 import com.example.towerdefense.utility.*
 import com.example.towerdefense.utility.KMath.Companion.angle
+import com.example.towerdefense.utility.KMath.Companion.anglePositionToTarget
 import com.example.towerdefense.utility.textures.Drawing
 import org.joml.Vector2f
 
-class TCanon(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
+class TCannon(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
     constructor(position: Vector2f) : this(300f, Box2D(Vector2f(150f, 150f), Rigidbody2D(position)))
     
     override var timeActionDelay = 1000f
     private var dph: Int = 1
+    
     private var sizeCanonBall: Float = 30f
+    private var texture = BitmapFactory.decodeResource(
+        gameView!!.context.resources,
+        com.example.towerdefense.R.drawable.cannon
+    )
+    private var textureResized =
+        Bitmap.createScaledBitmap(texture, texture.width * 2, texture.height * 2, false)
     
     override fun applyDamageInArea() {
         if (readyToDamage()) {
             shootBigCanonBall()
-            if(level > 4) shootSmallCanonBalls()
+            if (level > 4) shootSmallCanonBalls()
             timeLastAction = TimeController.getGameTime()
         }
     }
@@ -31,17 +37,18 @@ class TCanon(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
         return Vector2f(enemyPosition).sub(box2D.body.position).angle()
     }
     
-    private fun createCanonBall(position: Vector2f, rotation: Float): CanonBall {
+    private fun createCanonBall(position: Vector2f, rotation: Float): CannonBall {
         val circle = Circle(sizeCanonBall / 4, position)
-        val canonBall = CanonBall(circle, 1)
-        canonBall.velocity(20f)
-        canonBall.setRotation(rotation)
-        return canonBall
+        val cannonBall = CannonBall(circle, 1, level * 2)
+        cannonBall.velocity(20f)
+        cannonBall.setRotation(rotation)
+        return cannonBall
     }
     
-    private fun addCanonBallsToProjectiles(canonBalls: List<CanonBall>) {
-        gameView!!.surfaceView.projectiles.addAll(canonBalls)
+    private fun addCanonBallsToProjectiles(cannonBalls: List<CannonBall>) {
+        gameView!!.surfaceView.projectiles.addAll(cannonBalls)
     }
+    
     
     private fun shootSmallCanonBalls() {
         val enemy = towerArea.toDamage()!!
@@ -55,14 +62,13 @@ class TCanon(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
         addCanonBallsToProjectiles(canonBalls)
     }
     
-    
     private fun shootBigCanonBall() {
-        val canonBall = CanonBall(Circle(sizeCanonBall, Vector2f(box2D.body.position)), dph)
-        canonBall.velocity(10f)
+        val cannonBall = CannonBall(Circle(sizeCanonBall, Vector2f(box2D.body.position)), dph, level * 5)
+        cannonBall.velocity(10f)
         val enemy = towerArea.toDamage()!!
         val rotation = Vector2f(enemy.position()).sub(box2D.body.position).normalize().angle()
-        canonBall.setRotation(rotation)
-        gameView!!.surfaceView.projectiles.add(canonBall)
+        cannonBall.setRotation(rotation)
+        gameView!!.surfaceView.projectiles.add(cannonBall)
     }
     
     override fun buildCost(): Int {
@@ -72,13 +78,24 @@ class TCanon(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
     override fun draw(canvas: Canvas) {
         if (towerClicked == this) towerArea.draw(canvas)
         val paint = Paint()
+        drawPositionable(canvas)
         //Color for each level more green
         paint.color = Color.rgb(0, 255 / 6 * level, 0)
-        Drawing.drawBox2D(canvas, box2D, paint)
+        //Drawing.drawBox2D(canvas, box2D, paint)
+        angleAnimation(canvas)
+    }
+    
+    private var angle = 0f
+    private fun angleAnimation(canvas: Canvas) {
+        angle = if (gameView!!.surfaceView.enemies.isEmpty())
+            anglePositionToTarget(position(), gameView!!.surfaceView.road.getStart())
+        else towerArea.angle()
+        Drawing.drawBitmap(canvas, textureResized, position(), angle)
     }
     
     override fun upgrade() {
-        when(level) {
+        super.upgrade()
+        when (level) {
             1 -> {
                 towerArea.radius *= 2
             }
@@ -98,18 +115,18 @@ class TCanon(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
     }
     
     override fun upgradeCost(): Int {
-        return when(level) {
-            1 -> 400
-            2 -> 700
-            3 -> 1400
-            4 -> 2000
-            5 -> 3000
+        return when (level) {
+            1 -> 3000
+            2 -> 4500
+            3 -> 5400
+            4 -> 7000
+            5 -> 9000
             else -> 0
         }
     }
     
     override fun upgradeInfo(): String {
-        return when(level) {
+        return when (level) {
             1 -> "Bigger area of vision"
             2 -> "Double damage"
             3 -> "Faster shooting"
@@ -119,7 +136,8 @@ class TCanon(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
         }
     }
     
+    override var layerLevel: Int = 5
     override fun clone(): Tower {
-        return TCanon(radius, box2D.clone() as Box2D)
+        return TCannon(radius, box2D.clone() as Box2D)
     }
 }

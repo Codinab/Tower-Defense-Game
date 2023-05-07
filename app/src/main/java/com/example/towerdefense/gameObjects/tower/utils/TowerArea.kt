@@ -8,6 +8,8 @@ import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.R
 import com.example.towerdefense.gameObjects.enemies.Enemy
 import com.example.towerdefense.gameObjects.lists.EnemyList
+import com.example.towerdefense.utility.KMath.Companion.anglePositionToTarget
+import com.example.towerdefense.utility.TimeController
 import com.example.towerdefense.utility.gameView
 import org.joml.Vector2f
 
@@ -27,13 +29,31 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
     }
     
     private var inArea = ArrayDeque<Enemy>()
-    fun updateArea(enemies: EnemyList): Boolean {
-        inArea.clear()
+    /*fun updateArea(enemies: EnemyList): Boolean {
+        val tmpArea = ArrayDeque<Enemy>()
         for (enemy in enemies) {
-            if (IntersectionDetector2D.intersection(this, enemy.collider2D())) inArea.add(enemy)
+            if (IntersectionDetector2D.intersection(this, enemy.collider())) tmpArea.add(enemy)
+        }
+        if (!tmpArea.containsAll(inArea) || !inArea.containsAll(tmpArea)) inArea = tmpArea
+        return inArea.isNotEmpty()
+    }*/
+    
+    fun updateArea(enemies: EnemyList): Boolean {
+        val tmpArea = ArrayDeque<Enemy>()
+        synchronized(enemies) {
+            for (enemy in enemies) {
+                if (IntersectionDetector2D.intersection(this, enemy.collider())) tmpArea.add(enemy)
+            }
+        }
+        synchronized(inArea) {
+            if (!tmpArea.containsAll(inArea) || !inArea.containsAll(tmpArea)) {
+                inArea.clear()
+                inArea.addAll(tmpArea)
+            }
         }
         return inArea.isNotEmpty()
     }
+    
     
     fun isEmpty(): Boolean = inArea.isEmpty()
     
@@ -52,6 +72,17 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
         }
     }
     
+    fun toDamageList(): ArrayList<Enemy>? {
+        val tmpList = inArea
+        val toDamageList = ArrayList<Enemy>()
+        while(inArea.isNotEmpty()) {
+            toDamageList.add(toDamage() ?: return null)
+            inArea.remove(toDamageList.last())
+        }
+        inArea = tmpList
+        return if (toDamageList.isEmpty()) null else toDamageList
+    }
+    
     fun setToDamageType(damageType: DamageType) {
         this.damageType = damageType
     }
@@ -65,9 +96,15 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
     fun getToDamageType(): DamageType = damageType
     
     
-    fun getFirst(): Enemy? = inArea.minByOrNull { it.distanceToNextCornerSquared() }
+    fun getFirst(): Enemy? {
+        val corner = inArea.maxByOrNull { it.corner() }?.corner() ?: return null
+        return inArea.filter { it.corner() == corner }.minByOrNull { it.distanceToNextCornerSquared() }
+    }
     
-    private fun getLast(): Enemy? = inArea.maxByOrNull { it.distanceToNextCornerSquared() }
+    private fun getLast(): Enemy? {
+        val corner = inArea.minByOrNull { it.corner() }?.corner() ?: return null
+        return inArea.filter { it.corner() == corner }.maxByOrNull { it.distanceToNextCornerSquared() }
+    }
     
     private fun getLeastHealthy(): Enemy? = inArea.minByOrNull { it.getMaxHealth() }
     
@@ -83,6 +120,13 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
     
     private fun getRandom(): Enemy? = inArea.randomOrNull()
     
+    private var savedAngle = 0f
+    fun angle(): Float {
+        if (toDamage() != null) {
+            savedAngle = anglePositionToTarget(center, toDamage()!!.position())
+        }
+        return savedAngle
+    }
     
     override fun clone(): Collider2D = TowerArea(radius, Vector2f(center))
     

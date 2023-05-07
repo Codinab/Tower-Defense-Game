@@ -5,8 +5,6 @@ import android.graphics.ColorFilter
 import android.graphics.Paint
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import com.example.towerdefense.Game
-import com.example.towerdefense.GameView
 import com.example.towerdefense.Physics2d.primitives.Collider2D
 
 open class DrawableObject(var collider2D: Collider2D) : Drawable() {

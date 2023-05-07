@@ -5,27 +5,44 @@
     android:id="@+id/StartMenu"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/universal_background"
     tools:context=".MainActivity">
 
 
-    <Button
+    <ImageButton
         android:id="@+id/createButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/create_game"
-        app:layout_constraintBottom_toTopOf="@+id/continueGame"
+        android:layout_marginTop="92dp"
+        android:background="@null"
+        android:src="@drawable/new_game"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/help" />
 
-    <Button
-        android:id="@+id/continueGame"
+    <ImageButton
+        android:id="@+id/exitGame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="164dp"
-        android:text="@string/continue_"
+        android:layout_marginBottom="212dp"
+        android:background="@null"
+        android:src="@drawable/exit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/createButton" />
+
+    <ImageButton
+        android:id="@+id/help"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="128dp"
+        android:background="@drawable/help"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

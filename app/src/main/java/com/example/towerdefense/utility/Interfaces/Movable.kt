@@ -1,14 +1,46 @@
 package com.example.towerdefense.utility.Interfaces
 
-interface Movable {
-    fun addVelocity(velocity: Float)
-    fun velocity(): Float
-    fun velocity(velocity: Float)
-    fun setAngularVelocity(angularVelocity: Float)
-    fun getAngularVelocity(): Float
-    fun addAngularVelocity(angularVelocity: Float)
-    fun setRotation(rotation: Float)
-    fun getRotation(): Float
-    fun addRotation(rotation: Float)
-    fun update()
+import java.util.Objects
+
+interface Movable : Collisionable, Removable, Updatable {
+    fun addVelocity(velocity: Float) {
+        collider().body.velocity += velocity
+    }
+    
+    fun velocity(): Float {
+        return collider().body.velocity
+    }
+    
+    fun velocity(velocity: Float) {
+        collider().body.velocity = velocity
+    }
+    
+    fun setAngularVelocity(angularVelocity: Float) {
+        collider().body.angularVelocity = angularVelocity
+    }
+    
+    fun getAngularVelocity(): Float {
+        return collider().body.angularVelocity
+    }
+    
+    fun addAngularVelocity(angularVelocity: Float) {
+        collider().body.angularVelocity += angularVelocity
+    }
+    
+    fun setRotation(rotation: Float) {
+        collider().body.rotation = rotation
+    }
+    
+    fun getRotation(): Float {
+        return collider().body.rotation
+    }
+    
+    fun addRotation(rotation: Float) {
+        collider().body.rotation += rotation
+    }
+    
+    override fun update() {
+        if (toDelete()) return
+        collider().update()
+    }
 }

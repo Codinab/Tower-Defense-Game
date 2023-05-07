@@ -15,10 +15,18 @@ class TimeController {
         }
 
         // Returns the time since the app started in milliseconds
-        fun getSinceAppStart(): Long {
+        fun getSinceGameStart(): Long {
             return System.currentTimeMillis() - startTime
         }
-
+        fun initCount() {
+            startTime = System.currentTimeMillis()
+        }
+        
+        fun timeLeft(): Long {
+            if (maxTime == -100) return -100L
+            return (maxTime * 1000L - (getSinceGameStart() - getGameTime())) / 1000
+        }
+        
         // Resumes the game time
         @Synchronized
         fun resume() {
@@ -41,6 +49,7 @@ class TimeController {
                 paused = true
             }
         }
+        
     }
 }
 

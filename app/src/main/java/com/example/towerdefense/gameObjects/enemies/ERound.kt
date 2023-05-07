@@ -3,13 +3,14 @@ package com.example.towerdefense.gameObjects.enemies
 import com.example.towerdefense.utility.Interfaces.Removable
 import com.example.towerdefense.utility.TimeController
 
-class ERound() : Removable {
+class ERound() : Removable, java.io.Serializable {
     
     private var waves: ArrayList<Pair<EnemyWave, Int>> = ArrayList()
-    var roundStartTime: Long = 10000000L
+    var roundStartTime: Long = Long.MAX_VALUE
+    private var canStartERounds = false
     
     fun update() {
-        if (TimeController.isPaused() || toDelete()) return
+        if (TimeController.isPaused() || toDelete() || !canStartERounds) return
         if (roundStartTime == Long.MAX_VALUE) throw Exception("Round start time not set")
         for (wave in waves) {
             wave.first.update()
@@ -33,6 +34,8 @@ class ERound() : Removable {
         for (wave in waves) {
             setWaveStartTime(wave.first, wave.second)
         }
+        
+        canStartERounds = true
     }
     
     override var toDelete: Boolean = false
