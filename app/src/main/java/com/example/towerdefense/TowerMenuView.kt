@@ -6,12 +6,13 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.RelativeLayout
+import com.example.towerdefense.utility.gameView
 import com.example.towerdefense.utility.money
 import com.example.towerdefense.utility.towerClicked
 
 class TowerMenuView(context: Context) : RelativeLayout(context) {
-    private lateinit var sell: Button
-    private lateinit var upgrade: Button
+    private lateinit var sell: ImageButton
+    private lateinit var upgrade: ImageButton
     private lateinit var damageType: ImageButton
     
     init {
@@ -20,19 +21,22 @@ class TowerMenuView(context: Context) : RelativeLayout(context) {
     }
     
     private fun setupButtons(context: Context) {
-        sell = Button(context).apply {
-            id = View.generateViewId()
-            text = "Sell"
+        upgrade = ImageButton(context).apply {
+            id = generateViewId()
             alpha = 0.8f
+            setImageBitmap(BitmapFactory.decodeResource(resources, R.drawable.upgrade))
+            background = null
+            layoutParams = upgradeLayoutParams()
+        }
+        
+        sell = ImageButton(context).apply {
+            id = generateViewId()
+            alpha = 0.8f
+            setImageBitmap(BitmapFactory.decodeResource(resources, R.drawable.sell))
+            background = null
             layoutParams = sellLayoutParams()
         }
         
-        upgrade = Button(context).apply {
-            id = View.generateViewId()
-            text = "Upgrade"
-            alpha = 0.8f
-            layoutParams = upgradeLayoutParams()
-        }
         
         damageType = ImageButton(context).apply {
             id = generateViewId()
@@ -51,9 +55,9 @@ class TowerMenuView(context: Context) : RelativeLayout(context) {
             LayoutParams.WRAP_CONTENT,
             LayoutParams.WRAP_CONTENT
         )
-        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
-        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_START)
-        layoutParams.marginStart = 0
+        layoutParams.addRule(RelativeLayout.CENTER_VERTICAL)
+        layoutParams.addRule(RelativeLayout.LEFT_OF, upgrade.id)
+        layoutParams.marginEnd = 16
         return layoutParams
     }
     
@@ -62,9 +66,7 @@ class TowerMenuView(context: Context) : RelativeLayout(context) {
             LayoutParams.WRAP_CONTENT,
             LayoutParams.WRAP_CONTENT
         )
-        layoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, sell.id)
-        layoutParams.addRule(RelativeLayout.END_OF, sell.id)
-        layoutParams.marginStart = 16
+        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT)
         return layoutParams
     }
     
@@ -73,11 +75,12 @@ class TowerMenuView(context: Context) : RelativeLayout(context) {
             LayoutParams.WRAP_CONTENT,
             LayoutParams.WRAP_CONTENT
         )
-        layoutParams.addRule(ALIGN_BOTTOM, upgrade.id)
-        layoutParams.addRule(END_OF, upgrade.id)
+        layoutParams.addRule(RelativeLayout.CENTER_VERTICAL)
+        layoutParams.addRule(RelativeLayout.RIGHT_OF, upgrade.id)
         layoutParams.marginStart = 16
         return layoutParams
     }
+
     
     private fun addViews() {
         addView(sell)
@@ -90,6 +93,7 @@ class TowerMenuView(context: Context) : RelativeLayout(context) {
             if (towerClicked != null) {
                 money.addAndGet(towerClicked!!.buildCost())
                 towerClicked!!.destroy()
+                gameView!!.hideTowerButtons()
             }
         }
         

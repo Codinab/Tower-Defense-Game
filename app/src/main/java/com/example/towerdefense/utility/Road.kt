@@ -176,8 +176,3 @@ class Road(private val startVector: Vector2i) : Serializable {
         return savedPositionableAreaBox2Ds
     }
 }
-
-
-object IncorrectFormatException : Throwable() {
-
-}

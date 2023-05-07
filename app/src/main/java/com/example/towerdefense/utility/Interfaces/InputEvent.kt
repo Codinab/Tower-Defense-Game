@@ -3,6 +3,7 @@ package com.example.towerdefense.utility.Interfaces
 import android.view.MotionEvent
 import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
+import com.example.towerdefense.utility.gameView
 import org.joml.Vector2f
 
 interface InputEvent : Removable, Stateful, Positionable, Collisionable {
@@ -21,6 +22,7 @@ interface InputEvent : Removable, Stateful, Positionable, Collisionable {
         if (fixable.get()) {
             fixable.set(false)
             movable.set(false)
+            gameView!!.surfaceView.movableTower = null
             return true
         }
         return false

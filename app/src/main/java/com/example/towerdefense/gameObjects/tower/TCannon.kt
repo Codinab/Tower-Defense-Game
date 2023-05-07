@@ -18,12 +18,17 @@ class TCannon(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
     private var dph: Int = 1
     
     private var sizeCanonBall: Float = 30f
-    private var textureResized = Bitmap.createScaledBitmap(texture, texture.width * 2, texture.height * 2, false)
+    private var texture = BitmapFactory.decodeResource(
+        gameView!!.context.resources,
+        com.example.towerdefense.R.drawable.cannon
+    )
+    private var textureResized =
+        Bitmap.createScaledBitmap(texture, texture.width * 2, texture.height * 2, false)
     
     override fun applyDamageInArea() {
         if (readyToDamage()) {
             shootBigCanonBall()
-            if(level > 4) shootSmallCanonBalls()
+            if (level > 4) shootSmallCanonBalls()
             timeLastAction = TimeController.getGameTime()
         }
     }
@@ -89,7 +94,7 @@ class TCannon(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
     }
     
     override fun upgrade() {
-        when(level) {
+        when (level) {
             1 -> {
                 towerArea.radius *= 2
             }
@@ -109,7 +114,7 @@ class TCannon(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
     }
     
     override fun upgradeCost(): Int {
-        return when(level) {
+        return when (level) {
             1 -> 400
             2 -> 700
             3 -> 1400
@@ -120,7 +125,7 @@ class TCannon(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
     }
     
     override fun upgradeInfo(): String {
-        return when(level) {
+        return when (level) {
             1 -> "Bigger area of vision"
             2 -> "Double damage"
             3 -> "Faster shooting"
@@ -133,12 +138,5 @@ class TCannon(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
     override var layerLevel: Int = 5
     override fun clone(): Tower {
         return TCannon(radius, box2D.clone() as Box2D)
-    }
-    
-    companion object {
-        private val texture = BitmapFactory.decodeResource(
-            gameView!!.context.resources,
-            com.example.towerdefense.R.drawable.cannon
-        )
     }
 }

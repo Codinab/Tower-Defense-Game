@@ -18,7 +18,6 @@ class EnemyList(private val enemies: Vector<Enemy> = Vector()) :
                 it.update()
             }
         }
-        println(enemies.size)
     }
 
 

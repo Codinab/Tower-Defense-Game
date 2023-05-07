@@ -42,7 +42,7 @@ class TRocketSilo(radius: Float, private val box2D: Box2D) : Tower(radius, box2D
         if (towerClicked == this) towerArea.draw(canvas)
         drawPositionable(canvas)
         
-        if (timeLastAction + timeActionDelay / 2 > TimeController.getGameTime()) {
+        if (towerArea.isNotEmpty()) {
             Drawing.drawBitmap(canvas, textureOpenedResized, box2D.body.position, 0f)
         } else {
             Drawing.drawBitmap(canvas, textureClosedResized, box2D.body.position, 0f)

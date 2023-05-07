@@ -21,7 +21,7 @@ class Animation(private val frames: Array<Bitmap>, var frameTime: Float, var loo
     
     fun draw(canvas: Canvas, position: Vector2f, paint: Paint, rotation: Float) {
         val timeFunction =
-            if (loop) TimeController.getSinceAppStart() else TimeController.getGameTime()
+            if (loop) TimeController.getSinceGameStart() else TimeController.getGameTime()
         
         if (isFirstDraw) {
             lastFrameTime = timeFunction

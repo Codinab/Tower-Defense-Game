@@ -103,7 +103,7 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
     
     private fun getRandom(): Enemy? = inArea.randomOrNull()
     
-    private var savedAngle = anglePositionToTarget(getCenter(), gameView!!.surfaceView.road.getStart())
+    private var savedAngle = 0f
     fun angle(): Float {
         if (toDamage() != null) {
             savedAngle = anglePositionToTarget(center, toDamage()!!.position())
