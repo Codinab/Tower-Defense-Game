@@ -177,7 +177,6 @@ class GameSurfaceView(context: Context, road: Road) : SurfaceView(context),
     
     private var updates = 0
     fun update() {
-        if (checkGameEnd()) gameEnd()
         if (updates == 0) initTowerSpawners()
         
         rounds.update()
@@ -214,10 +213,6 @@ class GameSurfaceView(context: Context, road: Road) : SurfaceView(context),
     
     private fun deleteProjectiles() {
         projectiles.filter { it.toDelete() }.forEach { projectiles.remove(it) }
-    }
-    
-    private fun gameEnd() {
-        gameView!!.gamePause()
     }
     
     

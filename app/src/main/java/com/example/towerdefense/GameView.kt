@@ -44,8 +44,8 @@ class GameView(private val context: Context, val name: String = "DefaultGame") :
         hideTowerButtons()
         
         money = AtomicInteger(1000)
-        gameHealth = AtomicInteger(200)
-        maxTime = 10
+        gameHealth = AtomicInteger(2)
+        maxTime = 240
         round = 1
         
     }
@@ -143,13 +143,13 @@ class GameView(private val context: Context, val name: String = "DefaultGame") :
         surfaceView.update()
         updateRoundCounter()
         towerMenuView.updateCostTexts()
-        if (TimeController.timeLeft() <= 0 && !end) {
+        if ((TimeController.timeLeft() <= 0 || gameHealth.get() <= 0)&& !end) {
             gameHealth.set(0)
             end()
         }
         if (end && TimeController.getSinceGameStart() - endTime > 10000) {
             //TODO add end screen instead of the following line
-            post { recreate(context as MainActivity) }
+            //post { recreate(context as MainActivity) }
         }
     }
     

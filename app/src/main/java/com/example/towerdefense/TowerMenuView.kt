@@ -42,12 +42,11 @@ class TowerMenuView(context: Context) : RelativeLayout(context) {
         }
         
         
-        
         upgradeNumber = TextView(context).apply {
             id = generateViewId()
             textSize = 18f
             setTextColor(Color.WHITE)
-            text = "0"
+            text = ""
             layoutParams = upgradeNumberLayoutParams()
         }
         
@@ -55,7 +54,7 @@ class TowerMenuView(context: Context) : RelativeLayout(context) {
             id = generateViewId()
             textSize = 18f
             setTextColor(Color.WHITE)
-            text = "0"
+            text = ""
             layoutParams = sellNumberLayoutParams()
             x = sell.x - sell.width
         }
