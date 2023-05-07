@@ -9,13 +9,10 @@ import android.graphics.Color
 import android.view.*
 import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.core.app.ActivityCompat.getMainExecutor
-import androidx.core.app.ActivityCompat.recreate
 import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.utility.*
 import org.joml.Vector2f
-import java.sql.Time
 import java.util.concurrent.atomic.AtomicInteger
 
 @SuppressLint("ClickableViewAccessibility")
@@ -169,6 +166,7 @@ class GameView(private val context: Context, val name: String = "DefaultGame") :
         val result = if (gameHealth.get() > 0) "won" else "lost"
         
   
+        
         val intent = Intent(context, LogActivity::class.java)
         intent.putExtra("log_message", "$name has ended with $money money and has survived $round rounds, You $result")
         context.startActivity(intent)
@@ -229,7 +227,8 @@ class GameView(private val context: Context, val name: String = "DefaultGame") :
             start()
             gamePause()
         }
-        mainActivity?.getRotation()
+    
+        (context as OptionActivity).rotation()
         updatePosStartPauseButton()
         updateRoundCounter()
         restoreGame = onSaveInstanceState()

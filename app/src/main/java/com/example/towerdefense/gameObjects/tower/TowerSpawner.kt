@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 @SuppressLint("ViewConstructor")
 class TowerSpawner(private val box2D: Box2D, var modelTower: Tower) :
-    InputEvent, Updatable, Drawable {
+    InputEvent, Updatable, Drawable, java.io.Serializable {
     
     constructor(position: SpawnerPosition, modelTower: Tower) : this(
         Box2D(Vector2f(DEF_WIDTH, DEF_HEIGHT), Rigidbody2D(position.vector2f())),
@@ -170,6 +170,6 @@ class TowerSpawner(private val box2D: Box2D, var modelTower: Tower) :
     }
     
     override fun update() {
-    
+        position(spawnerPosition!!)
     }
 }

@@ -2,6 +2,8 @@ package com.example.towerdefense.utility
 
 import Roads
 import android.os.Bundle
+import android.util.DisplayMetrics
+import android.view.Surface
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
@@ -9,8 +11,8 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import com.example.towerdefense.GameView
-import com.example.towerdefense.R
 import com.example.towerdefense.databinding.ActivityOptionBinding
+import org.joml.Vector2i
 
 
 class OptionActivity : AppCompatActivity() {
@@ -108,6 +110,57 @@ class OptionActivity : AppCompatActivity() {
             finish()
         }
         
+    }
+    
+    fun rotation() {
+        // Get the window manager
+        val windowManager = windowManager
+        
+        
+        // Get the rotation of the window
+        val rotation = windowManager.defaultDisplay.rotation
+        
+        saveWindowSizes()
+        
+        // Update screenSize depending on rotation
+        when (rotation) {
+            Surface.ROTATION_0 -> {
+                if (screenRotation != 0f) {
+                    screenRotation = 0f
+                    gameLog?.addScreenRotatedLog(0f)
+                }
+            }
+            Surface.ROTATION_180 -> {
+                if (screenRotation != 180f) {
+                    screenRotation = 180f
+                    gameLog?.addScreenRotatedLog(180f)
+                }
+            }
+            Surface.ROTATION_90 -> {
+                // Landscape
+                if (screenRotation != 90f) {
+                    screenRotation = 90f
+                    gameLog?.addScreenRotatedLog(90f)
+                }
+            }
+            Surface.ROTATION_270 -> {
+                // Reversed landscape
+                if (screenRotation != 270f) {
+                    screenRotation = 270f
+                    gameLog?.addScreenRotatedLog(270f)
+                }
+            }
+            else -> {
+                screenRotation = 0f
+            }
+        }
+    }
+    
+    fun saveWindowSizes() {
+        val displayMetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+        
+        screenSize = Vector2i(displayMetrics.widthPixels, displayMetrics.heightPixels)
     }
     
     private fun setupSpinner(binding: ActivityOptionBinding, mapArray: Array<String>) {
