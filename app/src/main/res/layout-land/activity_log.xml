@@ -43,7 +43,7 @@
         app:layout_constraintTop_toBottomOf="@+id/time" />
 
     <EditText
-        android:id="@+id/editTextText2"
+        android:id="@+id/logMessage"
         android:layout_width="319dp"
         android:layout_height="43dp"
         android:layout_marginTop="8dp"
@@ -63,7 +63,7 @@
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText2" />
+        app:layout_constraintTop_toBottomOf="@+id/logMessage" />
 
     <EditText
         android:id="@+id/emailLog"
@@ -81,25 +81,24 @@
         android:id="@+id/sendLog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginStart="128dp"
         android:backgroundTint="#00FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/newGameLog"
-        app:layout_constraintHorizontal_bias="0.702"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emailLog"
+        app:layout_constraintVertical_bias="0.526"
         app:srcCompat="@drawable/send" />
 
     <ImageButton
         android:id="@+id/exitLog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="116dp"
         android:backgroundTint="#00FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.205"
-        app:layout_constraintStart_toEndOf="@+id/newGameLog"
+        app:layout_constraintTop_toBottomOf="@+id/emailLog"
+        app:layout_constraintVertical_bias="0.526"
         app:srcCompat="@drawable/exit" />
 
     <ImageButton
@@ -108,7 +107,18 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:backgroundTint="#00FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/exitLog"
+        app:layout_constraintHorizontal_bias="0.387"
+        app:layout_constraintStart_toEndOf="@+id/sendLog"
         app:layout_constraintTop_toBottomOf="@+id/emailLog"
-        app:srcCompat="@drawable/new_game"
-        tools:layout_editor_absoluteX="298dp" />
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/new_game" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="20dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

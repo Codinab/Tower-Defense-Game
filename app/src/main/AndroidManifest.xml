@@ -30,8 +30,12 @@
             android:screenOrientation="fullSensor"
             android:exported="true" >
         </activity>
-        <activity android:name=".utility.LogActivity" />
-        <activity android:name=".utility.HelpActivity" />
+        <activity android:name=".utility.LogActivity"
+            android:screenOrientation="fullSensor"
+            />
+        <activity android:name=".utility.HelpActivity"
+            android:screenOrientation="fullSensor"
+            />
 
 
 

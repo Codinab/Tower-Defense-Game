@@ -2,6 +2,7 @@ package com.example.towerdefense.utility
 
 import Roads
 import android.os.Bundle
+import android.text.TextWatcher
 import android.util.DisplayMetrics
 import android.view.Surface
 import android.view.View
@@ -91,6 +92,22 @@ class OptionActivity : AppCompatActivity() {
                 R.id.yes_time -> maxTime = 240
             }
         }*/
+    
+        binding.nombreEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+                // Do nothing or add code if needed
+            }
+    
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                gameName = s.toString()
+            }
+    
+            override fun afterTextChanged(s: android.text.Editable) {
+                // Do nothing or add code if needed
+            }
+        })
+        
+        
         
         binding.noTime.setOnClickListener {
             maxTime = -100
@@ -101,7 +118,7 @@ class OptionActivity : AppCompatActivity() {
         
         
         binding.newGame.setOnClickListener {
-            val view = GameView(this)
+            val view = GameView(this, gameName)
             setContentView(view)
             gameView = view
         }
@@ -155,6 +172,8 @@ class OptionActivity : AppCompatActivity() {
             }
         }
     }
+    
+    private var gameName: String = "DefaultGame"
     
     fun saveWindowSizes() {
         val displayMetrics = DisplayMetrics()

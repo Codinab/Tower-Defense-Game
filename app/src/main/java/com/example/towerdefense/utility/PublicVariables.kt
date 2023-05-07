@@ -22,7 +22,7 @@ var gameLog: Log? = null
 var money = AtomicInteger(1000)
 var gameHealth = AtomicInteger(20)
 var maxTime = 300
-var round = 1
+var round = 20
 
 var difficulty = 1
 var enemiesSpeed = 0f

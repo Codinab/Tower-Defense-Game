@@ -162,15 +162,24 @@ class GameView(private val context: Context, val name: String = "DefaultGame") :
         
         gamePause()
         end = true
-    
+        
         val result = if (gameHealth.get() > 0) "won" else "lost"
         
-  
         
         val intent = Intent(context, LogActivity::class.java)
-        intent.putExtra("log_message", "$name has ended with $money money and has survived $round rounds, You $result")
+/*
+        val logMss = "$name has ended with $money money and has survived $round rounds, You $result"
+        
+*/
+        val money = money.get().toString()
+        val round = round.toString()
+        
+        
+        intent.putExtra("log_name", name)
+        intent.putExtra("log_money", money)
+        intent.putExtra("log_round", round)
+        intent.putExtra("log_result", result)
         context.startActivity(intent)
-    
     }
     
     fun start() {

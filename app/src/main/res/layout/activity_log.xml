@@ -42,7 +42,7 @@
         app:layout_constraintTop_toBottomOf="@+id/time" />
 
     <EditText
-        android:id="@+id/editTextText2"
+        android:id="@+id/logMessage"
         android:layout_width="319dp"
         android:layout_height="43dp"
         android:layout_marginTop="16dp"
@@ -62,7 +62,7 @@
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText2" />
+        app:layout_constraintTop_toBottomOf="@+id/logMessage" />
 
     <EditText
         android:id="@+id/emailLog"
