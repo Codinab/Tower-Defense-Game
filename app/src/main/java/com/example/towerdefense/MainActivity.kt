@@ -13,6 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.towerdefense.databinding.ActivityMainBinding
+import com.example.towerdefense.utility.OptionActivity
 import com.example.towerdefense.utility.gameLog
 import com.example.towerdefense.utility.gameView
 import com.example.towerdefense.utility.screenRotation
@@ -117,10 +118,16 @@ class MainActivity : AppCompatActivity() {
         continueButton.setOnClickListener {
             createGame()
         }
-        val createButton = binding.continueGame
-        createButton.setOnClickListener {
-            continueGame()
+        val optionButton = binding.optionGame
+        optionButton.setOnClickListener {
+            val intent = Intent(this, OptionActivity::class.java)
+            startForResult.launch(intent)
         }
+        val createButton = binding.exitGame
+        createButton.setOnClickListener {
+            finish()
+        }
+        
     }
     
     private var lastClickTime: Long = 0

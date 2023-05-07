@@ -6,4 +6,10 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="textoToast">Not implemented yet</string>
+    <string name="dificultad">Difficulty</string>
+    <string name="si">Si</string>
+    <string name="no">No</string>
+    <string name="controlar_tiempo">Control Time?</string>
+    <string name="nombre_del_jugador">Player Name</string>
+    <string name="selecciona_mapa">Select Map</string>
 </resources>

@@ -24,6 +24,14 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".utility.OptionActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="fullSensor"
+            android:exported="true" >
+        </activity>
+
+
     </application>
     <permission android:hardwareAccelerated="true"
         android:name="hardwareAccelerated" />
