@@ -9,14 +9,15 @@
 
     <EditText
         android:id="@+id/nombreEditText"
-        android:layout_width="399dp"
-        android:layout_height="37dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="36dp"
+        android:layout_width="244dp"
+        android:layout_height="33dp"
+        android:layout_marginTop="32dp"
         android:hint="@string/nombre_del_jugador"
         android:inputType="text"
         android:maxLines="1"
         android:padding="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -29,9 +30,10 @@
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nombreEditText"
-        app:layout_constraintVertical_bias="0.036" />
+        app:layout_constraintVertical_bias="0.019" />
 
     <RadioGroup
         android:id="@+id/time_group"
@@ -64,11 +66,9 @@
         android:text="@string/dificultad"
         android:textColor="@color/black"
         android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/time_group"
-        app:layout_constraintVertical_bias="0.038" />
+        app:layout_constraintTop_toBottomOf="@+id/time_group" />
 
     <RadioGroup
         android:id="@+id/difficulty_group"
@@ -112,24 +112,26 @@
 
     <Spinner
         android:id="@+id/spinnerMap"
-        android:layout_width="409dp"
-        android:layout_height="wrap_content"
+        android:layout_width="148dp"
+        android:layout_height="29dp"
         android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/map_select" />
 
     <ImageButton
         android:id="@+id/exitOptions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="127dp"
+        android:layout_height="44dp"
         android:layout_margin="16dp"
+
+        android:layout_marginTop="12dp"
         android:background="@null"
         android:src="@drawable/exit"
-
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.823"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/newGame" />
+        app:layout_constraintTop_toBottomOf="@+id/velocity_group" />
 
     <TextView
         android:id="@+id/velocity"
@@ -174,9 +176,10 @@
         android:id="@+id/newGame"
         android:layout_width="148dp"
         android:layout_height="48dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="12dp"
         android:foreground="@drawable/new_game"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.247"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/velocity_group" />
 

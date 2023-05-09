@@ -9,14 +9,15 @@
 
     <EditText
         android:id="@+id/nombreEditText"
-        android:layout_width="399dp"
-        android:layout_height="37dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="256dp"
+        android:layout_height="33dp"
+        android:layout_marginTop="32dp"
         android:hint="@string/nombre_del_jugador"
         android:inputType="text"
         android:maxLines="1"
         android:padding="5dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -27,16 +28,15 @@
         android:text="@string/controlar_tiempo"
         android:textColor="@color/black"
         android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.499"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nombreEditText"
-        app:layout_constraintVertical_bias="0.047" />
+        app:layout_constraintTop_toBottomOf="@+id/nombreEditText" />
 
     <RadioGroup
         android:id="@+id/time_group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="104dp"
+        android:layout_height="36dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,7 +51,7 @@
         <RadioButton
             android:id="@+id/no_time"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
             android:text="@string/no" />
 
 
@@ -64,16 +64,14 @@
         android:text="@string/dificultad"
         android:textColor="@color/black"
         android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/time_group"
-        app:layout_constraintVertical_bias="0.037" />
+        app:layout_constraintTop_toBottomOf="@+id/time_group" />
 
     <RadioGroup
         android:id="@+id/difficulty_group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="201dp"
+        android:layout_height="36dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -94,7 +92,7 @@
         <RadioButton
             android:id="@+id/hard_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="37dp"
             android:text="@string/dif_cil" />
     </RadioGroup>
 
@@ -107,13 +105,14 @@
         android:textColor="@color/black"
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.499"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/difficulty_group" />
 
     <Spinner
         android:id="@+id/spinner"
-        android:layout_width="409dp"
-        android:layout_height="wrap_content"
+        android:layout_width="154dp"
+        android:layout_height="19dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/map_select" />
@@ -123,14 +122,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:layout_marginTop="6dp"
-        android:layout_marginBottom="8dp"
 
+        android:layout_marginTop="16dp"
         android:background="@null"
         android:src="@drawable/exit"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.357"
+        app:layout_constraintHorizontal_bias="0.278"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/velocity_group" />
 
@@ -176,16 +173,14 @@
 
     <ImageButton
         android:id="@+id/newGame"
-        android:layout_width="148dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="4dp"
+        android:layout_width="122dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="16dp"
         android:foreground="@drawable/new_game"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.629"
+        app:layout_constraintHorizontal_bias="0.709"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/velocity_group"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/velocity_group" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
