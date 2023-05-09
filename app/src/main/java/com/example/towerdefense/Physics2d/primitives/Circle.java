@@ -45,6 +45,7 @@ public class Circle extends Collider2D {
         return new Vector2f(this.getRadius() * 2, this.getRadius() * 2);
     }
 
+    @NonNull
     @Override
     public Collider2D clone() {
         return new Circle(this.radius, this.body.clone());

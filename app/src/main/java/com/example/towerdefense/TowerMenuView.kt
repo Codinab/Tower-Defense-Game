@@ -25,45 +25,32 @@ class TowerMenuView(context: Context) : RelativeLayout(context) {
     }
     
     private fun setupButtons(context: Context) {
-        upgrade = ImageButton(context).apply {
+        upgrade = ImageButton(context, null, 0, R.style.ButtonStyle).apply {
             id = generateViewId()
-            alpha = 0.8f
             setImageBitmap(BitmapFactory.decodeResource(resources, R.drawable.upgrade))
-            background = null
             layoutParams = upgradeLayoutParams()
         }
         
-        sell = ImageButton(context).apply {
+        sell = ImageButton(context, null, 0, R.style.ButtonStyle).apply {
             id = generateViewId()
-            alpha = 0.8f
             setImageBitmap(BitmapFactory.decodeResource(resources, R.drawable.sell))
-            background = null
             layoutParams = sellLayoutParams()
         }
         
-        
-        upgradeNumber = TextView(context).apply {
+        upgradeNumber = TextView(context, null, 0, R.style.TextViewStyle).apply {
             id = generateViewId()
-            textSize = 18f
-            setTextColor(Color.WHITE)
-            text = ""
             layoutParams = upgradeNumberLayoutParams()
         }
         
-        sellNumber = TextView(context).apply {
+        sellNumber = TextView(context, null, 0, R.style.TextViewStyle).apply {
             id = generateViewId()
-            textSize = 18f
-            setTextColor(Color.WHITE)
-            text = ""
             layoutParams = sellNumberLayoutParams()
             x = sell.x - sell.width
         }
         
-        damageType = ImageButton(context).apply {
+        damageType = ImageButton(context, null, 0, R.style.ButtonStyle).apply {
             id = generateViewId()
-            alpha = 1f
             setImageBitmap(BitmapFactory.decodeResource(resources, R.drawable.first_damage))
-            background = null
             layoutParams = damageTypeLayoutParams()
         }
         
@@ -169,12 +156,10 @@ class TowerMenuView(context: Context) : RelativeLayout(context) {
     }
     
     fun showTowerButtons() {
-        //sell.visibility = VISIBLE
-        //upgrade.visibility = VISIBLE
-        //damageType.visibility = VISIBLE
         damageType.setImageBitmap(towerClicked?.getToDamageType()!!.getBitmap())
     }
     
+    //Just a test function
     fun hideTowerButtons() {
         //sell.visibility = INVISIBLE
         //upgrade.visibility = INVISIBLE

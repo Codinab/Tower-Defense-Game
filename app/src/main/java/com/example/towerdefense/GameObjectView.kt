@@ -1,5 +1,6 @@
 package com.example.towerdefense
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.view.ViewGroup
@@ -9,7 +10,8 @@ import com.example.towerdefense.utility.Interfaces.Positionable
 import com.example.towerdefense.utility.cameraPosition
 import org.joml.Vector2f
 
-open class GameObjectView(context: Context, private var collider2D: Collider2D) :
+@SuppressLint("ViewConstructor")
+class GameObjectView(context: Context, private var collider2D: Collider2D) :
     androidx.appcompat.widget.AppCompatImageView(context), Positionable {
 
     var lastClickTime: Long = 0

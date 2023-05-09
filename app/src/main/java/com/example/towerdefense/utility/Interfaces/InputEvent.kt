@@ -18,7 +18,7 @@ interface InputEvent : Removable, Stateful, Positionable, Collisionable {
         }
     }
     
-    open fun handleUpEvent(event: MotionEvent, position: Vector2f): Boolean {
+    fun handleUpEvent(event: MotionEvent, position: Vector2f): Boolean {
         if (fixable.get()) {
             fixable.set(false)
             movable.set(false)
@@ -28,7 +28,7 @@ interface InputEvent : Removable, Stateful, Positionable, Collisionable {
         return false
     }
     
-    open fun handleMoveEvent(event: MotionEvent, position: Vector2f): Boolean {
+    fun handleMoveEvent(event: MotionEvent, position: Vector2f): Boolean {
         if (movable.get()) {
             position(position)
             return true
@@ -36,7 +36,7 @@ interface InputEvent : Removable, Stateful, Positionable, Collisionable {
         return false
     }
     
-    open fun handleDownEvent(event: MotionEvent, position: Vector2f): Boolean {
+    fun handleDownEvent(event: MotionEvent, position: Vector2f): Boolean {
         if (movable.get()) {
             position(position)
             return true
