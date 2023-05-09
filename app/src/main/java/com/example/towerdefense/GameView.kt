@@ -167,10 +167,6 @@ class GameView(private val context: Context, val name: String = "DefaultGame") :
         
         
         val intent = Intent(context, LogActivity::class.java)
-/*
-        val logMss = "$name has ended with $money money and has survived $round rounds, You $result"
-        
-*/
         val money = money.get().toString()
         val round = round.toString()
         

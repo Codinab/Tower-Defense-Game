@@ -12,7 +12,7 @@ import org.joml.Vector2f;
 
 public class Box2D extends Collider2D {
     private Vector2f size;
-    private Vector2f halfSize;
+    private final Vector2f halfSize;
 
     public Box2D() {
         size = new Vector2f();
@@ -65,13 +65,12 @@ public class Box2D extends Collider2D {
 
     public Line2D[] getSides() {
         Vector2f[] vertices = getVertices();
-        Line2D[] lines = {
+        return new Line2D[]{
                 new Line2D(vertices[0], vertices[1]),
                 new Line2D(vertices[3], vertices[1]),
                 new Line2D(vertices[2], vertices[3]),
                 new Line2D(vertices[2], vertices[0])
         };
-        return lines;
     }
 
     public Vector2f getHalfSize() {
@@ -92,6 +91,7 @@ public class Box2D extends Collider2D {
         this.halfSize.set(this.size).mul(0.5f);
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Box2D{" +
@@ -110,6 +110,7 @@ public class Box2D extends Collider2D {
         return new Vector2f(this.size);
     }
 
+    @NonNull
     @Override
     public Collider2D clone() {
         return new Box2D(new Vector2f(this.size), new Vector2f(this.halfSize), this.body.clone());

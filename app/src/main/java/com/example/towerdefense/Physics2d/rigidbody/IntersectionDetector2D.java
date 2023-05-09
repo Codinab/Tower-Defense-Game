@@ -12,11 +12,12 @@ public class IntersectionDetector2D {
     public static boolean intersection(@NotNull Vector2f point, @NotNull Line2D line) { //point on line
         float dy = line.getEnd().y - line.getStart().y;
         float dx = line.getEnd().x - line.getStart().x;
+
         if (dx == 0f) {
             return JMath.compare(point.x, line.getStart().x);
         }
-        float m = dy / dx;
 
+        float m = dy / dx;
         float n = line.getEnd().y - (m * line.getEnd().x);
 
         return point.y == m * point.x + n;
@@ -28,8 +29,8 @@ public class IntersectionDetector2D {
     }
 
     public static boolean intersection(@NotNull Vector2f point, @NotNull Circle circle) { //point on circle
-        Vector2f cicleCenter = circle.getCenter();
-        Vector2f centerToPoint = new Vector2f(point).sub(cicleCenter);
+        Vector2f circleCenter = circle.getCenter();
+        Vector2f centerToPoint = new Vector2f(point).sub(circleCenter);
 
         return centerToPoint.lengthSquared() <= circle.getRadius() * circle.getRadius();
     }
@@ -175,9 +176,9 @@ public class IntersectionDetector2D {
 
 
     public static boolean intersection(@NotNull Circle c1, @NotNull Circle c2) { //Intersection of two circles
-        Vector2f vecBetwenCenters = new Vector2f(c1.getCenter()).sub(c2.getCenter());
+        Vector2f vecBetweenCenters = new Vector2f(c1.getCenter()).sub(c2.getCenter());
         float radiusSum = c1.getRadius() + c2.getRadius();
-        return vecBetwenCenters.lengthSquared() < radiusSum * radiusSum;
+        return vecBetweenCenters.lengthSquared() < radiusSum * radiusSum;
     }
 
     public static boolean intersection(@NotNull Circle c1, @NotNull AABB box) { //Intersection of a circle and an AABB

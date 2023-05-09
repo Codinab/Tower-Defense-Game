@@ -44,7 +44,6 @@ class MainActivity : AppCompatActivity() {
         
         
         initializeButtons(binding)
-        
         setContentView(view)
         
         startForResult =
@@ -55,14 +54,12 @@ class MainActivity : AppCompatActivity() {
             }
         
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        
         mainActivity = this
     }
     
     fun getRotation() {
         // Get the window manager
         val windowManager = windowManager
-        
         
         // Get the rotation of the window
         val rotation = windowManager.defaultDisplay.rotation
@@ -133,6 +130,7 @@ class MainActivity : AppCompatActivity() {
     
     private var lastClickTime: Long = 0
     
+    @Deprecated("Deprecated in Java")
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onBackPressed() {
         //Do double back press to exit

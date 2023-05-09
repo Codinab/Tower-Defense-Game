@@ -1,16 +1,39 @@
 <resources>
     <string name="app_name">Tower Defense</string>
+
     <string name="create_game">Create Game</string>
     <string name="continue_">Continue</string>
+
     <string name="title_activity_fullscreen">FullscreenActivity</string>
+
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="textoToast">Not implemented yet</string>
+
+
     <string name="dificultad">Difficulty</string>
     <string name="si">Si</string>
     <string name="no">No</string>
     <string name="controlar_tiempo">Control Time?</string>
     <string name="nombre_del_jugador">Player Name</string>
     <string name="selecciona_mapa">Select Map</string>
+
+
+    <string name="easy">Fácil</string>
+    <string name="media">Media</string>
+    <string name="dif_cil">Difícil</string>
+
+    <string name="enemy_velocity">Enemy Velocity</string>
+    <string name="normal">Normal</string>
+    <string name="fast">Fast</string>
+    <string name="very_fast">Very Fast</string>
+
+    <string name="day_and_hour">Day and Hour</string>
+    <string name="_07_05_2023">07/05/2023</string>
+    <string name="log_values">Log Values</string>
+    <string name="log_message">Log message</string>
+    <string name="email_to_send">Email to Send</string>
     <string name="mail">marioferro2002_gmail_com</string>
+
+    <string name="empty_string" />
 </resources>

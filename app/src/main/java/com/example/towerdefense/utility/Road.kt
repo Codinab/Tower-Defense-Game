@@ -33,6 +33,7 @@ class Road(private val startVector: Vector2i) : Serializable {
     
     fun isLastCorner(position: Vector2f): Boolean {
         val position2f = Vector2f(position)
+        
         position2f.div(roadWidth.toFloat(), roadHeight.toFloat())
         return roadCorners.last().first.toVector2f() == position2f
     }
@@ -40,7 +41,6 @@ class Road(private val startVector: Vector2i) : Serializable {
     private fun updateCorners() {
         
         roadCorners.clear()
-        
         roadCorners.add(roadDirections.first())
         
         for (i in 0 until roadDirections.size - 1) {
@@ -55,6 +55,7 @@ class Road(private val startVector: Vector2i) : Serializable {
     fun addDirection(direction: Direction2D) {
         val lastPosition = roadDirections.last().first
         val newPosition = lastPosition.add(direction.vector, Vector2i())
+        
         roadDirections.add(Pair(newPosition, direction))
         updateCorners()
     }
@@ -111,7 +112,6 @@ class Road(private val startVector: Vector2i) : Serializable {
     }
     
     fun getDirection(position: Vector2f, corner: Int, velocity: Float): Direction2D {
-        //if(corner == roadCorners.size - 1) return Direction2D.UNDEFINED
         return if (corner != roadCorners.size - 1) {
             val inNextCorner = inCorner(position, corner + 1, velocity)
             if (inNextCorner) roadCorners[corner + 1].second else roadCorners[corner].second
@@ -168,7 +168,7 @@ class Road(private val startVector: Vector2i) : Serializable {
         for (box2d in box2Ds) {
             val topLeft = Vector2f(box2d.body.position).sub(Vector2f(vSize).mul(size.toFloat()))
             val bottomRight = Vector2f(box2d.body.position).add(Vector2f(vSize).mul(size.toFloat()))
-    
+            
             savedPositionableAreaBox2Ds.add(Box2D(topLeft, bottomRight))
             
         }

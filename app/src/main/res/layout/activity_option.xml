@@ -83,19 +83,19 @@
             android:id="@+id/easy_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Fácil" />
+            android:text="@string/easy" />
 
         <RadioButton
             android:id="@+id/medium_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Media" />
+            android:text="@string/media" />
 
         <RadioButton
             android:id="@+id/hard_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Difícil" />
+            android:text="@string/dif_cil" />
     </RadioGroup>
 
     <TextView
@@ -135,7 +135,7 @@
         android:id="@+id/velocity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enemy Velocity"
+        android:text="@string/enemy_velocity"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -155,19 +155,19 @@
             android:id="@+id/x1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Normal" />
+            android:text="@string/normal" />
 
         <RadioButton
             android:id="@+id/x2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Fast" />
+            android:text="@string/fast" />
 
         <RadioButton
             android:id="@+id/x3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Very Fast" />
+            android:text="@string/very_fast" />
     </RadioGroup>
 
     <ImageButton

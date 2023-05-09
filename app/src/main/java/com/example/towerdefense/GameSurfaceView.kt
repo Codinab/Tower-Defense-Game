@@ -27,6 +27,7 @@ import java.io.Serializable
 import java.util.*
 import kotlin.collections.HashMap
 
+@SuppressLint("ViewConstructor")
 class GameSurfaceView(context: Context, road: Road) : SurfaceView(context),
     SurfaceHolder.Callback, java.io.Serializable {
     
@@ -108,6 +109,7 @@ class GameSurfaceView(context: Context, road: Road) : SurfaceView(context),
     }
     
     private val camera = Camera()
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val adjustedPosition = camera.adjustedPosition(event)
         val pos = Vector2f(event.x, event.y).add(cameraPosition)
@@ -218,16 +220,11 @@ class GameSurfaceView(context: Context, road: Road) : SurfaceView(context),
     
     private fun updateGameObjects() {
         
-        
-        
         updateEnemies()
         updateTowerSpawners() //Does nothing
         updateTowers()
         updateProjectiles()
-
-/*
-        movableTowers.removeIf { !it.movable.get() }
-*/
+        
     }
     
     private fun updateProjectiles() {

@@ -29,5 +29,6 @@ public abstract class Collider2D {
 
     public abstract Vector2f layoutSize();
 
+    @NonNull
     public abstract Collider2D clone();
 }

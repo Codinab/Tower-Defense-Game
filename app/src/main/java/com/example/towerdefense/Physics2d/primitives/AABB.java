@@ -38,22 +38,20 @@ public class AABB extends Collider2D{
         Vector2f min = getMin();
         Vector2f max = getMax();
 
-        Vector2f[] vertices = {
+        return new Vector2f[]{
                 new Vector2f(min.x, min.y), new Vector2f(max.x, min.y),
                 new Vector2f(min.x, max.y), new Vector2f(max.x, max.y)
         };
-        return vertices;
     }
 
     public Line2D[] getSides() {
         Vector2f[] vertices = getVertices();
-        Line2D[] lines = {
+        return new Line2D[]{
                 new Line2D(vertices[0], vertices[1]),
                 new Line2D(vertices[3], vertices[1]),
                 new Line2D(vertices[2], vertices[3]),
                 new Line2D(vertices[2], vertices[0])
         };
-        return lines;
     }
 
     public void setSize(Vector2f size) {
@@ -70,6 +68,7 @@ public class AABB extends Collider2D{
         return null;
     }
 
+    @NonNull
     @Override
     public Collider2D clone() {
         return null;
