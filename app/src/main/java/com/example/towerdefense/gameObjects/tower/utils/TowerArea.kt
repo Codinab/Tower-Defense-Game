@@ -73,15 +73,14 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
     }
     
     fun toDamageList(): ArrayList<Enemy>? {
-        val tmpList = inArea
         val toDamageList = ArrayList<Enemy>()
         while(inArea.isNotEmpty()) {
             toDamageList.add(toDamage() ?: return null)
             inArea.remove(toDamageList.last())
         }
-        inArea = tmpList
         return if (toDamageList.isEmpty()) null else toDamageList
     }
+    
     
     fun setToDamageType(damageType: DamageType) {
         this.damageType = damageType
@@ -97,14 +96,46 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
     
     
     fun getFirst(): Enemy? {
-        val corner = inArea.maxByOrNull { it.corner() }?.corner() ?: return null
-        return inArea.filter { it.corner() == corner }.minByOrNull { it.distanceToNextCornerSquared() }
+        val nonNullInArea = inArea.filterNotNull()
+        if (nonNullInArea.isEmpty()) return null
+        
+        return try {
+            val corner = nonNullInArea.maxByOrNull { it.corner() }?.corner() ?: return null
+            val filteredList = nonNullInArea.filter { it.corner() == corner }
+            if (filteredList.isNotEmpty()) {
+                filteredList.minByOrNull { it.distanceToNextCornerSquared() }
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            // Log the exception or handle it as required
+            null
+        }
     }
     
+    
+    
     private fun getLast(): Enemy? {
-        val corner = inArea.minByOrNull { it.corner() }?.corner() ?: return null
-        return inArea.filter { it.corner() == corner }.maxByOrNull { it.distanceToNextCornerSquared() }
+        val nonNullInArea = inArea.filterNotNull()
+        if (nonNullInArea.isEmpty()) return null
+        
+        return try {
+            val corner = nonNullInArea.minByOrNull { it.corner() }?.corner() ?: return null
+            val filteredList = nonNullInArea.filter { it.corner() == corner }
+            if (filteredList.isNotEmpty()) {
+                filteredList.maxByOrNull { it.distanceToNextCornerSquared() }
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            // Log the exception or handle it as required
+            null
+        }
     }
+    
+    
+    
+    
     
     private fun getLeastHealthy(): Enemy? = inArea.minByOrNull { it.getMaxHealth() }
     
@@ -122,11 +153,13 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
     
     private var savedAngle = 0f
     fun angle(): Float {
-        if (toDamage() != null) {
-            savedAngle = anglePositionToTarget(center, toDamage()!!.position())
+        val enemy = toDamage()
+        if (enemy != null) {
+            savedAngle = anglePositionToTarget(center, enemy.position())
         }
         return savedAngle
     }
+    
     
     override fun clone(): Collider2D = TowerArea(radius, Vector2f(center))
     

@@ -138,6 +138,10 @@ abstract class Tower(var radius: Float, private val box2D: Box2D) : Movable,
     }
     
     fun updateArea(enemies: EnemyList) {
-        towerArea.updateArea(enemies)
+        synchronized(enemies) {
+            synchronized(towerArea) {
+                towerArea.updateArea(enemies)
+            }
+        }
     }
 }

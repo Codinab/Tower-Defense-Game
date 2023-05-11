@@ -42,7 +42,7 @@ class GameView(private val context: Context, val name: String = "DefaultGame") :
         hideTowerButtons()
         
         money = AtomicInteger(1000)
-        gameHealth = AtomicInteger(20)
+        gameHealth = AtomicInteger(999999999)
         round = 1
         
     }
@@ -193,7 +193,6 @@ class GameView(private val context: Context, val name: String = "DefaultGame") :
             pauseStartButton.setImageBitmap(continueTexture)
             pauseStartButton.invalidate()
         }
-        
         
         TimeController.pause()
     }
