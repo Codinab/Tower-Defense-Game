@@ -160,5 +160,4 @@ enum class ERounds(val eRound: ERound) {
         it.addWave(EnemyWaves.Tier1Wave9.getValue(), 7)
         it.addWave(EnemyWaves.Tier6Wave9.getValue(), 7)
     })
-    
 }

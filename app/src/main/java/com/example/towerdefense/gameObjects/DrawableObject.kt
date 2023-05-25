@@ -7,6 +7,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import com.example.towerdefense.Physics2d.primitives.Collider2D
 
+@Deprecated("Use DrawableObject instead")
 open class DrawableObject(var collider2D: Collider2D) : Drawable() {
     constructor(collider2D: Collider2D, bitmapDrawable: BitmapDrawable) : this(collider2D) {
         this.bitmapDrawable = bitmapDrawable

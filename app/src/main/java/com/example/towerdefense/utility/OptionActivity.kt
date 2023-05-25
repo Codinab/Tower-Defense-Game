@@ -42,13 +42,6 @@ class OptionActivity : AppCompatActivity() {
     
     
     private fun initializeButtons(binding: ActivityOptionBinding) {
-        /*binding.difficultyGroup.setOnClickListener {
-            when (binding.difficultyGroup.checkedRadioButtonId) {
-                R.id.easy_button -> difficulty = 1
-                R.id.medium_button -> difficulty = 2
-                R.id.hard_button -> difficulty = 4
-            }
-        }*/
         
         binding.easyButton.setOnClickListener {
             difficulty = 1
