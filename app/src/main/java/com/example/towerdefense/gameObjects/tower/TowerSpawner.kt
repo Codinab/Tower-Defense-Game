@@ -1,12 +1,14 @@
 package com.example.towerdefense.gameObjects.tower
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.*
 import android.view.MotionEvent
 import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
+import com.example.towerdefense.activities.GameActivity
 import com.example.towerdefense.gameObjects.tower.utils.TowerArea
 import com.example.towerdefense.utility.*
 import com.example.towerdefense.utility.Interfaces.Drawable
@@ -17,12 +19,12 @@ import org.joml.Vector2f
 import java.util.concurrent.atomic.AtomicBoolean
 
 @SuppressLint("ViewConstructor")
-class TowerSpawner(private val box2D: Box2D, var modelTower: Tower) :
+class TowerSpawner(private val box2D: Box2D, var modelTower: Tower, private val context: Context) :
     InputEvent, Updatable, Drawable, java.io.Serializable {
     
-    constructor(position: SpawnerPosition, modelTower: Tower) : this(
-        Box2D(Vector2f(DEF_WIDTH, DEF_HEIGHT), Rigidbody2D(position.vector2f())),
-        modelTower
+    constructor(position: SpawnerPosition, modelTower: Tower, context: Context) : this(
+        Box2D(Vector2f(DEF_WIDTH, DEF_HEIGHT), Rigidbody2D(position.vector2f(context))),
+        modelTower, context
     ) {
         spawnerPosition = position
     }
@@ -111,9 +113,9 @@ class TowerSpawner(private val box2D: Box2D, var modelTower: Tower) :
     
     private var spawnerPosition: SpawnerPosition? = null
     fun position(spawnerPosition: SpawnerPosition) {
-        position(spawnerPosition.vector2f().add(cameraPosition))
+        position(spawnerPosition.vector2f(context).add(cameraPosition))
         this.spawnerPosition = spawnerPosition
-        modelTower.position(spawnerPosition.vector2f())
+        modelTower.position(spawnerPosition.vector2f(context))
     }
     
     override fun position(): Vector2f {
@@ -132,25 +134,27 @@ class TowerSpawner(private val box2D: Box2D, var modelTower: Tower) :
         BOTTOM_LEFT,
         BOTTOM_RIGHT;
         
-        fun vector2f(): Vector2f {
+        fun vector2f(context: Context): Vector2f {
+            (context as GameActivity)
+            val screenSize = context.getScreenSize()
             return when (this) {
                 TOP_LEFT -> Vector2f(screenSize.x - DEF_WIDTH * 2 - PADDING * 2, 300f)
                 TOP_RIGHT -> Vector2f(screenSize.x - DEF_WIDTH - PADDING, 300f)
                 MIDDLE_LEFT -> Vector2f(
                     screenSize.x - DEF_WIDTH * 2 - PADDING * 2,
-                    TOP_LEFT.vector2f().y + DEF_HEIGHT + PADDING
+                    TOP_LEFT.vector2f(context).y + DEF_HEIGHT + PADDING
                 )
                 MIDDLE_RIGHT -> Vector2f(
                     screenSize.x - DEF_WIDTH - PADDING,
-                    TOP_RIGHT.vector2f().y + DEF_HEIGHT + PADDING
+                    TOP_RIGHT.vector2f(context).y + DEF_HEIGHT + PADDING
                 )
                 BOTTOM_LEFT -> Vector2f(
                     screenSize.x - DEF_WIDTH * 2 - PADDING * 2,
-                    MIDDLE_LEFT.vector2f().y + DEF_HEIGHT + PADDING
+                    MIDDLE_LEFT.vector2f(context).y + DEF_HEIGHT + PADDING
                 )
                 BOTTOM_RIGHT -> Vector2f(
                     screenSize.x - DEF_WIDTH - PADDING,
-                    MIDDLE_RIGHT.vector2f().y + DEF_HEIGHT + PADDING
+                    MIDDLE_RIGHT.vector2f(context).y + DEF_HEIGHT + PADDING
                 )
             }
         }

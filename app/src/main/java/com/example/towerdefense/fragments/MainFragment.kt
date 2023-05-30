@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.*
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -14,7 +13,6 @@ import androidx.fragment.app.Fragment
 import com.example.towerdefense.R
 import com.example.towerdefense.databinding.FragmentMainBinding
 import com.example.towerdefense.utility.*
-import org.joml.Vector2i
 
 class MainFragment : Fragment() {
     
@@ -36,64 +34,11 @@ class MainFragment : Fragment() {
                 }
             }
         
-        
-        
         requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         
         return view
     }
     
-    private fun getRotation() {
-        // Get the window manager
-        val windowManager = activity?.windowManager
-        
-        // Get the rotation of the window
-        val rotation = windowManager?.defaultDisplay?.rotation
-        
-        saveWindowSizes()
-        
-        // Update screenSize depending on rotation
-        when (rotation) {
-            Surface.ROTATION_0 -> {
-                if (screenRotation != 0f) {
-                    screenRotation = 0f
-                    gameLog?.addScreenRotatedLog(0f)
-                }
-            }
-            Surface.ROTATION_180 -> {
-                if (screenRotation != 180f) {
-                    screenRotation = 180f
-                    gameLog?.addScreenRotatedLog(180f)
-                }
-            }
-            Surface.ROTATION_90 -> {
-                // Landscape
-                if (screenRotation != 90f) {
-                    screenRotation = 90f
-                    gameLog?.addScreenRotatedLog(90f)
-                }
-            }
-            Surface.ROTATION_270 -> {
-                // Reversed landscape
-                if (screenRotation != 270f) {
-                    screenRotation = 270f
-                    gameLog?.addScreenRotatedLog(270f)
-                }
-            }
-            else -> {
-                screenRotation = 0f
-            }
-        }
-    }
-    
-    private fun saveWindowSizes() {
-        val displayMetrics = DisplayMetrics()
-        activity?.windowManager?.defaultDisplay?.let {
-            it.getMetrics(displayMetrics)
-            screenSize = Vector2i(displayMetrics.widthPixels, displayMetrics.heightPixels)
-        }
-        
-    }
     
     @RequiresApi(Build.VERSION_CODES.R)
     private fun initializeButtons(binding: FragmentMainBinding) {
@@ -117,7 +62,7 @@ class MainFragment : Fragment() {
     
     private fun replaceFragment(fragment: Fragment) {
         requireActivity().supportFragmentManager.beginTransaction().apply {
-            replace(R.id.fragmentContainerView, fragment)
+            replace(R.id.fragmentContainerViewMain, fragment)
             addToBackStack(null)
             commit()
         }

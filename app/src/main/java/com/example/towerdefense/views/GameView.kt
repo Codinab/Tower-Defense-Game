@@ -21,13 +21,18 @@ import org.joml.Vector2i
 import java.util.concurrent.atomic.AtomicInteger
 
 @SuppressLint("ClickableViewAccessibility")
-class GameView(private val context: Context, val name: String = "DefaultGame") : RelativeLayout(context), SurfaceHolder.Callback, java.io.Serializable {
+class GameView(private val context: Context, val name: String = "DefaultGame", val difficulty: Int, val enemySpeed: Int, val maxTime: Int) : RelativeLayout(context), SurfaceHolder.Callback, java.io.Serializable {
     
     private lateinit var pauseStartButton: GameObjectView
     lateinit var surfaceView: GameSurfaceView
     private lateinit var gameLoop: GameLoop
-    
     private lateinit var towerMenuView: TowerMenuView
+    
+    /*
+    * private var difficulty: Int = -1
+    private var enemiesSpeed: Float = -1f
+    private var maxTime: Int = -1
+    private var gameName: String = "")*/
     
     
     init {

@@ -34,8 +34,7 @@ class GameActivity : AppCompatActivity() {
         val maxTime = intent.getIntExtra("maxTime", -100)
         val gameName = intent.getStringExtra("gameName") ?: "DefaultGame"
         
-        gameView = GameView(this, gameName)//, difficulty, enemiesSpeed, maxTime)
-        setContentView(gameView)
+        
     }
     
     override fun onResume() {

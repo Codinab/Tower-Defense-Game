@@ -87,12 +87,6 @@ class OptionFragment : Fragment() {
             if (difficulty == -1 || enemiesSpeed == -1f || maxTime == -1 || gameName == "") {
                 return@setOnClickListener
             }
-            /*val intent = Intent(requireContext(), GameView::class.java)
-            intent.putExtra("difficulty", difficulty)
-            intent.putExtra("enemiesSpeed", enemiesSpeed)
-            intent.putExtra("maxTime", maxTime)
-            intent.putExtra("gameName", gameName)
-            startActivity(intent)*/
             val intent = Intent(requireContext(), GameActivity::class.java)
             intent.putExtra("difficulty", difficulty)
             intent.putExtra("enemiesSpeed", enemiesSpeed)
@@ -112,28 +106,6 @@ class OptionFragment : Fragment() {
     private var enemiesSpeed: Float = -1f
     private var maxTime: Int = -1
     private var gameName: String = ""
-    
-    fun rotation() {
-        // Get the window manager
-        val windowManager = requireActivity().windowManager
-        
-        // Get the rotation of the window
-        val rotation = windowManager.defaultDisplay.rotation
-        
-        saveWindowSizes()
-        
-        // Update screenSize depending on rotation
-        when (rotation) {
-            // Your rotation handling code...
-        }
-    }
-    
-    fun saveWindowSizes() {
-        val displayMetrics = DisplayMetrics()
-        requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
-        
-        screenSize = Vector2i(displayMetrics.widthPixels, displayMetrics.heightPixels)
-    }
     
     private fun setupSpinner(mapArray: Array<String>) {
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -159,5 +131,4 @@ class OptionFragment : Fragment() {
         binding.spinnerMap.invalidate()
         binding.spinnerMap.requestLayout()
     }
-    
 }

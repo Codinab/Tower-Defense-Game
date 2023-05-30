@@ -9,7 +9,7 @@
     tools:context=".activities.MainActivity">
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragmentContainerView"
+        android:id="@+id/fragmentContainerViewMain"
         android:name="com.example.towerdefense.fragments.MainFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

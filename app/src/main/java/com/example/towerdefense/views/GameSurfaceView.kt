@@ -27,7 +27,7 @@ import java.util.*
 import kotlin.collections.HashMap
 
 @SuppressLint("ViewConstructor")
-class GameSurfaceView(context: Context, road: Road) : SurfaceView(context), java.io.Serializable {
+class GameSurfaceView(private val context: Context, road: Road) : SurfaceView(context), java.io.Serializable {
     
     var enemies = EnemyList()
     var movableTower: Tower? = null
@@ -148,7 +148,8 @@ class GameSurfaceView(context: Context, road: Road) : SurfaceView(context), java
         val towerSpawner2 =
             TowerSpawner(
                 TowerSpawner.SpawnerPosition.TOP_RIGHT,
-                TCannon(Vector2f(TowerSpawner.SpawnerPosition.TOP_RIGHT.vector2f()))
+                TCannon(Vector2f(TowerSpawner.SpawnerPosition.TOP_RIGHT.vector2f(context))),
+                context
             )
         towerSpawner2.setTexture(R.drawable.cannon)
         addTowerSpawner(towerSpawner2)
@@ -156,7 +157,8 @@ class GameSurfaceView(context: Context, road: Road) : SurfaceView(context), java
         val towerSpawner3 =
             TowerSpawner(
                 TowerSpawner.SpawnerPosition.MIDDLE_RIGHT,
-                TLaser(Vector2f(TowerSpawner.SpawnerPosition.MIDDLE_RIGHT.vector2f()))
+                TLaser(Vector2f(TowerSpawner.SpawnerPosition.MIDDLE_RIGHT.vector2f(context))),
+                context
             )
         towerSpawner3.setTexture(R.drawable.tlaser)
         addTowerSpawner(towerSpawner3)
@@ -164,7 +166,8 @@ class GameSurfaceView(context: Context, road: Road) : SurfaceView(context), java
         val towerSpawner4 =
             TowerSpawner(
                 TowerSpawner.SpawnerPosition.BOTTOM_RIGHT,
-                TRocketSilo(Vector2f(TowerSpawner.SpawnerPosition.BOTTOM_RIGHT.vector2f()))
+                TRocketSilo(Vector2f(TowerSpawner.SpawnerPosition.BOTTOM_RIGHT.vector2f(context))),
+                context
             )
         towerSpawner4.setTexture(R.drawable.silo_closed)
         addTowerSpawner(towerSpawner4)
