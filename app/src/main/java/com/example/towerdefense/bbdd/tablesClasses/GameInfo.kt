@@ -1,4 +1,4 @@
-package com.example.towerdefense.bbdd.TablesClasses
+package com.example.towerdefense.bbdd.tablesClasses
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

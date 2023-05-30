@@ -4,12 +4,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.view.menu.ActionMenuItemView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.example.towerdefense.bbdd.TablesClasses.GameInfo
-import com.example.towerdefense.R
+import com.example.towerdefense.bbdd.tablesClasses.GameInfo
 import androidx.recyclerview.widget.ListAdapter
+import com.example.towerdefense.R
 
 
 class MyListAdapter : ListAdapter<GameInfo, MyListAdapter.GameInfoViewHolder>(GameInfoComparator()) {
@@ -20,16 +19,19 @@ class MyListAdapter : ListAdapter<GameInfo, MyListAdapter.GameInfoViewHolder>(Ga
     
     override fun onBindViewHolder(holder: GameInfoViewHolder, position: Int) {
         val current = getItem(position)
-        holder.bind(current.name, current.score)
+        holder.bind(current)
     }
     
     class GameInfoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val textViewGameInfo: TextView = itemView.findViewById(R.id.textViewGameInfo)
-        private val textViewGameScore: TextView = itemView.findViewById(R.id.textViewGameScore)
+        private val textViewGameInfo: TextView = itemView.findViewById(R.id.levelTextView)
         
-        fun bind(text: String?, score: Int?) {
-            textViewGameInfo.text = text
-            textViewGameScore.text = "Score: $score"
+       
+        
+        fun bind(game: GameInfo) {
+            
+            textViewGameInfo.text = "Name: ${game.name} Score: ${game.score}"
+           
+            textViewGameInfo.background
         }
         
         companion object {

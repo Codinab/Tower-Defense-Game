@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.towerdefense.bbdd.TablesClasses.GameInfo
+import com.example.towerdefense.bbdd.tablesClasses.GameInfo
 import kotlinx.coroutines.launch
 
 

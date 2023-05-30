@@ -1,6 +1,5 @@
 package com.example.towerdefense
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
@@ -15,14 +14,12 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import com.example.towerdefense.bbdd.MyApplication
 import com.example.towerdefense.bbdd.MyListAdapter
 import com.example.towerdefense.bbdd.MyViewModel
 import com.example.towerdefense.bbdd.MyViewModelFactory
 import com.example.towerdefense.bbdd.NewGameInfAct
-import com.example.towerdefense.bbdd.TablesClasses.GameInfo
+import com.example.towerdefense.bbdd.tablesClasses.GameInfo
 import com.example.towerdefense.databinding.ActivityMainBinding
 import com.example.towerdefense.utility.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -62,12 +59,7 @@ class MainActivity : AppCompatActivity() {
         initializeButtons(binding)
         setContentView(view)
         
-        startForResult =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                if (result.resultCode == Activity.RESULT_OK) {
-                    Toast.makeText(this, "Result OK", Toast.LENGTH_SHORT).show()
-                }
-            }
+        
         
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         mainActivity = this
@@ -84,7 +76,7 @@ class MainActivity : AppCompatActivity() {
         val fab = findViewById<FloatingActionButton>(R.id.fab)
         fab.setOnClickListener {
             val intent = Intent(this@MainActivity, NewGameInfAct::class.java)
-            startForResult.launch(intent)
+            startActivityForResult(intent, newGameInfActivityRequestCode)
         }
         
     }
@@ -95,9 +87,9 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == newGameInfActivityRequestCode && resultCode == Activity.RESULT_OK) {
             data?.let {
                 val gameInfoString = it.getStringExtra(NewGameInfAct.EXTRA_REPLY) ?: ""
-                val gameInfoScore = it.getIntExtra(NewGameInfAct.EXTRA_REPLY, -1)
-                
-                val gameInfo = GameInfo(gameInfoString, gameInfoScore)
+                val gameInfo = GameInfo(gameInfoString, 20)
+                print(gameInfoString)
+                Toast.makeText(applicationContext, gameInfoString, Toast.LENGTH_LONG).show()
                 myViewModel.insert(gameInfo)
                 
             }

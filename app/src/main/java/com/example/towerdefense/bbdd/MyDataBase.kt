@@ -7,19 +7,22 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.example.towerdefense.bbdd.TablesClasses.GameInfo
+import com.example.towerdefense.bbdd.tablesClasses.GameInfo
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-@Database(entities = [GameInfo::class], version = 1, exportSchema = false)
-public abstract class MyDataBase: RoomDatabase() {
+@Database(
+    entities = [GameInfo::class],
+    version = 1
+)
+abstract class MyDataBase: RoomDatabase() {
     
     abstract fun myDaoIdentity(): MyDaoIdentity
     
-    private class WordDatabaseCallback(
+    /*private class WordDatabaseCallback(
         private val scope: CoroutineScope
     ) : RoomDatabase.Callback() {
         override fun onCreate(db: SupportSQLiteDatabase) {
@@ -44,22 +47,19 @@ public abstract class MyDataBase: RoomDatabase() {
             }
         }
     }
-    
+    */
     companion object{
         @Volatile
         private var INSTANCE: MyDataBase? = null
         
-        fun getDatabase(
-            context: Context,
-            scope: CoroutineScope
-        ): MyDataBase {
+        fun getDatabase(context: Context): MyDataBase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     MyDataBase::class.java,
                     "game_database"
                 )
-                    .addCallback(WordDatabaseCallback(CoroutineScope(Dispatchers.IO)))
+                    //.addCallback(WordDatabaseCallback(CoroutineScope(Dispatchers.IO)))
                     .build()
                 INSTANCE = instance
                 // return instance

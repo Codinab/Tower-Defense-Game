@@ -14,17 +14,6 @@
         android:textSize="18sp"
         android:autofillHints="" />
 
-    <EditText
-        android:id="@+id/edit_game_info_score"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-light"
-        android:hint="@string/hint_gameInfo"
-        android:inputType="textAutoComplete"
-        android:layout_margin="@dimen/big_padding"
-        android:textSize="18sp"
-        android:autofillHints="" />
-
     <Button
         android:id="@+id/button_save"
         android:layout_width="match_parent"

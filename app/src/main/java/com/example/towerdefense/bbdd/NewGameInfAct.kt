@@ -21,7 +21,6 @@ class NewGameInfAct: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_newgameinfo)
         editGameInfoView = findViewById(R.id.edit_game_info)
-        editGameInfoScoreView = findViewById(R.id.edit_game_info_score)
         
         val button = findViewById<Button>(R.id.button_save)
         button.setOnClickListener {
@@ -30,9 +29,7 @@ class NewGameInfAct: AppCompatActivity() {
                 setResult(Activity.RESULT_CANCELED, replyIntent)
             } else {
                 val gameInf = editGameInfoView.text.toString()
-                val gameScore = editGameInfoScoreView.text.toString() // Add this line to get the game score
                 replyIntent.putExtra(EXTRA_REPLY, gameInf)
-                replyIntent.putExtra(EXTRA_REPLY, gameScore) // Add this line to include the game score in the result
                 setResult(Activity.RESULT_OK, replyIntent)
             }
             finish()
