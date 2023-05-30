@@ -18,37 +18,11 @@ import kotlinx.coroutines.launch
     entities = [GameInfo::class],
     version = 1
 )
-abstract class MyDataBase: RoomDatabase() {
+abstract class MyDataBase : RoomDatabase() {
     
     abstract fun myDaoIdentity(): MyDaoIdentity
     
-    /*private class WordDatabaseCallback(
-        private val scope: CoroutineScope
-    ) : RoomDatabase.Callback() {
-        override fun onCreate(db: SupportSQLiteDatabase) {
-            super.onCreate(db)
-            INSTANCE?.let { database ->
-                scope.launch{
-                    val myDaoIdentity = database.myDaoIdentity()
-                    
-                    // Delete all content here.
-                    myDaoIdentity.deleteAll()
-                    
-                    // Add sample gameInfo.
-                    var gameInfo = GameInfo("Putin", 200)
-                    myDaoIdentity.insert(gameInfo)
-                    gameInfo = GameInfo("Putin coding!", 100)
-                    myDaoIdentity.insert(gameInfo)
-                    
-                    //TODO: Add your own words!
-                    gameInfo = GameInfo("TETE", 400)
-                    myDaoIdentity.insert(gameInfo)
-                }
-            }
-        }
-    }
-    */
-    companion object{
+    companion object {
         @Volatile
         private var INSTANCE: MyDataBase? = null
         
@@ -66,11 +40,30 @@ abstract class MyDataBase: RoomDatabase() {
                 instance
             }
         }
-    
-        
     }
-    
-    
-   
-    
 }
+/*private class WordDatabaseCallback(
+    private val scope: CoroutineScope
+) : RoomDatabase.Callback() {
+    override fun onCreate(db: SupportSQLiteDatabase) {
+        super.onCreate(db)
+        INSTANCE?.let { database ->
+            scope.launch{
+                val myDaoIdentity = database.myDaoIdentity()
+                
+                // Delete all content here.
+                myDaoIdentity.deleteAll()
+                
+                // Add sample gameInfo.
+                var gameInfo = GameInfo("Putin", 200)
+                myDaoIdentity.insert(gameInfo)
+                gameInfo = GameInfo("Putin coding!", 100)
+                myDaoIdentity.insert(gameInfo)
+                
+                //TODO: Add your own words!
+                gameInfo = GameInfo("TETE", 400)
+                myDaoIdentity.insert(gameInfo)
+            }
+        }
+    }
+}*/

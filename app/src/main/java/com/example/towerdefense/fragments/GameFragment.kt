@@ -6,9 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.towerdefense.R
+import com.example.towerdefense.activities.GameActivity
 import com.example.towerdefense.views.GameView
 
-class GameFragment(val name: String = "DefaultGame", val difficulty: Int, val enemySpeed: Int, val maxTime: Int) : Fragment() {
+class GameFragment : Fragment() {
     
     private var gameView: GameView? = null
     
@@ -16,6 +17,10 @@ class GameFragment(val name: String = "DefaultGame", val difficulty: Int, val en
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val name = (context as GameActivity).getGameName()
+        val difficulty = (context as GameActivity).getDifficulty()
+        val enemySpeed = (context as GameActivity).getEnemiesSpeed()
+        val maxTime = (context as GameActivity).getMaxTime()
         return GameView(requireContext(), name, difficulty, enemySpeed, maxTime).also { gameView = it }
     }
 }

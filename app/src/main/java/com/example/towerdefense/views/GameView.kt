@@ -20,20 +20,13 @@ import org.joml.Vector2f
 import org.joml.Vector2i
 import java.util.concurrent.atomic.AtomicInteger
 
-@SuppressLint("ClickableViewAccessibility")
-class GameView(private val context: Context, val name: String = "DefaultGame", val difficulty: Int, val enemySpeed: Int, val maxTime: Int) : RelativeLayout(context), SurfaceHolder.Callback, java.io.Serializable {
+@SuppressLint("ClickableViewAccessibility", "ViewConstructor")
+class GameView(private val context: GameActivity, val name: String = "DefaultGame", val difficulty: Int, val enemySpeed: Float, val maxTime: Int) : RelativeLayout(context), SurfaceHolder.Callback, java.io.Serializable {
     
     private lateinit var pauseStartButton: GameObjectView
     lateinit var surfaceView: GameSurfaceView
     private lateinit var gameLoop: GameLoop
     private lateinit var towerMenuView: TowerMenuView
-    
-    /*
-    * private var difficulty: Int = -1
-    private var enemiesSpeed: Float = -1f
-    private var maxTime: Int = -1
-    private var gameName: String = "")*/
-    
     
     init {
         gameView = this
@@ -43,15 +36,13 @@ class GameView(private val context: Context, val name: String = "DefaultGame", v
         //change to horizontal view
         setBackgroundColor(Color.TRANSPARENT)
         initSurfaceView(context)
-    
-        (context as GameActivity)
         
         val size = context.getScreenSize()
         initViews(context, size)
         hideTowerButtons()
         
         money = AtomicInteger(1000)
-        gameHealth = AtomicInteger(999999999)
+        gameHealth = AtomicInteger(1)
         round = 1
         
         invalidate()

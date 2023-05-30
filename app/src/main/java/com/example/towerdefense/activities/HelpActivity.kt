@@ -8,7 +8,7 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.example.towerdefense.R
 import com.example.towerdefense.databinding.ActivityHelpBinding
-import com.example.towerdefense.databinding.ActivityLogBinding
+
 
 class HelpActivity : AppCompatActivity() {
     
