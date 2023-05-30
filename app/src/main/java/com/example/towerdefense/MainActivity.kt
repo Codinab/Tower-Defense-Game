@@ -10,16 +10,32 @@ import android.view.*
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.example.towerdefense.bbdd.MyApplication
+import com.example.towerdefense.bbdd.MyListAdapter
+import com.example.towerdefense.bbdd.MyViewModel
+import com.example.towerdefense.bbdd.MyViewModelFactory
+import com.example.towerdefense.bbdd.NewGameInfAct
+import com.example.towerdefense.bbdd.TablesClasses.GameInfo
 import com.example.towerdefense.databinding.ActivityMainBinding
 import com.example.towerdefense.utility.*
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.joml.Vector2i
 
 
 class MainActivity : AppCompatActivity() {
     
     lateinit var startForResult: ActivityResultLauncher<Intent>
+    private val myViewModel: MyViewModel by viewModels() {
+        MyViewModelFactory((application as MyApplication).repository)
+    }
+    private val newGameInfActivityRequestCode = 1
     
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +71,43 @@ class MainActivity : AppCompatActivity() {
         
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         mainActivity = this
+    
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
+        val adapter = MyListAdapter()
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        
+        myViewModel.allGameInfo.observe(this) { gameInfo ->
+            // Update the cached copy of the words in the adapter.
+            gameInfo?.let { adapter.submitList(it) }
+        }
+        val fab = findViewById<FloatingActionButton>(R.id.fab)
+        fab.setOnClickListener {
+            val intent = Intent(this@MainActivity, NewGameInfAct::class.java)
+            startForResult.launch(intent)
+        }
+        
+    }
+    
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == newGameInfActivityRequestCode && resultCode == Activity.RESULT_OK) {
+            data?.let {
+                val gameInfoString = it.getStringExtra(NewGameInfAct.EXTRA_REPLY) ?: ""
+                val gameInfoScore = it.getIntExtra(NewGameInfAct.EXTRA_REPLY, -1)
+                
+                val gameInfo = GameInfo(gameInfoString, gameInfoScore)
+                myViewModel.insert(gameInfo)
+                
+            }
+        } else {
+            Toast.makeText(
+                applicationContext,
+                R.string.empty_not_saved,
+                Toast.LENGTH_LONG
+            ).show()
+        }
     }
     
     fun getRotation() {
