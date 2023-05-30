@@ -13,7 +13,7 @@
         android:theme="@style/Theme.TowerDefense"
         tools:targetApi="31" >
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:screenOrientation="fullSensor"
             android:exported="true" >
             <intent-filter>
@@ -24,14 +24,17 @@
         </activity>
 
         <activity
-            android:name=".utility.OptionActivity"
+            android:name=".activities.OptionActivity"
             android:screenOrientation="fullSensor"
             android:exported="true" >
         </activity>
-        <activity android:name=".utility.LogActivity"
+        <activity android:name=".activities.LogActivity"
             android:screenOrientation="fullSensor"
             />
-        <activity android:name=".utility.HelpActivity"
+        <activity android:name=".activities.HelpActivity"
+            android:screenOrientation="fullSensor"
+            />
+        <activity android:name=".activities.GameActivity"
             android:screenOrientation="fullSensor"
             />
 

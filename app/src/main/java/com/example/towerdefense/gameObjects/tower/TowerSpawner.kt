@@ -1,11 +1,8 @@
 package com.example.towerdefense.gameObjects.tower
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.*
 import android.view.MotionEvent
-import android.view.ViewGroup
-import com.example.towerdefense.GameObjectView
 import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D

@@ -1,4 +1,4 @@
-package com.example.towerdefense.utility
+package com.example.towerdefense.activities
 
 import android.annotation.SuppressLint
 import android.os.Bundle

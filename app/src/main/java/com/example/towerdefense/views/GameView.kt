@@ -1,4 +1,4 @@
-package com.example.towerdefense
+package com.example.towerdefense.views
 
 import Roads
 import android.annotation.SuppressLint
@@ -9,10 +9,15 @@ import android.graphics.Color
 import android.view.*
 import android.widget.RelativeLayout
 import android.widget.TextView
+import com.example.towerdefense.GameLoop
 import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
+import com.example.towerdefense.R
+import com.example.towerdefense.activities.GameActivity
+import com.example.towerdefense.activities.LogActivity
 import com.example.towerdefense.utility.*
 import org.joml.Vector2f
+import org.joml.Vector2i
 import java.util.concurrent.atomic.AtomicInteger
 
 @SuppressLint("ClickableViewAccessibility")
@@ -33,17 +38,19 @@ class GameView(private val context: Context, val name: String = "DefaultGame") :
         //change to horizontal view
         setBackgroundColor(Color.TRANSPARENT)
         initSurfaceView(context)
+    
+        (context as GameActivity)
         
-        
-        initTowerMenu(context)
-        initStartPauseButton()
-        initRoundCounter()
-        
+        val size = context.getScreenSize()
+        initViews(context, size)
         hideTowerButtons()
         
         money = AtomicInteger(1000)
         gameHealth = AtomicInteger(999999999)
         round = 1
+        
+        invalidate()
+        requestLayout()
         
     }
     
@@ -71,13 +78,13 @@ class GameView(private val context: Context, val name: String = "DefaultGame") :
     val continueTexture =
         BitmapFactory.decodeResource(resources, R.drawable.continue_button)
     private val pauseTexture = BitmapFactory.decodeResource(resources, R.drawable.pause_button)
-    private fun initStartPauseButton() {
-        
+    private fun initStartPauseButton(size: Vector2i) {
         pauseStartButton = GameObjectView(
             context, Box2D(
                 Vector2f(250f, 100f), Rigidbody2D(
                     Vector2f(
-                        screenSize.x - 250f, 50f
+                        size.x - 250f,
+                        50f
                     )
                 )
             )
@@ -99,11 +106,11 @@ class GameView(private val context: Context, val name: String = "DefaultGame") :
         pauseStartButton.position(Vector2f(screenSize.x - 250f, 50f))
     }
     
-    private fun initTowerMenu(context: Context) {
+    private fun initTowerMenu(context: Context, size: Vector2i) {
         towerMenuView = TowerMenuView(context)
         val layoutParams = LayoutParams(
             LayoutParams.MATCH_PARENT,
-            screenSize.y / 4
+            size.y / 4
         )
         layoutParams.addRule(ALIGN_PARENT_BOTTOM)
         towerMenuView.layoutParams = layoutParams
@@ -141,7 +148,7 @@ class GameView(private val context: Context, val name: String = "DefaultGame") :
         surfaceView.update()
         updateRoundCounter()
         towerMenuView.updateCostTexts()
-        if ((gameHealth.get() <= 0)&& !end) {
+        if ((gameHealth.get() <= 0) && !end) {
             gameHealth.set(0)
             end()
         }
@@ -225,18 +232,59 @@ class GameView(private val context: Context, val name: String = "DefaultGame") :
         }
     }
     
+    /*    override fun surfaceChanged(p0: SurfaceHolder, p1: Int, p2: Int, p3: Int) {
+            //onSaveInstanceState(this)
+            if (!isRunning()) {
+                start()
+                gamePause()
+            }
+        
+            //(context as OptionActivity).rotation()
+            updatePosStartPauseButton()
+            updateRoundCounter()
+            restoreGame = onSaveInstanceState()
+        }*/
     override fun surfaceChanged(p0: SurfaceHolder, p1: Int, p2: Int, p3: Int) {
-        //onSaveInstanceState(this)
         if (!isRunning()) {
             start()
             gamePause()
         }
     
-        (context as OptionActivity).rotation()
-        updatePosStartPauseButton()
-        updateRoundCounter()
+        
+        val size = Vector2i(p2, p3)
+   
+        updateViews(size)
+        if (towerClicked == null) {
+            towerMenuView.visibility = INVISIBLE
+        }
         restoreGame = onSaveInstanceState()
     }
+    
+    private fun initViews(context: Context, size: Vector2i) {
+        initSurfaceView(context)
+        initTowerMenu(context, size)
+        initStartPauseButton(size)
+        initRoundCounter()
+    }
+    private fun updateViews(size: Vector2i) {
+        updateTowerMenu(size)
+        updatePauseStartButton(size)
+        updateRoundCounter()
+    }
+    
+    private fun updateTowerMenu(size: Vector2i) {
+        // remove and re-add the tower menu to update its position
+        removeView(towerMenuView)
+        initTowerMenu(context, size)
+    }
+    
+    private fun updatePauseStartButton(size: Vector2i) {
+        // remove and re-add the start/pause button to update its position
+        removeView(pauseStartButton)
+        initStartPauseButton(size)
+    }
+    
+    
     
     override fun surfaceDestroyed(p0: SurfaceHolder) {
         restoreGame = onSaveInstanceState()

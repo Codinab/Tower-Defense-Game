@@ -1,4 +1,4 @@
-package com.example.towerdefense
+package com.example.towerdefense.views
 
 import com.example.towerdefense.gameObjects.lists.TowerList
 import android.annotation.SuppressLint
@@ -8,8 +8,8 @@ import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import androidx.core.content.ContextCompat
-import com.example.towerdefense.Physics2d.primitives.Box2D
-import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
+import com.example.towerdefense.GameLoop
+import com.example.towerdefense.R
 import com.example.towerdefense.gameObjects.*
 import com.example.towerdefense.gameObjects.Camera
 import com.example.towerdefense.gameObjects.lists.ERoundList
@@ -22,14 +22,12 @@ import com.example.towerdefense.utility.TimeController.Companion.timeLeft
 import com.example.towerdefense.utility.textures.BackgroundGenerator
 import com.example.towerdefense.utility.textures.Drawing
 import org.joml.Vector2f
-import org.joml.Vector2i
 import java.io.Serializable
 import java.util.*
 import kotlin.collections.HashMap
 
 @SuppressLint("ViewConstructor")
-class GameSurfaceView(context: Context, road: Road) : SurfaceView(context),
-    SurfaceHolder.Callback, java.io.Serializable {
+class GameSurfaceView(context: Context, road: Road) : SurfaceView(context), java.io.Serializable {
     
     var enemies = EnemyList()
     var movableTower: Tower? = null
@@ -307,7 +305,7 @@ class GameSurfaceView(context: Context, road: Road) : SurfaceView(context),
         )
     }
     
-    override fun surfaceCreated(p0: SurfaceHolder) {
+/*    override fun surfaceCreated(p0: SurfaceHolder) {
         if (restoreSurfaceView != null) {
             restoreSurfaceView = null
             onRestoreInstanceState(restoreSurfaceView)
@@ -320,7 +318,7 @@ class GameSurfaceView(context: Context, road: Road) : SurfaceView(context),
     
     override fun surfaceDestroyed(p0: SurfaceHolder) {
         restoreSurfaceView = onSaveInstanceState()
-    }
+    }*/
     
     fun getGameState(): Serializable {
         return this

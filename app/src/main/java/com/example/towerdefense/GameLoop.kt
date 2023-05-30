@@ -1,7 +1,7 @@
 package com.example.towerdefense
 
-import android.graphics.Canvas
-import android.view.SurfaceView
+import com.example.towerdefense.views.GameSurfaceView
+import com.example.towerdefense.views.GameView
 
 /**
  *
