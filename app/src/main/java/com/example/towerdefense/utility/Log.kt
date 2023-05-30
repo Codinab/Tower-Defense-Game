@@ -1,11 +1,9 @@
 package com.example.towerdefense.utility
 
-import com.example.towerdefense.GameSurfaceView
-import com.example.towerdefense.GameView
-import com.example.towerdefense.utility.Interfaces.Movable
+import com.example.towerdefense.views.GameSurfaceView
+import com.example.towerdefense.views.GameView
 import com.example.towerdefense.utility.Interfaces.Positionable
 import com.example.towerdefense.utility.Interfaces.Removable
-import org.joml.Vector2i
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 

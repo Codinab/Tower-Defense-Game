@@ -1,4 +1,4 @@
-package com.example.towerdefense
+package com.example.towerdefense.views
 
 import android.annotation.SuppressLint
 import android.content.Context

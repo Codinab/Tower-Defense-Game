@@ -1,13 +1,12 @@
 package com.example.towerdefense.utility
 
 import android.os.Parcelable
-import com.example.towerdefense.GameView
-import com.example.towerdefense.MainActivity
+import com.example.towerdefense.views.GameView
+import com.example.towerdefense.activities.MainActivity
 import com.example.towerdefense.gameObjects.tower.Tower
 import org.joml.Vector2f
 import org.joml.Vector2i
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.math.atan2
 
 var fps = false
 

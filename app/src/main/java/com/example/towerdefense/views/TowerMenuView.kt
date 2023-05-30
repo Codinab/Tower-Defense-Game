@@ -1,13 +1,11 @@
-package com.example.towerdefense
+package com.example.towerdefense.views
 
 import android.content.Context
 import android.graphics.BitmapFactory
-import android.graphics.Color
-import android.view.View
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.RelativeLayout
 import android.widget.TextView
+import com.example.towerdefense.R
 import com.example.towerdefense.utility.gameView
 import com.example.towerdefense.utility.money
 import com.example.towerdefense.utility.towerClicked
