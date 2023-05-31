@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
+import com.example.towerdefense.activities.GameActivity
 import com.example.towerdefense.gameObjects.enemies.Enemy
 import com.example.towerdefense.utility.*
 import com.example.towerdefense.utility.Interfaces.Drawable
@@ -13,11 +14,19 @@ import com.example.towerdefense.utility.textures.Drawing
 import org.joml.Vector2f
 import kotlin.math.max
 
-open class TLaser(radius: Float, private val box2D: Box2D) : Tower(radius, box2D),
+open class TLaser(radius: Float, private val box2D: Box2D, private val context: GameActivity) : Tower(radius, box2D, context),
     Drawable {
     
-    constructor(position: Vector2f) : this(300f, Box2D(Vector2f(100f, 100f), Rigidbody2D(position)))
+    constructor(position: Vector2f, context: GameActivity) : this(300f, Box2D(Vector2f(100f, 100f), Rigidbody2D(position)), context)
     
+    private val texture = BitmapFactory.decodeResource(
+        context.resources,
+        com.example.towerdefense.R.drawable.tlaser
+    )
+    private val hitTexture = BitmapFactory.decodeResource(
+        context.resources,
+        com.example.towerdefense.R.drawable.thunder
+    )
     
     
     private var enemyHit: Enemy? = null
@@ -82,21 +91,12 @@ open class TLaser(radius: Float, private val box2D: Box2D) : Tower(radius, box2D
         return "Damage per second: $dph"
     }
     
-    override fun clone(): Tower = TLaser(radius, box2D.clone() as Box2D)
+    override fun clone(): Tower = TLaser(radius, box2D.clone() as Box2D, context)
     override fun toString(): String {
         return "Tower(radius=$radius, collider2D=$box2D, enemyHit=$enemyHit, lastHit=$lastHit, towerArea=$towerArea, dph=$dph, timeLastDamage=$timeLastAction, hitDelay=$timeActionDelay)"
     }
     
     override var layerLevel: Int = 10
     
-    companion object {
-        private val texture = BitmapFactory.decodeResource(
-            gameView!!.context.resources,
-            com.example.towerdefense.R.drawable.tlaser
-        )
-        private val hitTexture = BitmapFactory.decodeResource(
-            gameView!!.context.resources,
-            com.example.towerdefense.R.drawable.thunder
-        )
-    }
+
 }

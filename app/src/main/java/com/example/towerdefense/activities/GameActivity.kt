@@ -1,15 +1,12 @@
 package com.example.towerdefense.activities
 
-import android.os.Build
 import android.os.Bundle
-import android.view.Surface
 import android.view.Window
 import android.view.WindowManager
-import android.util.DisplayMetrics
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.towerdefense.databinding.ActivityGameBinding
+import com.example.towerdefense.fragments.GameFragment
 import com.example.towerdefense.views.GameView
 import org.joml.Vector2i
 
@@ -42,9 +39,18 @@ class GameActivity : AppCompatActivity() {
         enemiesSpeed = intent.getFloatExtra("enemiesSpeed", 0f)
         maxTime = intent.getIntExtra("maxTime", -100)
         gameName = intent.getStringExtra("gameName") ?: "DefaultGame"
-        
+    
+        binding()
+    }
+    
+    private fun binding() {
         binding = ActivityGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.fragmentContainerViewGame
+    }
+    
+    fun gameView(): GameView? {
+        return (binding.fragmentContainerViewGame.getFragment() as GameFragment).getGameView()
     }
     
     fun getGameName(): String {

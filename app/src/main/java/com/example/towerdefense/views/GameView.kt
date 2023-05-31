@@ -5,9 +5,11 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.os.Build
 import android.view.*
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import com.example.towerdefense.GameLoop
 import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
@@ -27,8 +29,11 @@ class GameView(private val context: GameActivity, val name: String = "DefaultGam
     private lateinit var gameLoop: GameLoop
     private lateinit var towerMenuView: TowerMenuView
     
+    var money: AtomicInteger
+    var gameHealth: AtomicInteger
+    var round: Int
+    
     init {
-        gameView = this
         gameLog = Log()
         gameLog?.addGameViewLog(this)
         
@@ -46,7 +51,6 @@ class GameView(private val context: GameActivity, val name: String = "DefaultGam
         
         invalidate()
         requestLayout()
-        
     }
     
     var roundCounter: TextView? = null
@@ -98,7 +102,7 @@ class GameView(private val context: GameActivity, val name: String = "DefaultGam
     }
     
     private fun updatePosStartPauseButton() {
-        pauseStartButton.position(Vector2f(screenSize.x - 250f, 50f))
+        pauseStartButton.position(Vector2f(context.getScreenSize().x - 250f, 50f))
     }
     
     private fun initTowerMenu(context: GameActivity, size: Vector2i) {
@@ -139,7 +143,7 @@ class GameView(private val context: GameActivity, val name: String = "DefaultGam
         towerMenuView.visibility = INVISIBLE
     }
     
-    fun update() {
+    @RequiresApi(Build.VERSION_CODES.N) fun update() {
         surfaceView.update()
         updateRoundCounter()
         towerMenuView.updateCostTexts()
@@ -147,7 +151,7 @@ class GameView(private val context: GameActivity, val name: String = "DefaultGam
             gameHealth.set(0)
             end()
         }
-        if (TimeController.timeLeft() <= 0 && !end && TimeController.timeLeft() != -100L) {
+        if (TimeController.timeLeft(context.gameView()!!.maxTime) <= 0 && !end && TimeController.timeLeft(context.gameView()!!.maxTime) != -100L) {
             gameHealth.set(0)
             end()
         }

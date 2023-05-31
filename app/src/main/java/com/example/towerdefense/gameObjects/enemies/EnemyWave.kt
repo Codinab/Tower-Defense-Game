@@ -1,20 +1,24 @@
 package com.example.towerdefense.gameObjects.enemies
 
+import android.content.Context
+import com.example.towerdefense.activities.GameActivity
 import com.example.towerdefense.utility.Interfaces.Removable
 import com.example.towerdefense.utility.TimeController
-import com.example.towerdefense.utility.gameView
 
 class EnemyWave(private val enemyGenerators: ArrayList<EnemyGenerator>, private val timeBetweenEnemies: Long) : Removable {
     
     private var waveStartTime: Long = Long.MAX_VALUE
     private var lastEnemySpawned = 0L
     
+    private var context: GameActivity? = null
+    
     fun update() {
+        if (context == null) return
         if (TimeController.isPaused()) return
         if (TimeController.getGameTime() < waveStartTime) return
         if (enemyGenerators.isNotEmpty() && TimeController.getGameTime() - lastEnemySpawned > timeBetweenEnemies) {
-            gameView!!.surfaceView.enemies
-                .add(enemyGenerators.removeFirst().getEnemy(gameView!!.surfaceView.road))
+            context!!.gameView()!!.surfaceView.enemies
+                .add(enemyGenerators.removeFirst().getEnemy(context!!.gameView()!!.surfaceView.road))
             lastEnemySpawned = TimeController.getGameTime()
         }
         if (enemyGenerators.isEmpty()) destroy()
@@ -36,7 +40,8 @@ class EnemyWave(private val enemyGenerators: ArrayList<EnemyGenerator>, private 
             return EnemyWave(Array(size) { generator() }.toCollection(ArrayList()), timeBetweenEnemies)
         }
     }
-    fun clone(): EnemyWave {
-        return EnemyWave(ArrayList(enemyGenerators), timeBetweenEnemies)
+    fun clone(context: GameActivity): EnemyWave {
+        enemyGenerators.forEach { it.setContext(context) }
+        return EnemyWave(ArrayList(enemyGenerators), timeBetweenEnemies).also { it.context = context }
     }
 }

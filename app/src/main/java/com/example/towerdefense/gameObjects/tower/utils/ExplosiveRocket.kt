@@ -2,10 +2,13 @@ package com.example.towerdefense.gameObjects.tower.utils
 
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.example.towerdefense.Physics2d.primitives.Circle
 import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.R
+import com.example.towerdefense.activities.GameActivity
 import com.example.towerdefense.gameObjects.enemies.Enemy
 import com.example.towerdefense.gameObjects.GameObject
 import com.example.towerdefense.utility.*
@@ -15,13 +18,29 @@ import com.example.towerdefense.utility.Interfaces.Positionable
 import com.example.towerdefense.utility.KMath.Companion.anglePositionToTarget
 import com.example.towerdefense.utility.textures.Animation
 
-class ExplosiveRocket(private var circle: Circle, var enemies: ArrayList<Enemy>, private var damage: Int) : Projectile, Drawable, Movable, Positionable {
+class ExplosiveRocket(private var circle: Circle, var enemies: ArrayList<Enemy>, private var damage: Int, private val context: GameActivity) : Projectile, Drawable, Movable, Positionable {
     
     private var timeToLive = 1500L
     private val spawnTime = TimeController.getGameTime()
+    
+    private val explosiveRocketFrames =
+        arrayOf(
+            BitmapFactory.decodeResource(context.resources, R.drawable.cohete),
+            BitmapFactory.decodeResource(context.resources, R.drawable.cohete2),
+            BitmapFactory.decodeResource(context.resources, R.drawable.cohete3)
+        )
+    private val explosionFrames =
+        arrayOf(
+            BitmapFactory.decodeResource(context.resources, R.drawable.boom1),
+            BitmapFactory.decodeResource(context.resources, R.drawable.boom2),
+            BitmapFactory.decodeResource(context.resources, R.drawable.boom3),
+            BitmapFactory.decodeResource(context.resources, R.drawable.boom4),
+        )
+    
     private var rocketAnimation: Animation = Animation(explosiveRocketFrames, 100f)
     private var explosionAnimation: Animation = Animation(explosionFrames, 100f, false, circle.radius.toInt() * 5)
     
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun update() {
         //If the explosion has ended
         if (TimeController.getGameTime() > explosionEndTime) destroy()
@@ -55,7 +74,7 @@ class ExplosiveRocket(private var circle: Circle, var enemies: ArrayList<Enemy>,
     
     private var damagedEnemies = ArrayList<Enemy>()
     private fun explosionDamage() {
-        gameView!!.surfaceView.enemies.forEach {
+        context.gameView()!!.surfaceView.enemies.forEach {
             if (IntersectionDetector2D.intersection(circle, it.collider())) {
                 if (!damagedEnemies.contains(it)) {
                     it.damage(damage)
@@ -69,7 +88,7 @@ class ExplosiveRocket(private var circle: Circle, var enemies: ArrayList<Enemy>,
     
     //Detects collisions with enemies, if the object has exploded damages the enemy, if it collided with it generates an explosion
     private fun detectCollisions() {
-        gameView!!.surfaceView.enemies.forEach {
+        context.gameView()!!.surfaceView.enemies.forEach {
             if (IntersectionDetector2D.intersection(circle, it.collider())) {
                 generateExplosion()
                 return
@@ -102,22 +121,6 @@ class ExplosiveRocket(private var circle: Circle, var enemies: ArrayList<Enemy>,
     
     private fun drawExplosion(canvas: Canvas) {
         explosionAnimation.draw(canvas, circle.body.position, (0..360).random().toFloat())
-    }
-    
-    companion object {
-        private val explosiveRocketFrames =
-            arrayOf(
-                BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.cohete),
-                BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.cohete2),
-                BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.cohete3)
-            )
-        private val explosionFrames =
-            arrayOf(
-                BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.boom1),
-                BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.boom2),
-                BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.boom3),
-                BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.boom4),
-            )
     }
     
     override fun collider(): Collider2D {

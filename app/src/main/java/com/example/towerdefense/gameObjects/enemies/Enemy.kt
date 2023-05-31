@@ -1,30 +1,31 @@
 package com.example.towerdefense.gameObjects.enemies
 
 import android.graphics.*
-import android.view.MotionEvent
 import com.example.towerdefense.Physics2d.JMath
 import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.R
-import com.example.towerdefense.gameObjects.GameObject
+import com.example.towerdefense.activities.GameActivity
 import com.example.towerdefense.utility.*
 import com.example.towerdefense.utility.Interfaces.Drawable
 import com.example.towerdefense.utility.Interfaces.Movable
 import com.example.towerdefense.utility.Interfaces.Positionable
-import com.example.towerdefense.utility.Interfaces.Stateful
 import com.example.towerdefense.utility.textures.Animation
 import com.example.towerdefense.utility.textures.Drawing
 import org.joml.Vector2f
 import java.io.Serializable
-import java.util.concurrent.atomic.AtomicBoolean
 
-class Enemy(private var collider2D: Collider2D, private val road: Road) : Positionable, Serializable, Drawable,
+class Enemy(private var collider2D: Collider2D, private val road: Road, private val context: GameActivity) : Positionable, Serializable, Drawable,
     Movable {
     private var health: Int = 1
     private var maxHealth: Int = health
     private var animation: Animation
     
-    constructor(road: Road) : this(Box2D(Vector2f(0f, 0f), Vector2f(100f, 100f)), road)
+    private val enemyFrames = arrayOf(
+        BitmapFactory.decodeResource(context.resources, R.drawable.slime_f1),
+        BitmapFactory.decodeResource(context.resources, R.drawable.slime_f2),
+    )
+    constructor(road: Road, context: GameActivity) : this(Box2D(Vector2f(0f, 0f), Vector2f(100f, 100f)), road, context)
     
     init {
         
@@ -32,21 +33,21 @@ class Enemy(private var collider2D: Collider2D, private val road: Road) : Positi
         position(road.getStart())
         
         animation = Animation(enemyFrames, 100f)
-        velocity(velocity() + enemiesSpeed)
-        health *= difficulty
+        velocity(velocity() + context.getEnemiesSpeed())
+        health *= context.getDifficulty()
     }
     
     fun damage(damage: Int) {
         health -= damage
         if (health <= 0) {
             destroy()
-            money.addAndGet(10)
+            context.gameView()!!.money.addAndGet(10)
         }
     }
     
-    override fun velocity(v: Float) {
-        super.velocity(v)
-        animation.updateFrameTime(500f / v)
+    override fun velocity(velocity: Float) {
+        super.velocity(velocity)
+        animation.updateFrameTime(500f / velocity)
     }
     
     private var corner = 0
@@ -65,7 +66,7 @@ class Enemy(private var collider2D: Collider2D, private val road: Road) : Positi
     }
     
     private fun gameDamage() {
-        gameHealth.getAndAdd(-1)
+        context.gameView()!!.gameHealth.getAndAdd(-1)
         destroy()
     }
     
@@ -121,16 +122,5 @@ class Enemy(private var collider2D: Collider2D, private val road: Road) : Positi
         return road.distanceToNextCornerSquared(position(), corner)
     }
     
-    companion object {
-        private val enemyFrames = arrayOf(
-            BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.slime_f1),
-            BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.slime_f2),
-            /*BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.slime_f3),
-            BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.slime_f4),
-            BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.slime_f5),
-            BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.slime_f6),
-            BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.slime_f7)*/
-        )
-    }
     
 }

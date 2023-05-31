@@ -15,7 +15,6 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.example.towerdefense.activities.GameActivity
 import com.example.towerdefense.databinding.FragmentOptionBinding
-import com.example.towerdefense.utility.screenSize
 import com.example.towerdefense.utility.selectedMap
 import org.joml.Vector2i
 
@@ -27,7 +26,7 @@ class OptionFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentOptionBinding.inflate(inflater, container, false)
         
-        val mapArray: Array<String> =  Roads.values().map { it.name }.toTypedArray()
+        val mapArray: Array<String> = Roads.values().map { it.name }.toTypedArray()
         setupSpinner(mapArray)
         
         initializeButtons()
@@ -92,9 +91,9 @@ class OptionFragment : Fragment() {
             intent.putExtra("enemiesSpeed", enemiesSpeed)
             intent.putExtra("maxTime", maxTime)
             intent.putExtra("gameName", gameName)
-            startActivity(intent)
-            
-            
+            startActivity(intent).also {
+                replaceFragment(MainFragment())
+            }
         }
         
         binding.exitOptions.setOnClickListener {
@@ -130,5 +129,13 @@ class OptionFragment : Fragment() {
         
         binding.spinnerMap.invalidate()
         binding.spinnerMap.requestLayout()
+    }
+    
+    private fun replaceFragment(fragment: Fragment) {
+        requireActivity().supportFragmentManager.beginTransaction().apply {
+            replace(com.example.towerdefense.R.id.fragmentContainerViewMain, fragment)
+            addToBackStack(null)
+            commit()
+        }
     }
 }

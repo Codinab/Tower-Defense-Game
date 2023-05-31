@@ -19,12 +19,10 @@ import org.joml.Vector2f
 import java.util.concurrent.atomic.AtomicBoolean
 
 @SuppressLint("ViewConstructor")
-class TowerSpawner(private val box2D: Box2D, var modelTower: Tower, private val context: Context) :
-    InputEvent, Updatable, Drawable, java.io.Serializable {
+class TowerSpawner(private val box2D: Box2D, var modelTower: Tower, private val context: GameActivity) : InputEvent, Updatable, Drawable, java.io.Serializable {
     
-    constructor(position: SpawnerPosition, modelTower: Tower, context: Context) : this(
-        Box2D(Vector2f(DEF_WIDTH, DEF_HEIGHT), Rigidbody2D(position.vector2f(context))),
-        modelTower, context
+    constructor(position: SpawnerPosition, modelTower: Tower, context: GameActivity) : this(
+        Box2D(Vector2f(DEF_WIDTH, DEF_HEIGHT), Rigidbody2D(position.vector2f(context))), modelTower, context
     ) {
         spawnerPosition = position
     }
@@ -37,7 +35,7 @@ class TowerSpawner(private val box2D: Box2D, var modelTower: Tower, private val 
     }
     
     fun setTexture(resId: Int) {
-        setTexture(BitmapFactory.decodeResource(gameView!!.resources, resId))
+        setTexture(BitmapFactory.decodeResource(context.gameView()!!.resources, resId))
     }
     
     companion object {
@@ -48,7 +46,7 @@ class TowerSpawner(private val box2D: Box2D, var modelTower: Tower, private val 
     }
     
     private val backgroundTextureResized =
-        Bitmap.createScaledBitmap(BitmapFactory.decodeResource(gameView!!.resources, com.example.towerdefense.R.drawable.universal_background), DEF_WIDTH.toInt(), DEF_HEIGHT.toInt(), false)
+        Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.gameView()!!.resources, com.example.towerdefense.R.drawable.universal_background), DEF_WIDTH.toInt(), DEF_HEIGHT.toInt(), false)
     
     init {
     
@@ -57,8 +55,8 @@ class TowerSpawner(private val box2D: Box2D, var modelTower: Tower, private val 
     
     private var lastTower: Tower? = null
     var damageType = TowerArea.DamageType.FIRST
-    override fun onTouchEvent(event: MotionEvent, position: Vector2f): Boolean {
-    
+    override fun onTouchEvent(event: MotionEvent, position: Vector2f, context: GameActivity): Boolean {
+        
         if (lastTower != null && lastTower!!.movable.get()) {
             return false
         }
@@ -66,27 +64,27 @@ class TowerSpawner(private val box2D: Box2D, var modelTower: Tower, private val 
         
         return when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                if (money.getAndAdd(-modelTower.buildCost()) < modelTower.buildCost() ||
-                    gameView!!.surfaceView.movableTower != null
-                ) return false.also {
-                    money.getAndAdd(
+                if (context.gameView()!!.money.getAndAdd(-modelTower.buildCost()) < modelTower.buildCost() || context.gameView()!!.surfaceView.movableTower != null) return false.also {
+                    context.gameView()!!.money.getAndAdd(
                         modelTower.buildCost()
                     )
                 }
                 val tower = modelTower.clone()
                 
-                gameView!!.surfaceView.towers.add(tower)
-                gameView!!.surfaceView.movableTower = tower
-                gameView!!.hideTowerButtons()
+                context.gameView()!!.surfaceView.towers.add(tower)
+                context.gameView()!!.surfaceView.movableTower = tower
+                context.gameView()!!.hideTowerButtons()
                 
                 lastTower = tower
                 towerClicked = tower
-    
+                
                 true
             }
             MotionEvent.ACTION_MOVE -> return true
             MotionEvent.ACTION_UP -> {
-                if (lastTower != null && IntersectionDetector2D.intersection(collider().clone().body.position.add(cameraPosition), lastTower!!.collider())) {
+                if (lastTower != null && IntersectionDetector2D.intersection(collider().clone()
+                        .body.position.add(context.gameView()!!.surfaceView.camera().position()),
+                            lastTower!!.collider())) {
                     lastTower!!.destroy()
                     return true
                 } else lastTower = null
@@ -113,7 +111,8 @@ class TowerSpawner(private val box2D: Box2D, var modelTower: Tower, private val 
     
     private var spawnerPosition: SpawnerPosition? = null
     fun position(spawnerPosition: SpawnerPosition) {
-        position(spawnerPosition.vector2f(context).add(cameraPosition))
+        position(spawnerPosition.vector2f(context).add(context.gameView()!!.
+            surfaceView.camera().position()))
         this.spawnerPosition = spawnerPosition
         modelTower.position(spawnerPosition.vector2f(context))
     }
@@ -123,16 +122,9 @@ class TowerSpawner(private val box2D: Box2D, var modelTower: Tower, private val 
         return super.position()
     }
     
-
-    
     
     enum class SpawnerPosition() {
-        TOP_LEFT,
-        TOP_RIGHT,
-        MIDDLE_LEFT,
-        MIDDLE_RIGHT,
-        BOTTOM_LEFT,
-        BOTTOM_RIGHT;
+        TOP_LEFT, TOP_RIGHT, MIDDLE_LEFT, MIDDLE_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT;
         
         fun vector2f(context: Context): Vector2f {
             (context as GameActivity)
@@ -141,20 +133,16 @@ class TowerSpawner(private val box2D: Box2D, var modelTower: Tower, private val 
                 TOP_LEFT -> Vector2f(screenSize.x - DEF_WIDTH * 2 - PADDING * 2, 300f)
                 TOP_RIGHT -> Vector2f(screenSize.x - DEF_WIDTH - PADDING, 300f)
                 MIDDLE_LEFT -> Vector2f(
-                    screenSize.x - DEF_WIDTH * 2 - PADDING * 2,
-                    TOP_LEFT.vector2f(context).y + DEF_HEIGHT + PADDING
+                    screenSize.x - DEF_WIDTH * 2 - PADDING * 2, TOP_LEFT.vector2f(context).y + DEF_HEIGHT + PADDING
                 )
                 MIDDLE_RIGHT -> Vector2f(
-                    screenSize.x - DEF_WIDTH - PADDING,
-                    TOP_RIGHT.vector2f(context).y + DEF_HEIGHT + PADDING
+                    screenSize.x - DEF_WIDTH - PADDING, TOP_RIGHT.vector2f(context).y + DEF_HEIGHT + PADDING
                 )
                 BOTTOM_LEFT -> Vector2f(
-                    screenSize.x - DEF_WIDTH * 2 - PADDING * 2,
-                    MIDDLE_LEFT.vector2f(context).y + DEF_HEIGHT + PADDING
+                    screenSize.x - DEF_WIDTH * 2 - PADDING * 2, MIDDLE_LEFT.vector2f(context).y + DEF_HEIGHT + PADDING
                 )
                 BOTTOM_RIGHT -> Vector2f(
-                    screenSize.x - DEF_WIDTH - PADDING,
-                    MIDDLE_RIGHT.vector2f(context).y + DEF_HEIGHT + PADDING
+                    screenSize.x - DEF_WIDTH - PADDING, MIDDLE_RIGHT.vector2f(context).y + DEF_HEIGHT + PADDING
                 )
             }
         }
