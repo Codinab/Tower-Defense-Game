@@ -6,11 +6,12 @@ import android.widget.ImageButton
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.example.towerdefense.R
+import com.example.towerdefense.activities.GameActivity
 import com.example.towerdefense.utility.gameView
 import com.example.towerdefense.utility.money
 import com.example.towerdefense.utility.towerClicked
 
-class TowerMenuView(context: Context) : RelativeLayout(context) {
+class TowerMenuView(context: GameActivity) : RelativeLayout(context) {
     private lateinit var sell: ImageButton
     private lateinit var upgrade: ImageButton
     private lateinit var damageType: ImageButton

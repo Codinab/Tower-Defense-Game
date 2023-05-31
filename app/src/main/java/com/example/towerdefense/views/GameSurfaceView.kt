@@ -10,6 +10,7 @@ import android.view.SurfaceView
 import androidx.core.content.ContextCompat
 import com.example.towerdefense.GameLoop
 import com.example.towerdefense.R
+import com.example.towerdefense.activities.GameActivity
 import com.example.towerdefense.gameObjects.*
 import com.example.towerdefense.gameObjects.Camera
 import com.example.towerdefense.gameObjects.lists.ERoundList
@@ -27,7 +28,7 @@ import java.util.*
 import kotlin.collections.HashMap
 
 @SuppressLint("ViewConstructor")
-class GameSurfaceView(private val context: Context, road: Road) : SurfaceView(context), java.io.Serializable {
+class GameSurfaceView(private val context: GameActivity, road: Road) : SurfaceView(context), java.io.Serializable {
     
     var enemies = EnemyList()
     var movableTower: Tower? = null

@@ -2,7 +2,6 @@ package com.example.towerdefense.views
 
 import Roads
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -102,7 +101,7 @@ class GameView(private val context: GameActivity, val name: String = "DefaultGam
         pauseStartButton.position(Vector2f(screenSize.x - 250f, 50f))
     }
     
-    private fun initTowerMenu(context: Context, size: Vector2i) {
+    private fun initTowerMenu(context: GameActivity, size: Vector2i) {
         towerMenuView = TowerMenuView(context)
         val layoutParams = LayoutParams(
             LayoutParams.MATCH_PARENT,
@@ -114,7 +113,7 @@ class GameView(private val context: GameActivity, val name: String = "DefaultGam
         addView(towerMenuView)
     }
     
-    private fun initSurfaceView(context: Context) {
+    private fun initSurfaceView(context: GameActivity) {
         if (selectedMap == null) selectedMap = Roads.values().random().road
         surfaceView = GameSurfaceView(context, selectedMap!!)
         surfaceView.holder.addCallback(this)
@@ -256,7 +255,7 @@ class GameView(private val context: GameActivity, val name: String = "DefaultGam
         restoreGame = onSaveInstanceState()
     }
     
-    private fun initViews(context: Context, size: Vector2i) {
+    private fun initViews(context: GameActivity, size: Vector2i) {
         initSurfaceView(context)
         initTowerMenu(context, size)
         initStartPauseButton(size)
