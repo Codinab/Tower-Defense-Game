@@ -154,24 +154,12 @@ class GameSurfaceView(private val context: GameActivity, road: Road) : SurfaceVi
     }
     
     fun initTowerSpawners() {
-        val towerSpawner2 =
-            TowerSpawner(
-                TowerSpawner.SpawnerPosition.TOP_RIGHT,
-                TCannon(Vector2f(TowerSpawner.SpawnerPosition.TOP_RIGHT.vector2f(context)), context),
-                context
-            )
-        towerSpawner2.setTexture(R.drawable.cannon)
-        addTowerSpawner(towerSpawner2)
-        
-        val towerSpawner3 =
-            TowerSpawner(
-                TowerSpawner.SpawnerPosition.MIDDLE_RIGHT,
-                TLaser(Vector2f(TowerSpawner.SpawnerPosition.MIDDLE_RIGHT.vector2f(context)), context),
-                context
-            )
-        towerSpawner3.setTexture(R.drawable.tlaser)
-        addTowerSpawner(towerSpawner3)
-        
+        tower2()
+        tower3()
+        tower4()
+    }
+    
+    private fun tower4() {
         val towerSpawner4 =
             TowerSpawner(
                 TowerSpawner.SpawnerPosition.BOTTOM_RIGHT,
@@ -182,6 +170,28 @@ class GameSurfaceView(private val context: GameActivity, road: Road) : SurfaceVi
         addTowerSpawner(towerSpawner4)
     }
     
+    private fun tower3() {
+        val towerSpawner3 =
+            TowerSpawner(
+                TowerSpawner.SpawnerPosition.MIDDLE_RIGHT,
+                TLaser(Vector2f(TowerSpawner.SpawnerPosition.MIDDLE_RIGHT.vector2f(context)), context),
+                context
+            )
+        towerSpawner3.setTexture(R.drawable.tlaser)
+        addTowerSpawner(towerSpawner3)
+    }
+    
+    private fun tower2() {
+        val towerSpawner2 =
+            TowerSpawner(
+                TowerSpawner.SpawnerPosition.TOP_RIGHT,
+                TCannon(Vector2f(TowerSpawner.SpawnerPosition.TOP_RIGHT.vector2f(context)), context),
+                context
+            )
+        towerSpawner2.setTexture(R.drawable.cannon)
+        addTowerSpawner(towerSpawner2)
+    }
+    
     @SuppressLint("ClickableViewAccessibility")
     private fun addTowerSpawner(towerSpawner: TowerSpawner) {
         towerSpawners.add(towerSpawner)
@@ -190,11 +200,8 @@ class GameSurfaceView(private val context: GameActivity, road: Road) : SurfaceVi
     private var updates = 0
     @RequiresApi(Build.VERSION_CODES.N) fun update() {
         if (updates == 0) initTowerSpawners()
-        
         rounds.update()
-        
         updateGameObjects()
-        
         deleteObjects()
         updates++
     }
@@ -317,6 +324,7 @@ class GameSurfaceView(private val context: GameActivity, road: Road) : SurfaceVi
         )
     }
     
+
     override fun surfaceCreated(p0: SurfaceHolder) {
         if (restoreSurfaceView != null) {
             restoreSurfaceView = null

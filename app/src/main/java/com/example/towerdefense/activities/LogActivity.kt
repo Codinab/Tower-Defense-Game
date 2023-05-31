@@ -50,32 +50,40 @@ class LogActivity : AppCompatActivity() {
         setContentView(binding.root)
         
         initializeButtons(binding)
-        
+    
+        mailSend(savedInstanceState, binding)
+    }
+    
+    private fun mailSend(savedInstanceState: Bundle?, binding: ActivityLogBinding) {
         emailEditText = findViewById(R.id.emailLog)
         email = "marioferro2002@gmail.com"
+        
         // Get the log message from the intent extras or savedInstanceState
         val name = intent.getStringExtra("log_name")
         val money = intent.getStringExtra("log_money")
         val round = intent.getStringExtra("log_round")
         val result = intent.getStringExtra("log_result")
         
-        
-        
         var logMss = "Game: {$name} Money: {$money} Round: {$round} Result: {$result}"
-        
+    
         if (name == null || money == null || round == null || result == null) {
-            logMss = savedInstanceState?.getString(LOG_MESSAGE_KEY) ?: intent.getStringExtra("log") ?: "Log message"
+            logMss = savedInstanceState?.getString(LOG_MESSAGE_KEY) ?: intent.getStringExtra("log")
+                    ?: "Log message"
         }
-        
+    
+        sendToDatabase(binding, logMss, name, money, round, result)
+    }
+    
+    private fun sendToDatabase(binding: ActivityLogBinding, logMss: String, name: String?, money: String?, round: String?, result: String?) {
         binding.logMessage.setText(logMss)
-        
-        
         dayAndHour = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(Date())
+        
         val editText = findViewById<EditText>(R.id.time)
         editText.setText(dayAndHour)
     
     
-        val gameInfo = GameInfo(name!!, money!!.toInt(), dayAndHour, money!!.toInt(),round!!.toInt(), result!!)
+        val gameInfo =
+            GameInfo(name!!, money!!.toInt(), dayAndHour, money!!.toInt(), round!!.toInt(), result!!)
         myViewModel.insert(gameInfo)
     }
     
