@@ -1,50 +1,57 @@
-package com.example.towerdefense
+package com.example.towerdefense.views
 
 import Roads
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.os.Build
 import android.view.*
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.annotation.RequiresApi
+import com.example.towerdefense.GameLoop
 import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
+import com.example.towerdefense.R
+import com.example.towerdefense.activities.GameActivity
+import com.example.towerdefense.activities.LogActivity
 import com.example.towerdefense.utility.*
 import org.joml.Vector2f
+import org.joml.Vector2i
 import java.util.concurrent.atomic.AtomicInteger
 
-@SuppressLint("ClickableViewAccessibility")
-class GameView(private val context: Context, val name: String = "DefaultGame") : RelativeLayout(context), SurfaceHolder.Callback, java.io.Serializable {
+@RequiresApi(Build.VERSION_CODES.O)
+@SuppressLint("ClickableViewAccessibility", "ViewConstructor")
+class GameView(private val context: GameActivity, val name: String = "DefaultGame", val difficulty: Int, val enemySpeed: Float, val maxTime: Int) : RelativeLayout(context), SurfaceHolder.Callback {
     
     private lateinit var pauseStartButton: GameObjectView
     lateinit var surfaceView: GameSurfaceView
     private lateinit var gameLoop: GameLoop
-    
     private lateinit var towerMenuView: TowerMenuView
     
+    var money: AtomicInteger
+    var gameHealth: AtomicInteger
+    var round: Int
     
     init {
-        gameView = this
-        gameLog = Log()
-        gameLog?.addGameViewLog(this)
+        gameLog = Log(context)
+        gameLog!!.addGameViewLog(this)
         
         //change to horizontal view
         setBackgroundColor(Color.TRANSPARENT)
         initSurfaceView(context)
         
-        
-        initTowerMenu(context)
-        initStartPauseButton()
-        initRoundCounter()
-        
+        val size = context.getScreenSize()
+        initViews(context, size)
         hideTowerButtons()
         
         money = AtomicInteger(1000)
-        gameHealth = AtomicInteger(999999999)
+        gameHealth = AtomicInteger(20)
         round = 1
         
+        invalidate()
+        requestLayout()
     }
     
     var roundCounter: TextView? = null
@@ -71,13 +78,13 @@ class GameView(private val context: Context, val name: String = "DefaultGame") :
     val continueTexture =
         BitmapFactory.decodeResource(resources, R.drawable.continue_button)
     private val pauseTexture = BitmapFactory.decodeResource(resources, R.drawable.pause_button)
-    private fun initStartPauseButton() {
-        
+    private fun initStartPauseButton(size: Vector2i) {
         pauseStartButton = GameObjectView(
             context, Box2D(
                 Vector2f(250f, 100f), Rigidbody2D(
                     Vector2f(
-                        screenSize.x - 250f, 50f
+                        size.x - 250f,
+                        50f
                     )
                 )
             )
@@ -96,14 +103,14 @@ class GameView(private val context: Context, val name: String = "DefaultGame") :
     }
     
     private fun updatePosStartPauseButton() {
-        pauseStartButton.position(Vector2f(screenSize.x - 250f, 50f))
+        pauseStartButton.position(Vector2f(context.getScreenSize().x - 250f, 50f))
     }
     
-    private fun initTowerMenu(context: Context) {
+    private fun initTowerMenu(context: GameActivity, size: Vector2i) {
         towerMenuView = TowerMenuView(context)
         val layoutParams = LayoutParams(
             LayoutParams.MATCH_PARENT,
-            screenSize.y / 4
+            size.y / 4
         )
         layoutParams.addRule(ALIGN_PARENT_BOTTOM)
         towerMenuView.layoutParams = layoutParams
@@ -111,7 +118,7 @@ class GameView(private val context: Context, val name: String = "DefaultGame") :
         addView(towerMenuView)
     }
     
-    private fun initSurfaceView(context: Context) {
+    private fun initSurfaceView(context: GameActivity) {
         if (selectedMap == null) selectedMap = Roads.values().random().road
         surfaceView = GameSurfaceView(context, selectedMap!!)
         surfaceView.holder.addCallback(this)
@@ -137,15 +144,15 @@ class GameView(private val context: Context, val name: String = "DefaultGame") :
         towerMenuView.visibility = INVISIBLE
     }
     
-    fun update() {
+    @RequiresApi(Build.VERSION_CODES.N) fun update() {
         surfaceView.update()
         updateRoundCounter()
         towerMenuView.updateCostTexts()
-        if ((gameHealth.get() <= 0)&& !end) {
+        if ((gameHealth.get() <= 0) && !end) {
             gameHealth.set(0)
             end()
         }
-        if (TimeController.timeLeft() <= 0 && !end && TimeController.timeLeft() != -100L) {
+        if (TimeController.timeLeft(context.gameView()!!.maxTime) <= 0 && !end && TimeController.timeLeft(context.gameView()!!.maxTime) != -100L) {
             gameHealth.set(0)
             end()
         }
@@ -183,6 +190,14 @@ class GameView(private val context: Context, val name: String = "DefaultGame") :
         gameLoop = GameLoop(this)
         gameLoop.startLoop()
         surfaceView.gameLoop = gameLoop
+    }
+    
+    fun stop() {
+        if (!::gameLoop.isInitialized) return
+        if (!gameLoop.isRunning) return
+        
+        gamePause()
+        gameLoop.stopLoop()
     }
     
     fun gamePause() {
@@ -226,19 +241,47 @@ class GameView(private val context: Context, val name: String = "DefaultGame") :
     }
     
     override fun surfaceChanged(p0: SurfaceHolder, p1: Int, p2: Int, p3: Int) {
-        //onSaveInstanceState(this)
         if (!isRunning()) {
             start()
             gamePause()
         }
-    
-        (context as OptionActivity).rotation()
-        updatePosStartPauseButton()
-        updateRoundCounter()
+        
+        val size = Vector2i(p2, p3)
+   
+        updateViews(size)
+        if (towerClicked == null) {
+            towerMenuView.visibility = INVISIBLE
+        }
         restoreGame = onSaveInstanceState()
+    }
+    
+    private fun initViews(context: GameActivity, size: Vector2i) {
+        initSurfaceView(context)
+        initTowerMenu(context, size)
+        initStartPauseButton(size)
+        initRoundCounter()
+    }
+    private fun updateViews(size: Vector2i) {
+        updateTowerMenu(size)
+        updatePauseStartButton(size)
+        updateRoundCounter()
+    }
+    
+    private fun updateTowerMenu(size: Vector2i) {
+        // remove and re-add the tower menu to update its position
+        removeView(towerMenuView)
+        initTowerMenu(context, size)
+    }
+    
+    private fun updatePauseStartButton(size: Vector2i) {
+        // remove and re-add the start/pause button to update its position
+        removeView(pauseStartButton)
+        initStartPauseButton(size)
     }
     
     override fun surfaceDestroyed(p0: SurfaceHolder) {
         restoreGame = onSaveInstanceState()
     }
+    
+    
 }

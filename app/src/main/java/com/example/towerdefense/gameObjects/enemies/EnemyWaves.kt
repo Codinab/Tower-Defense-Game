@@ -1,8 +1,7 @@
 package com.example.towerdefense.gameObjects.enemies
 
+import com.example.towerdefense.activities.GameActivity
 import com.example.towerdefense.gameObjects.enemies.EnemyWave.Companion.enemyWaveGenerator
-import com.example.towerdefense.utility.difficulty
-import com.example.towerdefense.utility.enemiesSpeed
 
 enum class EnemyWaves(private val wave: EnemyWave, private val difficulty: Int) {
     
@@ -68,8 +67,8 @@ enum class EnemyWaves(private val wave: EnemyWave, private val difficulty: Int) 
     Tier6Wave9(enemyWaveGenerator(100, 5L) { EnemyGenerator(10, 15f) }, 27);
     
     
-    fun getValue(): EnemyWave {
-        return this.wave.clone()
+    fun getValue(context: GameActivity): EnemyWave {
+        return this.wave.clone(context)
     }
-    
+
 }

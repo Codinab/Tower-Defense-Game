@@ -7,6 +7,7 @@ import android.view.MotionEvent
 import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
+import com.example.towerdefense.activities.GameActivity
 import com.example.towerdefense.gameObjects.lists.EnemyList
 import com.example.towerdefense.gameObjects.tower.utils.TowerArea
 import com.example.towerdefense.utility.*
@@ -17,7 +18,7 @@ import com.example.towerdefense.utility.textures.Drawing
 import org.joml.Vector2f
 import java.util.concurrent.atomic.AtomicBoolean
 
-abstract class Tower(var radius: Float, private val box2D: Box2D) : Movable,
+abstract class Tower(var radius: Float, private val box2D: Box2D, private val context: GameActivity) : Movable,
     Drawable, java.io.Serializable, InputEvent {
     
     override var lastClickTime: Long = 0L
@@ -26,7 +27,7 @@ abstract class Tower(var radius: Float, private val box2D: Box2D) : Movable,
     protected abstract var timeActionDelay: Float
     protected var level: Int = 1
     
-    var towerArea: TowerArea = TowerArea(radius, box2D.body)
+    var towerArea: TowerArea = TowerArea(radius, box2D.body, context)
     override fun draw(canvas: Canvas) {
         if (towerClicked == this) towerArea.draw(canvas)
         drawPositionable(canvas)
@@ -65,9 +66,9 @@ abstract class Tower(var radius: Float, private val box2D: Box2D) : Movable,
         } else if (isClicked(position)) {
             towerClicked = if (towerClicked == this) null else this
             if (towerClicked == null) {
-                gameView!!.hideTowerButtons()
+                context.gameView()!!.hideTowerButtons()
             } else if (towerClicked == this) {
-                gameView!!.showTowerButtons()
+                context.gameView()!!.showTowerButtons()
             }
             val currentTime = System.currentTimeMillis()
             lastClickTime = currentTime
@@ -76,11 +77,11 @@ abstract class Tower(var radius: Float, private val box2D: Box2D) : Movable,
         return false
     }
     
-    override fun handleUpEvent(event: MotionEvent, position: Vector2f): Boolean {
+    override fun handleUpEvent(event: MotionEvent, position: Vector2f, context: GameActivity): Boolean {
         if (fixable.get()) {
             fixable.set(false)
             movable.set(false)
-            gameView!!.showTowerButtons()
+            context.gameView()!!.showTowerButtons()
             return true
         }
         return false
@@ -89,19 +90,19 @@ abstract class Tower(var radius: Float, private val box2D: Box2D) : Movable,
     override fun handleMoveEvent(event: MotionEvent, position: Vector2f): Boolean {
         if (movable.get()) {
             position(position)
-            if(gameView!!.surfaceView.road.getPositionableAreaBox2Ds(3)
+            if(context.gameView()!!.surfaceView.road.getPositionableAreaBox2Ds(3)
                 .any { IntersectionDetector2D.intersection(collider(), it)}) {
                 fixable.set(true)
             } else
                 fixable.set(false)
                 
             
-            gameView!!.surfaceView.towers.filterNot { it == this }.forEach {
+            context.gameView()!!.surfaceView.towers.filterNot { it == this }.forEach {
                 if(IntersectionDetector2D.intersection(collider(), it.collider())) {
                     fixable.set(false)
                 }
             }
-            for (positionBox2D in gameView!!.surfaceView.road.getPositionBox2Ds()) {
+            for (positionBox2D in context.gameView()!!.surfaceView.road.getPositionBox2Ds()) {
                 if(IntersectionDetector2D.intersection(collider(), positionBox2D)) {
                     fixable.set(false)
                 }

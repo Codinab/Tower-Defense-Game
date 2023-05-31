@@ -8,8 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.example.towerdefense.R
 import com.example.towerdefense.utility.Road
-import com.example.towerdefense.utility.gameView
-import com.example.towerdefense.utility.screenSize
+
 import org.joml.Vector2f
 import org.joml.Vector2i
 import java.util.*

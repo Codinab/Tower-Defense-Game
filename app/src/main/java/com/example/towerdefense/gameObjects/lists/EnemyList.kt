@@ -4,7 +4,6 @@ import android.graphics.Canvas
 import android.view.MotionEvent
 import com.example.towerdefense.gameObjects.enemies.Enemy
 import com.example.towerdefense.utility.gameLog
-import com.example.towerdefense.utility.money
 import org.joml.Vector2f
 import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList

@@ -1,4 +1,4 @@
-package com.example.towerdefense
+package com.example.towerdefense.views
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -6,12 +6,12 @@ import android.graphics.Color
 import android.view.ViewGroup
 import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
+import com.example.towerdefense.activities.GameActivity
 import com.example.towerdefense.utility.Interfaces.Positionable
-import com.example.towerdefense.utility.cameraPosition
 import org.joml.Vector2f
 
 @SuppressLint("ViewConstructor")
-class GameObjectView(context: Context, private var collider2D: Collider2D) :
+class GameObjectView(private val context: GameActivity, private var collider2D: Collider2D) :
     androidx.appcompat.widget.AppCompatImageView(context), Positionable {
 
     var lastClickTime: Long = 0
@@ -37,7 +37,7 @@ class GameObjectView(context: Context, private var collider2D: Collider2D) :
     }
 
     override fun position(): Vector2f {
-        return Vector2f(collider2D.body.position).add(cameraPosition)
+        return Vector2f(collider2D.body.position).add(context.gameView()!!.surfaceView.camera().position())
     }
     
     override fun collider(): Collider2D {

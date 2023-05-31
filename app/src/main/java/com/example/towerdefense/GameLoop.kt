@@ -1,7 +1,7 @@
 package com.example.towerdefense
 
-import android.graphics.Canvas
-import android.view.SurfaceView
+import com.example.towerdefense.views.GameSurfaceView
+import com.example.towerdefense.views.GameView
 
 /**
  *
@@ -42,7 +42,13 @@ class GameLoop(private val game: GameView) : Thread() {
 
             try { //Update and render
                 synchronized(view.holder) {
-                    game.update()
+                    try{
+                        game.update()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        isRunning = false
+                        return
+                    }
                     updateCount++
                     view.postInvalidate()
                     frameCount++

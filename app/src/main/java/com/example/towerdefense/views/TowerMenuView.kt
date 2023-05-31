@@ -1,18 +1,17 @@
-package com.example.towerdefense
+package com.example.towerdefense.views
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.BitmapFactory
-import android.graphics.Color
-import android.view.View
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.RelativeLayout
 import android.widget.TextView
-import com.example.towerdefense.utility.gameView
-import com.example.towerdefense.utility.money
+import com.example.towerdefense.R
+import com.example.towerdefense.activities.GameActivity
 import com.example.towerdefense.utility.towerClicked
 
-class TowerMenuView(context: Context) : RelativeLayout(context) {
+@SuppressLint("ViewConstructor")
+class TowerMenuView(private val context: GameActivity) : RelativeLayout(context) {
     private lateinit var sell: ImageButton
     private lateinit var upgrade: ImageButton
     private lateinit var damageType: ImageButton
@@ -133,30 +132,30 @@ class TowerMenuView(context: Context) : RelativeLayout(context) {
     private fun setOnclickListeners() {
         sell.setOnClickListener {
             if (towerClicked != null) {
-                money.addAndGet(towerClicked!!.buildCost())
+                context.gameView()!!.money.addAndGet(towerClicked!!.buildCost())
                 towerClicked!!.destroy()
-                gameView!!.hideTowerButtons()
+                context.gameView()!!.hideTowerButtons()
             }
         }
         
         upgrade.setOnClickListener {
             if (towerClicked != null) {
-                if (money.addAndGet(-towerClicked!!.upgradeCost()) >= 0) towerClicked!!.upgrade()
-                else money.addAndGet(towerClicked!!.upgradeCost())
+                if (context.gameView()!!.money.addAndGet(-towerClicked!!.upgradeCost()) >= 0) towerClicked!!.upgrade()
+                else context.gameView()!!.money.addAndGet(towerClicked!!.upgradeCost())
             }
         }
         
         damageType.setOnClickListener {
             towerClicked?.let {
                 towerClicked!!.nextToDamageType()
-                damageType.setImageBitmap(towerClicked!!.getToDamageType().getBitmap())
+                damageType.setImageBitmap(towerClicked!!.getToDamageType().getBitmap(context))
             }
         }
         
     }
     
     fun showTowerButtons() {
-        damageType.setImageBitmap(towerClicked?.getToDamageType()!!.getBitmap())
+        damageType.setImageBitmap(towerClicked?.getToDamageType()!!.getBitmap(context))
     }
     
     //Just a test function

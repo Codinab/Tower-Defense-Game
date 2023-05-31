@@ -36,4 +36,8 @@
     <string name="mail">marioferro2002_gmail_com</string>
 
     <string name="empty_string" />
+    <string name="add_word">ADD_WORD\n</string>
+    <string name="hint_gameInfo">Game Info...</string>
+    <string name="button_save">Save\n</string>
+    <string name="empty_not_saved">not saved empty\n</string>
 </resources>

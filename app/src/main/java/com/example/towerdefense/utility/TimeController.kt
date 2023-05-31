@@ -22,7 +22,7 @@ class TimeController {
             startTime = System.currentTimeMillis()
         }
         
-        fun timeLeft(): Long {
+        fun timeLeft(maxTime: Int): Long {
             if (maxTime == -100) return -100L
             return (maxTime * 1000L - (getSinceGameStart() - getGameTime())) / 1000
         }

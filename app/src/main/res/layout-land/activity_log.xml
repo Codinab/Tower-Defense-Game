@@ -81,38 +81,31 @@
         android:id="@+id/sendLog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="128dp"
         android:backgroundTint="#00FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emailLog"
-        app:layout_constraintVertical_bias="0.526"
         app:srcCompat="@drawable/send" />
 
     <ImageButton
         android:id="@+id/exitLog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="116dp"
         android:backgroundTint="#00FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emailLog"
-        app:layout_constraintVertical_bias="0.526"
         app:srcCompat="@drawable/exit" />
 
     <ImageButton
         android:id="@+id/newGameLog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:backgroundTint="#00FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/exitLog"
-        app:layout_constraintHorizontal_bias="0.387"
         app:layout_constraintStart_toEndOf="@+id/sendLog"
         app:layout_constraintTop_toBottomOf="@+id/emailLog"
-        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/new_game" />
 
     <androidx.constraintlayout.widget.Guideline

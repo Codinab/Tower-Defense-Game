@@ -1,5 +1,7 @@
 package com.example.towerdefense.gameObjects.enemies
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.example.towerdefense.utility.Interfaces.Removable
 import com.example.towerdefense.utility.TimeController
 
@@ -9,7 +11,7 @@ class ERound() : Removable, java.io.Serializable {
     var roundStartTime: Long = Long.MAX_VALUE
     private var canStartERounds = false
     
-    fun update() {
+    @RequiresApi(Build.VERSION_CODES.N) fun update() {
         if (TimeController.isPaused() || toDelete() || !canStartERounds) return
         if (roundStartTime == Long.MAX_VALUE) throw Exception("Round start time not set")
         for (wave in waves) {

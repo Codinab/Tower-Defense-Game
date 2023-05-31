@@ -1,10 +1,12 @@
 package com.example.towerdefense.gameObjects.tower
 
+import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import com.example.towerdefense.Physics2d.JMath
 import com.example.towerdefense.Physics2d.primitives.Box2D
+import com.example.towerdefense.activities.GameActivity
 import com.example.towerdefense.gameObjects.tower.utils.TowerArea
 import com.example.towerdefense.utility.textures.Drawing
 import com.example.towerdefense.utility.TimeController
@@ -13,8 +15,8 @@ import java.lang.Float.max
 import java.lang.Float.min
 
 //Work in progress
-class TInferno(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
-    constructor(position: Vector2f) : this(300f, Box2D(Vector2f(120f, 120f), position))
+class TInferno(radius: Float, private val box2D: Box2D, private val context: GameActivity) : Tower(radius, box2D, context) {
+    constructor(position: Vector2f, context: GameActivity) : this(300f, Box2D(Vector2f(120f, 120f), position), context)
     
     init {
         setToDamageType(TowerArea.DamageType.MOST_HEALTH)
@@ -144,7 +146,7 @@ class TInferno(radius: Float, private val box2D: Box2D) : Tower(radius, box2D) {
     }
     
     override fun clone(): Tower {
-        return TInferno(radius, box2D.clone() as Box2D)
+        return TInferno(radius, box2D.clone() as Box2D, context)
     }
     
 }

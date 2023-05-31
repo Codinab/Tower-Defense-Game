@@ -1,12 +1,19 @@
 package com.example.towerdefense.gameObjects.enemies
 
+import com.example.towerdefense.activities.GameActivity
 import com.example.towerdefense.utility.Road
 
 class EnemyGenerator(var health: Int, var velocity: Float) {
     
-    
+    private var context: GameActivity? = null
+    fun setContext(context: GameActivity) {
+        this.context = context
+    }
     fun getEnemy(road: Road): Enemy {
-        val enemy = Enemy(road)
+        if (this.context == null) {
+            throw Exception("Context is null")
+        }
+        val enemy = Enemy(road, context!!)
         enemy.health(health)
         enemy.velocity(velocity)
         return enemy

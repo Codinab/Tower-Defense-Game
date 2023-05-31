@@ -1,0 +1,68 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "f2b8711625e0391809c0f39c7f6c4840",
+    "entities": [
+      {
+        "tableName": "game_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`gameName` TEXT NOT NULL, `gameScore` INTEGER NOT NULL, `gameDate` TEXT NOT NULL DEFAULT 'your_default_value', `gameMoney` INTEGER NOT NULL DEFAULT your_default_value, `gameRound` INTEGER NOT NULL DEFAULT your_default_value, `gameResult` TEXT NOT NULL DEFAULT 'your_default_value', PRIMARY KEY(`gameName`))",
+        "fields": [
+          {
+            "fieldPath": "name",
+            "columnName": "gameName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "score",
+            "columnName": "gameScore",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "gameDate",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'your_default_value'"
+          },
+          {
+            "fieldPath": "money",
+            "columnName": "gameMoney",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "your_default_value"
+          },
+          {
+            "fieldPath": "round",
+            "columnName": "gameRound",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "your_default_value"
+          },
+          {
+            "fieldPath": "result",
+            "columnName": "gameResult",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'your_default_value'"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "gameName"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f2b8711625e0391809c0f39c7f6c4840')"
+    ]
+  }
+}

@@ -18,4 +18,8 @@
         <item name="android:textColor">@color/white</item>
         <item name="android:text"> @string/empty_string</item>
     </style>
+
+    <style name="word_title">BBDD</style>
+
+
 </resources>

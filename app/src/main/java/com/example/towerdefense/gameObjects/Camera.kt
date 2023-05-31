@@ -10,7 +10,7 @@ class Camera {
     private var previousTouchY = 0f
     internal var moving = false
 
-    fun cameraPosition(): Vector2f {
+    fun position(): Vector2f {
         return position
     }
 
@@ -30,7 +30,6 @@ class Camera {
         position.y -= event.y - previousTouchY
         previousTouchX = event.x
         previousTouchY = event.y
-        com.example.towerdefense.utility.cameraPosition = position
     }
 
     fun adjustedPosition(event: MotionEvent): Vector2f {

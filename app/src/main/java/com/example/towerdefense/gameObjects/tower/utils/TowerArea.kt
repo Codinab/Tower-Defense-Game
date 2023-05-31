@@ -6,15 +6,15 @@ import com.example.towerdefense.Physics2d.primitives.Collider2D
 import com.example.towerdefense.Physics2d.rigidbody.IntersectionDetector2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.R
+import com.example.towerdefense.activities.GameActivity
 import com.example.towerdefense.gameObjects.enemies.Enemy
 import com.example.towerdefense.gameObjects.lists.EnemyList
 import com.example.towerdefense.utility.KMath.Companion.anglePositionToTarget
 import com.example.towerdefense.utility.TimeController
-import com.example.towerdefense.utility.gameView
 import org.joml.Vector2f
 
-class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
-    constructor(radius: Float, center: Vector2f) : this(radius, Rigidbody2D(center))
+class TowerArea(rad: Float, center: Rigidbody2D, private val context: GameActivity) : Circle(rad, center) {
+    constructor(radius: Float, center: Vector2f, context: GameActivity) : this(radius, Rigidbody2D(center), context)
     
     override fun draw(p0: Canvas) {
         //Draw circle with radius radius
@@ -74,7 +74,7 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
     
     fun toDamageList(): ArrayList<Enemy>? {
         val toDamageList = ArrayList<Enemy>()
-        while(inArea.isNotEmpty()) {
+        while (inArea.isNotEmpty()) {
             toDamageList.add(toDamage() ?: return null)
             inArea.remove(toDamageList.last())
         }
@@ -114,7 +114,6 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
     }
     
     
-    
     private fun getLast(): Enemy? {
         val nonNullInArea = inArea.filterNotNull()
         if (nonNullInArea.isEmpty()) return null
@@ -132,9 +131,6 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
             null
         }
     }
-    
-    
-    
     
     
     private fun getLeastHealthy(): Enemy? = inArea.minByOrNull { it.getMaxHealth() }
@@ -161,7 +157,7 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
     }
     
     
-    override fun clone(): Collider2D = TowerArea(radius, Vector2f(center))
+    override fun clone(): Collider2D = TowerArea(radius, Vector2f(center), context)
     
     
     override fun toString(): String = "TowerArea(inArea=$inArea, damageType=$damageType)"
@@ -171,45 +167,45 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
         FIRST, LAST, RANDOM, MOST_HEALTH, LEAST_HEALTH, FASTEST, SLOWEST;
         
         companion object {
-            private fun firstBitmap(): Bitmap {
+            private fun firstBitmap(context: GameActivity): Bitmap {
                 if (firstBitmap == null) firstBitmap =
-                    BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.first_damage)
+                    BitmapFactory.decodeResource(context.resources, R.drawable.first_damage)
                 return firstBitmap!!
             }
             
-            private fun lastBitmap(): Bitmap {
+            private fun lastBitmap(context: GameActivity): Bitmap {
                 if (lastBitmap == null) lastBitmap =
-                    BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.last_damage)
+                    BitmapFactory.decodeResource(context.resources, R.drawable.last_damage)
                 return lastBitmap!!
             }
             
-            private fun randomBitmap(): Bitmap {
+            private fun randomBitmap(context: GameActivity): Bitmap {
                 if (randomBitmap == null) randomBitmap =
-                    BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.random_damage)
+                    BitmapFactory.decodeResource(context.resources, R.drawable.random_damage)
                 return randomBitmap!!
             }
             
-            private fun mostHealthBitmap(): Bitmap {
+            private fun mostHealthBitmap(context: GameActivity): Bitmap {
                 if (mostHealthBitmap == null) mostHealthBitmap =
-                    BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.most_health_damage)
+                    BitmapFactory.decodeResource(context.resources, R.drawable.most_health_damage)
                 return mostHealthBitmap!!
             }
             
-            private fun leastHealthBitmap(): Bitmap {
+            private fun leastHealthBitmap(context: GameActivity): Bitmap {
                 if (leastHealthBitmap == null) leastHealthBitmap =
-                    BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.least_health_damage)
+                    BitmapFactory.decodeResource(context.resources, R.drawable.least_health_damage)
                 return leastHealthBitmap!!
             }
             
-            private fun fastestBitmap(): Bitmap {
+            private fun fastestBitmap(context: GameActivity): Bitmap {
                 if (fastestBitmap == null) fastestBitmap =
-                    BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.fastest_damage)
+                    BitmapFactory.decodeResource(context.resources, R.drawable.fastest_damage)
                 return fastestBitmap!!
             }
             
-            private fun slowestBitmap(): Bitmap {
+            private fun slowestBitmap(context: GameActivity): Bitmap {
                 if (slowestBitmap == null) slowestBitmap =
-                    BitmapFactory.decodeResource(gameView!!.context.resources, R.drawable.slowest_damage)
+                    BitmapFactory.decodeResource(context.resources, R.drawable.slowest_damage)
                 return slowestBitmap!!
             }
             
@@ -222,15 +218,15 @@ class TowerArea(rad: Float, center: Rigidbody2D) : Circle(rad, center) {
             private var slowestBitmap: Bitmap? = null
         }
         
-        fun getBitmap(): Bitmap {
+        fun getBitmap(context: GameActivity): Bitmap {
             return when (this) {
-                FIRST -> firstBitmap()
-                LAST -> lastBitmap()
-                RANDOM -> randomBitmap()
-                MOST_HEALTH -> mostHealthBitmap()
-                LEAST_HEALTH -> leastHealthBitmap()
-                FASTEST -> fastestBitmap()
-                SLOWEST -> slowestBitmap()
+                FIRST -> firstBitmap(context)
+                LAST -> lastBitmap(context)
+                RANDOM -> randomBitmap(context)
+                MOST_HEALTH -> mostHealthBitmap(context)
+                LEAST_HEALTH -> leastHealthBitmap(context)
+                FASTEST -> fastestBitmap(context)
+                SLOWEST -> slowestBitmap(context)
             }
         }
     }
