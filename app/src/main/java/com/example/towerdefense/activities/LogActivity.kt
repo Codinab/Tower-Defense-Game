@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
 import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.towerdefense.R
@@ -51,31 +52,40 @@ class LogActivity : AppCompatActivity() {
         
         initializeButtons(binding)
         
+        mailSend(savedInstanceState, binding)
+    }
+    
+    var logMss = ""
+    private fun mailSend(savedInstanceState: Bundle?, binding: ActivityLogBinding) {
         emailEditText = findViewById(R.id.emailLog)
         email = "marioferro2002@gmail.com"
+        
         // Get the log message from the intent extras or savedInstanceState
         val name = intent.getStringExtra("log_name")
         val money = intent.getStringExtra("log_money")
         val round = intent.getStringExtra("log_round")
         val result = intent.getStringExtra("log_result")
         
-        
-        
-        var logMss = "Game: {$name} Money: {$money} Round: {$round} Result: {$result}"
+        logMss = "Game: {$name} Money: {$money} Round: {$round} Result: {$result}"
         
         if (name == null || money == null || round == null || result == null) {
-            logMss = savedInstanceState?.getString(LOG_MESSAGE_KEY) ?: intent.getStringExtra("log") ?: "Log message"
+            logMss = savedInstanceState?.getString(LOG_MESSAGE_KEY) ?: intent.getStringExtra("log")
+                    ?: "Log message"
         }
         
+        sendToDatabase(binding, logMss, name, money, round, result)
+    }
+    
+    private fun sendToDatabase(binding: ActivityLogBinding, logMss: String, name: String?, money: String?, round: String?, result: String?) {
         binding.logMessage.setText(logMss)
-        
-        
         dayAndHour = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(Date())
+        
         val editText = findViewById<EditText>(R.id.time)
         editText.setText(dayAndHour)
-    
-    
-        val gameInfo = GameInfo(name!!, money!!.toInt(), dayAndHour, money!!.toInt(),round!!.toInt(), result!!)
+        
+        
+        val gameInfo =
+            GameInfo(name!!, money!!.toInt(), dayAndHour, money!!.toInt(), round!!.toInt(), result!!)
         myViewModel.insert(gameInfo)
     }
     
@@ -98,15 +108,21 @@ class LogActivity : AppCompatActivity() {
     }
     
     private fun sendPredefinedMail() {
-        val intent = Intent(Intent.ACTION_SENDTO)
-        intent.data =
-            Uri.parse("mailto:$email") // only email apps should handle this
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Tower Defense Log")
-        intent.putExtra(Intent.EXTRA_TEXT, "test")
+        val intent = Intent(Intent.ACTION_SENDTO).apply {
+            data = Uri.parse("mailto:") // only email apps should handle this
+            putExtra(Intent.EXTRA_EMAIL, arrayOf(email)) // recipients
+            putExtra(Intent.EXTRA_SUBJECT, "Tower Defense Log")
+            putExtra(Intent.EXTRA_TEXT, logMss)
+        }
+        
         if (intent.resolveActivity(packageManager) != null) {
             startActivity(intent)
+        } else {
+            // No app found to handle this intent, inform user or take alternative action
+            Toast.makeText(this, "No email client found", Toast.LENGTH_SHORT).show()
         }
     }
+    
     
     // Override onSaveInstanceState to save the log message
     override fun onSaveInstanceState(outState: Bundle) {
@@ -114,6 +130,5 @@ class LogActivity : AppCompatActivity() {
         val logMessage = findViewById<EditText>(R.id.logMessage).text.toString()
         outState.putString(LOG_MESSAGE_KEY, logMessage)
     }
-    
     // No need to override onRestoreInstanceState, as we already restored the log message in onCreate
 }

@@ -47,7 +47,7 @@ class GameView(private val context: GameActivity, val name: String = "DefaultGam
         hideTowerButtons()
         
         money = AtomicInteger(1000)
-        gameHealth = AtomicInteger(1)
+        gameHealth = AtomicInteger(20)
         round = 1
         
         invalidate()

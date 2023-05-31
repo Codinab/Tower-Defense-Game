@@ -32,9 +32,6 @@
             android:name=".activities.LogActivity"
             android:screenOrientation="fullSensor" />
         <activity
-            android:name=".activities.HelpActivity"
-            android:screenOrientation="fullSensor" />
-        <activity
             android:name=".activities.GameActivity"
             android:exported="true"
             android:screenOrientation="fullSensor" />

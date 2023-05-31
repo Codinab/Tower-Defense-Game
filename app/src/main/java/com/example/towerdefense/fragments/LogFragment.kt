@@ -20,14 +20,19 @@ class LogFragment : Fragment() {
     }
     
     fun addLog(log: String) {
-        activity?.runOnUiThread {
-            binding!!.logLinearLayout.addView(TextView(requireContext()).apply {
-                layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-                text = log
-            })
-            // Scroll to bottom
-            binding!!.logScrollView.post { binding!!.logScrollView.fullScroll(View.FOCUS_DOWN) }
+        if (binding?.logLinearLayout == null) return
+        try {
+            activity?.runOnUiThread {
+                binding?.logLinearLayout?.addView(TextView(requireContext()).apply {
+                    layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                    text = log
+                }.also { binding!!.logScrollView.post { binding!!.logScrollView.fullScroll(View.FOCUS_DOWN) } })
+                // Scroll to bottom
+            }
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
         }
+        
     }
     
     

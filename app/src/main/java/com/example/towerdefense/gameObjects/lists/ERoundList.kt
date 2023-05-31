@@ -31,8 +31,6 @@ class ERoundList(private val rounds: Vector<ERound> = Vector(), private val cont
             roundStart = false
         }
         
-        println("ERoundList update")
-    
         if (rounds.isEmpty() && context.gameView()!!.surfaceView.enemies.isEmpty()) {
             context.gameView()!!.end()
         }

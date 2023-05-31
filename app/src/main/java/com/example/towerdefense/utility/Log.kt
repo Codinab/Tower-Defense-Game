@@ -11,14 +11,13 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class Log(private val context: GameActivity) {
-    private val log: MutableList<String> = mutableListOf()
+
     
     @RequiresApi(Build.VERSION_CODES.O) fun addLog(message: String) {
         val currentTime = LocalDateTime.now()
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         val formattedTime = currentTime.format(formatter)
         val logMessage = "[$formattedTime] $message"
-        log.add(logMessage)
         context.addLog(logMessage)
     }
     

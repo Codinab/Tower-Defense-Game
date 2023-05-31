@@ -1,5 +1,6 @@
 package com.example.towerdefense.activities
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.SurfaceHolder
 import android.view.Window
@@ -48,9 +49,12 @@ class GameActivity : AppCompatActivity() {
     }
     
     fun addLog(log: String) {
-        val fragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerViewLog) as LogFragment?
-        if (fragment?.binding != null) {
-            fragment.addLog(log)
+        val screenSize = resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK
+        if (screenSize == Configuration.SCREENLAYOUT_SIZE_LARGE || screenSize == Configuration.SCREENLAYOUT_SIZE_XLARGE) {
+            val fragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerViewLog) as LogFragment?
+            if (fragment?.binding != null) {
+                fragment.addLog(log)
+            }
         }
     }
     

@@ -1,7 +1,5 @@
 package com.example.towerdefense
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.example.towerdefense.views.GameSurfaceView
 import com.example.towerdefense.views.GameView
 
@@ -29,7 +27,6 @@ class GameLoop(private val game: GameView) : Thread() {
         start()
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
     override fun run() {
         super.run()
         var updateCount: Int = 0
@@ -46,7 +43,7 @@ class GameLoop(private val game: GameView) : Thread() {
             try { //Update and render
                 synchronized(view.holder) {
                     try{
-                        view.update()
+                        game.update()
                     } catch (e: Exception) {
                         e.printStackTrace()
                         isRunning = false
