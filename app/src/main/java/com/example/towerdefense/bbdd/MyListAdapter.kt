@@ -23,15 +23,18 @@ class MyListAdapter : ListAdapter<GameInfo, MyListAdapter.GameInfoViewHolder>(Ga
     }
     
     class GameInfoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val textViewGameInfo: TextView = itemView.findViewById(R.id.levelTextView)
+        private val textViewGameInfo: TextView = itemView.findViewById(R.id.previewTextView)
+        //private val descriptionViewGameInfo: TextView = itemView.findViewById(R.id.descriptionTextView)
         
        
         
         fun bind(game: GameInfo) {
+    
+            val nameResultText = "Name: ${game.name}\nResult: ${game.score}"
+            val helloText = "Hello"
+            val finalText = "$nameResultText\n$helloText"
+            textViewGameInfo.text = finalText
             
-            textViewGameInfo.text = "Name: ${game.name} Score: ${game.score}"
-           
-            textViewGameInfo.background
         }
         
         companion object {
