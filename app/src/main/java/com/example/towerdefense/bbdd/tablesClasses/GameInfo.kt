@@ -11,5 +11,17 @@ class GameInfo(
     val name: String,
     
     @ColumnInfo(name = "gameScore")
-    val score: Int
+    val score: Int,
+    
+    @ColumnInfo(name = "gameDate", defaultValue = "your_default_value")
+    val date: String,
+    
+    @ColumnInfo(name = "gameMoney", defaultValue = "your_default_value")
+    val money: Int,
+    
+    @ColumnInfo(name = "gameRound", defaultValue = "your_default_value")
+    val round: Int,
+    
+    @ColumnInfo(name = "gameResult",defaultValue = "your_default_value")
+    val result: String
 )

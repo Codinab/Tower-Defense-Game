@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.example.towerdefense.R
+import com.example.towerdefense.bbdd.MyListAdapter
 import com.example.towerdefense.databinding.FragmentMainBinding
 import com.example.towerdefense.utility.*
 
@@ -35,8 +36,12 @@ class MainFragment : Fragment() {
             }
         
         requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    
+        
         
         return view
+        
+        
     }
     
     
@@ -56,6 +61,12 @@ class MainFragment : Fragment() {
         val helpButton = binding.help
         helpButton.setOnClickListener {
             val fragment = HelpFragment()
+            replaceFragment(fragment)
+        }
+        
+        val registryButton = binding.registryButton
+        registryButton.setOnClickListener {
+            val fragment = RegistryFragment()
             replaceFragment(fragment)
         }
     }

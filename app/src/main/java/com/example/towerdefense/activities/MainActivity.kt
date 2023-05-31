@@ -26,26 +26,7 @@ import org.joml.Vector2i
 
 class MainActivity : AppCompatActivity() {
     
-    private var startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            result.let {
-                val gameInfoString = it.data?.getStringExtra(NewGameInfAct.EXTRA_REPLY) ?: ""
-                val gameInfo = GameInfo(gameInfoString, 20)
-                println("InfoString: $gameInfoString")
-                Toast.makeText(applicationContext, gameInfoString, Toast.LENGTH_LONG).show()
-                myViewModel.insert(gameInfo)
-            
-            }
-        } else {
-            Toast.makeText(
-                applicationContext,
-                R.string.empty_not_saved,
-                Toast.LENGTH_LONG
-            ).show()
-            
-            println(result)
-        }
-    }
+    
     private val myViewModel: MyViewModel by viewModels() {
         MyViewModelFactory((application as MyApplication).repository)
     }
@@ -74,21 +55,10 @@ class MainActivity : AppCompatActivity() {
         
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         mainActivity = this
+    
         
-        val recyclerView = binding.recyclerview
-        val adapter = MyListAdapter()
-        recyclerView?.adapter = adapter
-        recyclerView?.layoutManager = LinearLayoutManager(this)
+    
         
-        myViewModel.allGameInfo.observe(this) { gameInfo ->
-            // Update the cached copy of the words in the adapter.
-            gameInfo?.let { adapter.submitList(it) }
-        }
-        val fab = findViewById<FloatingActionButton>(R.id.fab)
-        fab.setOnClickListener {
-            val intent = Intent(this@MainActivity, NewGameInfAct::class.java)
-            startForResult.launch(intent)
-        }
         
     }
     

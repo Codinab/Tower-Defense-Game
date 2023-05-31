@@ -27,3 +27,4 @@ class GameFragment : Fragment() {
         return GameView(requireContext() as GameActivity, name, difficulty, enemySpeed, maxTime).also { gameView = it }
     }
 }
+

@@ -12,7 +12,7 @@ import com.example.towerdefense.R
 
 class NewGameInfAct: AppCompatActivity() {
     private lateinit var editGameInfoView: EditText
-    private lateinit var editGameInfoScoreView: EditText
+    
     
     
     

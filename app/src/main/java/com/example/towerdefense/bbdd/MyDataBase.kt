@@ -2,6 +2,7 @@ package com.example.towerdefense.bbdd
 
 
 import android.content.Context
+import androidx.room.AutoMigration
 
 import androidx.room.Database
 import androidx.room.Room
@@ -15,8 +16,12 @@ import kotlinx.coroutines.launch
 
 
 @Database(
+    version = 2,
     entities = [GameInfo::class],
-    version = 1
+    exportSchema = true,
+    autoMigrations = [
+        AutoMigration (from = 1, to = 2)
+    ]
 )
 abstract class MyDataBase : RoomDatabase() {
     
