@@ -55,24 +55,8 @@ class MainActivity : AppCompatActivity() {
         
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         mainActivity = this
-    
-        
-    
-        
-        
     }
-    
-    private var lastClickTime: Long = 0
-    
-    @RequiresApi(Build.VERSION_CODES.R)
     override fun onBackPressed() {
-        //Do double back press to exit
-        val currentTime = System.currentTimeMillis()
-        if (currentTime - lastClickTime < 400) {
-            super.onBackPressed()
-        } else {
-            Toast.makeText(this, "Press 2 times to exit", Toast.LENGTH_SHORT).show()
-            lastClickTime = currentTime
-        }
+        //Back button creates bugs
     }
 }

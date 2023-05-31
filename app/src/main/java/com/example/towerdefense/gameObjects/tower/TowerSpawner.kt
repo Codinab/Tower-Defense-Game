@@ -82,9 +82,11 @@ class TowerSpawner(private val box2D: Box2D, var modelTower: Tower, private val 
             }
             MotionEvent.ACTION_MOVE -> return true
             MotionEvent.ACTION_UP -> {
-                if (lastTower != null && IntersectionDetector2D.intersection(collider().clone()
-                        .body.position.add(context.gameView()!!.surfaceView.camera().position()),
-                            lastTower!!.collider())) {
+                if (lastTower != null && IntersectionDetector2D.intersection(
+                        collider().clone()
+                            .body.position.add(context.gameView()!!.surfaceView.camera().position()),
+                        lastTower!!.collider()
+                    )) {
                     lastTower!!.destroy()
                     return true
                 } else lastTower = null
@@ -111,10 +113,14 @@ class TowerSpawner(private val box2D: Box2D, var modelTower: Tower, private val 
     
     private var spawnerPosition: SpawnerPosition? = null
     fun position(spawnerPosition: SpawnerPosition) {
-        position(spawnerPosition.vector2f(context).add(context.gameView()!!.
-            surfaceView.camera().position()))
+        position(
+            spawnerPosition.vector2f(context).add(
+                context.gameView()!!.surfaceView.camera().position()
+            )
+        )
         this.spawnerPosition = spawnerPosition
         modelTower.position(spawnerPosition.vector2f(context))
+        
     }
     
     override fun position(): Vector2f {

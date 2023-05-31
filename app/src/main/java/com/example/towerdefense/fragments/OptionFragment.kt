@@ -97,7 +97,7 @@ class OptionFragment : Fragment() {
         }
         
         binding.exitOptions.setOnClickListener {
-            requireActivity().finish()
+            replaceFragment(MainFragment())
         }
     }
     

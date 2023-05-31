@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.graphics.*
 import android.os.Build
 import android.view.MotionEvent
+import android.view.SurfaceHolder
 import android.view.SurfaceView
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
@@ -29,7 +30,7 @@ import java.util.*
 import kotlin.collections.HashMap
 
 @SuppressLint("ViewConstructor")
-class GameSurfaceView(private val context: GameActivity, road: Road) : SurfaceView(context), java.io.Serializable {
+class GameSurfaceView(private val context: GameActivity, road: Road) : SurfaceView(context), java.io.Serializable, SurfaceHolder.Callback {
     
     var enemies = EnemyList()
     var movableTower: Tower? = null
@@ -323,6 +324,21 @@ class GameSurfaceView(private val context: GameActivity, road: Road) : SurfaceVi
         )
     }
     
+
+    override fun surfaceCreated(p0: SurfaceHolder) {
+        if (restoreSurfaceView != null) {
+            restoreSurfaceView = null
+            onRestoreInstanceState(restoreSurfaceView)
+        }
+    }
+    
+    override fun surfaceChanged(p0: SurfaceHolder, p1: Int, p2: Int, p3: Int) {
+        restoreSurfaceView = onSaveInstanceState()
+    }
+    
+    override fun surfaceDestroyed(p0: SurfaceHolder) {
+        restoreSurfaceView = onSaveInstanceState()
+    }
     
     fun getGameState(): Serializable {
         return this

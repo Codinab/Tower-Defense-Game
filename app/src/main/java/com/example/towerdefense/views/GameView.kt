@@ -25,8 +25,9 @@ import org.joml.Vector2f
 import org.joml.Vector2i
 import java.util.concurrent.atomic.AtomicInteger
 
+@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("ClickableViewAccessibility", "ViewConstructor")
-class GameView(private val context: GameActivity, val name: String = "DefaultGame", val difficulty: Int, val enemySpeed: Float, val maxTime: Int) : RelativeLayout(context), SurfaceHolder.Callback, java.io.Serializable {
+class GameView(private val context: GameActivity, val name: String = "DefaultGame", val difficulty: Int, val enemySpeed: Float, val maxTime: Int) : RelativeLayout(context), SurfaceHolder.Callback {
     
     private lateinit var pauseStartButton: GameObjectView
     lateinit var surfaceView: GameSurfaceView
@@ -38,8 +39,8 @@ class GameView(private val context: GameActivity, val name: String = "DefaultGam
     var round: Int
     
     init {
-        gameLog = Log()
-        gameLog?.addGameViewLog(this)
+        gameLog = Log(context)
+        gameLog!!.addGameViewLog(this)
         
         //change to horizontal view
         setBackgroundColor(Color.TRANSPARENT)
@@ -198,6 +199,14 @@ class GameView(private val context: GameActivity, val name: String = "DefaultGam
         surfaceView.gameLoop = gameLoop
     }
     
+    fun stop() {
+        if (!::gameLoop.isInitialized) return
+        if (!gameLoop.isRunning) return
+        
+        gamePause()
+        gameLoop.stopLoop()
+    }
+    
     fun gamePause() {
         if (!::gameLoop.isInitialized) return
         if (!gameLoop.isRunning) return
@@ -238,24 +247,11 @@ class GameView(private val context: GameActivity, val name: String = "DefaultGam
         }
     }
     
-    /*    override fun surfaceChanged(p0: SurfaceHolder, p1: Int, p2: Int, p3: Int) {
-            //onSaveInstanceState(this)
-            if (!isRunning()) {
-                start()
-                gamePause()
-            }
-        
-            //(context as OptionActivity).rotation()
-            updatePosStartPauseButton()
-            updateRoundCounter()
-            restoreGame = onSaveInstanceState()
-        }*/
     override fun surfaceChanged(p0: SurfaceHolder, p1: Int, p2: Int, p3: Int) {
         if (!isRunning()) {
             start()
             gamePause()
         }
-    
         
         val size = Vector2i(p2, p3)
    
@@ -289,8 +285,6 @@ class GameView(private val context: GameActivity, val name: String = "DefaultGam
         removeView(pauseStartButton)
         initStartPauseButton(size)
     }
-    
-    
     
     override fun surfaceDestroyed(p0: SurfaceHolder) {
         restoreGame = onSaveInstanceState()
