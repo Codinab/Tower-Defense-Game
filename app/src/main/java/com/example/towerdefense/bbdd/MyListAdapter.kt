@@ -24,9 +24,6 @@ class MyListAdapter : ListAdapter<GameInfo, MyListAdapter.GameInfoViewHolder>(Ga
     
     class GameInfoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val textViewGameInfo: TextView = itemView.findViewById(R.id.previewTextView)
-        //private val descriptionViewGameInfo: TextView = itemView.findViewById(R.id.descriptionTextView)
-        
-       
         
         fun bind(game: GameInfo) {
     

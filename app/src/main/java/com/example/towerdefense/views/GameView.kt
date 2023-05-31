@@ -2,20 +2,24 @@ package com.example.towerdefense.views
 
 import Roads
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Build
+import android.text.TextUtils.replace
 import android.view.*
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.fragment.app.Fragment
 import com.example.towerdefense.GameLoop
 import com.example.towerdefense.Physics2d.primitives.Box2D
 import com.example.towerdefense.Physics2d.rigidbody.Rigidbody2D
 import com.example.towerdefense.R
 import com.example.towerdefense.activities.GameActivity
 import com.example.towerdefense.activities.LogActivity
+import com.example.towerdefense.fragments.HelpFragment
 import com.example.towerdefense.utility.*
 import org.joml.Vector2f
 import org.joml.Vector2i
@@ -182,6 +186,9 @@ class GameView(private val context: GameActivity, val name: String = "DefaultGam
         intent.putExtra("log_round", round)
         intent.putExtra("log_result", result)
         context.startActivity(intent)
+    
+        val fragment = HelpFragment()
+        
     }
     
     fun start() {
@@ -288,4 +295,6 @@ class GameView(private val context: GameActivity, val name: String = "DefaultGam
     override fun surfaceDestroyed(p0: SurfaceHolder) {
         restoreGame = onSaveInstanceState()
     }
+    
+    
 }

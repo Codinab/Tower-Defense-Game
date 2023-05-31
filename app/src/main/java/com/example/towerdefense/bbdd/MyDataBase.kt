@@ -47,28 +47,3 @@ abstract class MyDataBase : RoomDatabase() {
         }
     }
 }
-/*private class WordDatabaseCallback(
-    private val scope: CoroutineScope
-) : RoomDatabase.Callback() {
-    override fun onCreate(db: SupportSQLiteDatabase) {
-        super.onCreate(db)
-        INSTANCE?.let { database ->
-            scope.launch{
-                val myDaoIdentity = database.myDaoIdentity()
-                
-                // Delete all content here.
-                myDaoIdentity.deleteAll()
-                
-                // Add sample gameInfo.
-                var gameInfo = GameInfo("Putin", 200)
-                myDaoIdentity.insert(gameInfo)
-                gameInfo = GameInfo("Putin coding!", 100)
-                myDaoIdentity.insert(gameInfo)
-                
-                //TODO: Add your own words!
-                gameInfo = GameInfo("TETE", 400)
-                myDaoIdentity.insert(gameInfo)
-            }
-        }
-    }
-}*/

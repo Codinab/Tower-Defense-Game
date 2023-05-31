@@ -28,19 +28,21 @@ class GameActivity : AppCompatActivity() {
         
         // Hide title bar
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
-        
         // Hide action bar
         supportActionBar?.hide()
-        
         // New fullscreen method only for Android 11
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        
+    
+        optionsConfig()
+    
+        binding()
+    }
+    
+    private fun optionsConfig() {
         difficulty = intent.getIntExtra("difficulty", 1)
         enemiesSpeed = intent.getFloatExtra("enemiesSpeed", 0f)
         maxTime = intent.getIntExtra("maxTime", -100)
         gameName = intent.getStringExtra("gameName") ?: "DefaultGame"
-    
-        binding()
     }
     
     private fun binding() {
