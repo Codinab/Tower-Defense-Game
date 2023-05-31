@@ -7,6 +7,15 @@
     android:layout_height="match_parent">
 
     <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerViewLog"
+        android:name="com.example.towerdefense.fragments.LogFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        tools:srcCompat="@tools:sample/avatars"
+        tools:ignore="MissingConstraints" />
+
+
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerViewGame"
         android:name="com.example.towerdefense.fragments.GameFragment"
         android:layout_width="match_parent"
@@ -15,5 +24,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

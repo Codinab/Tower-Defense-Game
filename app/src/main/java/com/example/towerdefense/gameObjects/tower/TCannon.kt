@@ -21,7 +21,7 @@ class TCannon(radius: Float, private val box2D: Box2D, private val context: Game
     
     private var sizeCanonBall: Float = 30f
     private var texture = BitmapFactory.decodeResource(
-        context.gameView()!!.context.resources,
+        context.resources,
         com.example.towerdefense.R.drawable.cannon
     )
     private var textureResized =

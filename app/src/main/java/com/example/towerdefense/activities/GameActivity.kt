@@ -1,12 +1,16 @@
 package com.example.towerdefense.activities
 
 import android.os.Bundle
+import android.view.SurfaceHolder
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.towerdefense.R
 import com.example.towerdefense.databinding.ActivityGameBinding
 import com.example.towerdefense.fragments.GameFragment
+import com.example.towerdefense.fragments.LogFragment
+import com.example.towerdefense.utility.TimeController
 import com.example.towerdefense.views.GameView
 import org.joml.Vector2i
 
@@ -39,18 +43,41 @@ class GameActivity : AppCompatActivity() {
         enemiesSpeed = intent.getFloatExtra("enemiesSpeed", 0f)
         maxTime = intent.getIntExtra("maxTime", -100)
         gameName = intent.getStringExtra("gameName") ?: "DefaultGame"
-    
+        
         binding()
     }
+    
+    fun addLog(log: String) {
+        val fragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerViewLog) as LogFragment?
+        if (fragment?.binding != null) {
+            fragment.addLog(log)
+        }
+    }
+    
+    
+    
+    internal fun saveGameView(gameView: GameView) {
+        this.gameView = gameView
+        gameView.gamePause()
+        println("GameView saved")
+    }
+    internal fun restoreGameView(): GameView? {
+        if (gameView != null) {
+            println("GameView restored")
+            return gameView
+        }
+        return null
+    }
+    
+    private var gameView: GameView? = null
     
     private fun binding() {
         binding = ActivityGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.fragmentContainerViewGame
     }
     
     fun gameView(): GameView? {
-        return (binding.fragmentContainerViewGame.getFragment() as GameFragment).getGameView()
+        return gameView
     }
     
     fun getGameName(): String {
@@ -65,10 +92,6 @@ class GameActivity : AppCompatActivity() {
     fun getMaxTime(): Int {
         return maxTime ?: -100
     }
-    
-    override fun onResume() {
-        super.onResume()
-    }
 
     
     private fun resetWindowSizes() {
@@ -80,15 +103,7 @@ class GameActivity : AppCompatActivity() {
         return screenSize
     }
     
-    private var lastClickTime: Long = 0
     override fun onBackPressed() {
-        //Do double back press to exit
-        val currentTime = System.currentTimeMillis()
-        if (currentTime - lastClickTime < 400) {
-            finish()
-        } else {
-            Toast.makeText(this, "Press 2 times to exit", Toast.LENGTH_SHORT).show()
-            lastClickTime = currentTime
-        }
+        //Back button creates bugs
     }
 }
