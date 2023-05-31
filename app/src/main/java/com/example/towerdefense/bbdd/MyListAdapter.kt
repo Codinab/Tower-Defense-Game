@@ -30,9 +30,9 @@ class MyListAdapter : ListAdapter<GameInfo, MyListAdapter.GameInfoViewHolder>(Ga
         
         fun bind(game: GameInfo) {
     
-            val nameResultText = "Name: ${game.name}\nResult: ${game.score}"
-            val helloText = "Hello"
-            val finalText = "$nameResultText\n$helloText"
+            val nameResultText = "Name: ${game.name} Result: ${game.result}"
+            val descriptionText = "Date: ${game.date} Money: ${game.money} Round: ${game.round}"
+            val finalText = "$nameResultText\n$descriptionText"
             textViewGameInfo.text = finalText
             
         }

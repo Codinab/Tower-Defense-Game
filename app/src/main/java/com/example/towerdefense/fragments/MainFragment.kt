@@ -8,16 +8,24 @@ import android.view.*
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.example.towerdefense.R
+import com.example.towerdefense.bbdd.MyApplication
 import com.example.towerdefense.bbdd.MyListAdapter
+import com.example.towerdefense.bbdd.MyViewModel
+import com.example.towerdefense.bbdd.MyViewModelFactory
 import com.example.towerdefense.databinding.FragmentMainBinding
 import com.example.towerdefense.utility.*
 
 class MainFragment : Fragment() {
     
     private lateinit var startForResult: ActivityResultLauncher<Intent>
+    private val myViewModel: MyViewModel by viewModels() {
+        MyViewModelFactory((requireActivity().application as MyApplication).repository)
+    }
     
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -55,6 +63,7 @@ class MainFragment : Fragment() {
         
         val exitButton = binding.exitGame
         exitButton.setOnClickListener {
+            myViewModel.deleteAll()
             activity?.finish()
         }
         

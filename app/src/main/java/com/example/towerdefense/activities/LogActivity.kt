@@ -7,8 +7,13 @@ import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
 import android.widget.EditText
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.towerdefense.R
+import com.example.towerdefense.bbdd.MyApplication
+import com.example.towerdefense.bbdd.MyViewModel
+import com.example.towerdefense.bbdd.MyViewModelFactory
+import com.example.towerdefense.bbdd.tablesClasses.GameInfo
 import com.example.towerdefense.databinding.ActivityLogBinding
 import java.text.SimpleDateFormat
 import java.util.*
@@ -19,6 +24,10 @@ class LogActivity : AppCompatActivity() {
     private lateinit var emailEditText: EditText
     lateinit var email: String
     lateinit var dayAndHour: String
+    
+    private val myViewModel: MyViewModel by viewModels {
+        MyViewModelFactory((application as MyApplication).repository)
+    }
     
     // Add a constant for the saved instance state key
     companion object {
@@ -51,6 +60,7 @@ class LogActivity : AppCompatActivity() {
         val result = intent.getStringExtra("log_result")
         
         
+        
         var logMss = "Game: {$name} Money: {$money} Round: {$round} Result: {$result}"
         
         if (name == null || money == null || round == null || result == null) {
@@ -63,6 +73,10 @@ class LogActivity : AppCompatActivity() {
         dayAndHour = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(Date())
         val editText = findViewById<EditText>(R.id.time)
         editText.setText(dayAndHour)
+    
+    
+        val gameInfo = GameInfo(name!!, money!!.toInt(), dayAndHour, money!!.toInt(),round!!.toInt(), result!!)
+        myViewModel.insert(gameInfo)
     }
     
     @SuppressLint("QueryPermissionsNeeded")
